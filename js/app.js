@@ -991,7 +991,7 @@
       }, ["초기화"]))
     ]));
 
-    wrap.appendChild(el("p", { class: "footnote", text: "킹링고 · 매일 영어·중국어 · 만든이 지니" }));
+    wrap.appendChild(el("p", { class: "footnote", text: "킹링고 · 매일 영어·중국어·일본어 · 만든이 지니" }));
     return wrap;
   }
 

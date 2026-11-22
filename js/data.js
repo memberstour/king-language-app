@@ -534,7 +534,7 @@
     },
     apps: [
       { name: "킹링고", desc: "영어 · 중국어 · 일본어", href: "./", active: true },
-      { name: "킹링고 입문", desc: "러시아어 · 스페인어 · 베트남어 읽기·쓰기", href: "./beginner/" },
+      { name: "킹링고 입문", desc: "러시아어 · 스페인어 · 베트남어", href: "./beginner/" },
       { name: "킹한자", desc: "한자 읽기 · 따라 쓰기", href: "./hanja/" }
     ]
   };
