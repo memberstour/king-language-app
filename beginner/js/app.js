@@ -49,7 +49,7 @@
       streak: { count: 0, best: 0, last: null },
       progress: {},
       mastered: {},
-      prefs: { sound: true, slow: false, guide: true, pen: { width: 6, color: "#1f2937" }, letter: 0, char: 0 }
+      prefs: { sound: true, slow: false, guide: true, pen: { width: 9, color: "#1f2937" }, letter: 0, char: 0 }
     };
   }
   function isObj(v) { return v && typeof v === "object" && !Array.isArray(v); }
@@ -73,7 +73,7 @@
     if (typeof st.prefs.slow !== "boolean") st.prefs.slow = false;
     if (typeof st.prefs.guide !== "boolean") st.prefs.guide = true;
     if (!isObj(st.prefs.pen)) st.prefs.pen = d.prefs.pen;
-    st.prefs.pen.width = clamp(Math.floor(Number(st.prefs.pen.width) || 6), 2, 24);
+    st.prefs.pen.width = clamp(Math.floor(Number(st.prefs.pen.width) || 9), 2, 24);
     if (typeof st.prefs.pen.color !== "string") st.prefs.pen.color = d.prefs.pen.color;
     st.prefs.letter = Math.max(0, Math.floor(Number(st.prefs.letter) || 0));
     st.prefs.char = Math.max(0, Math.floor(Number(st.prefs.char) || 0));
@@ -408,7 +408,7 @@
       el("span", { class: "pad-label", text: "펜 굵기" }),
       el("div", { class: "pad-btns" }, widths.map(function (w) {
         var b = el("button", {
-          class: "chip-btn" + (Math.abs(pen.width - w.v) <= 3 ? " is-active" : ""), type: "button",
+          class: "chip-btn" + (pen.width === w.v ? " is-active" : ""), type: "button",
           on: { click: function () { pickWidth(w.v); } }
         }, [w.label]);
         widthBtns.push(b);
