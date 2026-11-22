@@ -78,6 +78,32 @@
     check("이전 카드 이동", txt(first("card-progress-text")).indexOf("1 / 5") === 0, txt(first("card-progress-text")));
   }
 
+  function cardsFinishChecks() {
+    goTab(1);
+    var chips = byClass("unit-chip");
+    clickNode(chips[0], "Day 1 카드");
+    for (var i = 0; i < 5; i++) {
+      var card = first("flash");
+      if (card) card.click();
+      var acts = first("flash-actions");
+      if (acts) acts.children[1].click();
+    }
+    check("카드 완주 시트", ids.modal.classList.contains("is-open"));
+    check("카드 완주 문구", txt(ids.modal).indexOf("모두 봤어요") >= 0);
+    var close = byClass("btn-ghost", ids.modal)[0];
+    clickNode(close, "카드 시트 닫기");
+    check("카드 시트 닫힘", !ids.modal.classList.contains("is-open"));
+  }
+
+  function installSheetChecks() {
+    goTab(0);
+    var btn = byClass("btn-blue").filter(function (b) { return txt(b).indexOf("방법 보기") >= 0; })[0];
+    clickNode(btn, "설치 안내 열기");
+    check("설치 안내 시트", ids.modal.classList.contains("is-open") && txt(ids.modal).indexOf("홈 화면에 추가") >= 0);
+    clickNode(byClass("btn-ghost", ids.modal)[0], "설치 안내 닫기");
+    check("설치 안내 닫힘", !ids.modal.classList.contains("is-open"));
+  }
+
   /* ---------- 3. 말하기 ---------- */
   function speakChecks() {
     goTab(2);
@@ -273,7 +299,11 @@
 
   function resetChecks() {
     var store = g.KingStore;
-    store.resetAll();
+    goTab(3);
+    clickNode(first("btn-danger-ghost"), "초기화 열기");
+    var wipe = byClass("btn-danger", ids.modal).filter(function (b) { return txt(b).indexOf("모두 지우기") >= 0; })[0];
+    clickNode(wipe, "모두 지우기");
+    check("초기화 시트 닫힘", !ids.modal.classList.contains("is-open"));
     check("초기화 후 XP 0", store.totalXp() === 0);
     check("초기화 후 스트릭 0", store.streakInfo().count === 0);
     check("초기화 후 외운 문장 0", store.masteredCount("en") === 0 && store.masteredCount("zh") === 0);
@@ -310,6 +340,8 @@
     try {
       bootChecks();
       cardChecks();
+      cardsFinishChecks();
+      installSheetChecks();
       speakChecks();
       progressChecks();
       langChecks();
