@@ -1,5 +1,5 @@
 /* 킹링고 — 앱 껍데기를 캐시해 오프라인에서도 실행합니다. */
-var CACHE_NAME = "kinglingo-hanja-v3";
+var CACHE_NAME = "kinglingo-hanja-v4";
 var ASSETS = [
   "./",
   "./index.html",
@@ -15,11 +15,13 @@ var ASSETS = [
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
-      return cache.addAll(ASSETS).catch(function () {
-        return Promise.all(ASSETS.map(function (url) {
-          return cache.add(url).catch(function () { return null; });
-        }));
-      });
+      // 브라우저 HTTP 캐시에 남은 예전 파일을 쓰지 않도록 새로 받아 둡니다.
+      return Promise.all(ASSETS.map(function (url) {
+        return fetch(url, { cache: "reload" }).then(function (response) {
+          if (response && response.ok) return cache.put(url, response);
+          return null;
+        }).catch(function () { return null; });
+      }));
     }).then(function () { return self.skipWaiting(); })
   );
 });
@@ -57,7 +59,7 @@ self.addEventListener("fetch", function (event) {
   // 정적 자산은 캐시를 먼저 보여 주고, 뒤에서 새 파일을 받아 둡니다.
   event.respondWith(
     caches.match(request).then(function (hit) {
-      var network = fetch(request).then(function (response) {
+      var network = fetch(request, { cache: "no-cache" }).then(function (response) {
         if (response && response.ok) {
           var copy = response.clone();
           caches.open(CACHE_NAME).then(function (cache) { cache.put(request, copy); });
