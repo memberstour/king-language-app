@@ -280,6 +280,21 @@
     check("초기화 후 언어 영어", store.get().lang === "en");
   }
 
+  function corruptedStateChecks() {
+    var store = g.KingStore;
+    g.localStorage.setItem("kinglingo.state.v1", "{not json");
+    store.load();
+    check("깨진 저장 복구", store.totalXp() === 0 && store.get().lang === "en");
+    g.localStorage.setItem("kinglingo.state.v1", JSON.stringify({
+      lang: "zz", xp: -5, streak: { count: "x", best: null, last: 3 },
+      progress: null, mastered: [], daily: { "nope": 4 }, prefs: { sound: "no" }
+    }));
+    store.load();
+    var st = store.get();
+    check("잘못된 값 정리", st.lang === "en" && st.xp === 0 && st.streak.count === 0 && !!st.progress,
+      st.lang + "/" + st.xp + "/" + st.streak.count);
+  }
+
   /* ---------- 9. 저장 ---------- */
   function storageChecks() {
     var raw = g.localStorage.getItem("kinglingo.state.v1");
@@ -304,6 +319,7 @@
       edgeChecks();
       storageChecks();
       resetChecks();
+      corruptedStateChecks();
     } catch (e) {
       results.push({ name: "예외", ok: false, extra: (e && e.message) + " @ " + (e && e.stack ? String(e.stack).split("\n")[1] : "") });
     }
