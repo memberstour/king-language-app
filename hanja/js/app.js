@@ -263,9 +263,11 @@
     }
     function resize() {
       var s = size();
-      canvas.width = Math.round(s * dpr());
-      canvas.height = Math.round(s * dpr());
-      if (canvas.style) canvas.style.height = s + "px";
+      var px = Math.round(s * dpr());
+      if (canvas.width !== px || canvas.height !== px) {
+        canvas.width = px;
+        canvas.height = px;
+      }
       redraw();
     }
     function drawGrid(c, s) {
@@ -452,6 +454,12 @@
     wrap.appendChild(el("p", { class: "pad-hint", text: "손가락으로 따라 써 보세요. 글자를 바꾸면 그 글자의 연습장이 따로 저장돼요." }));
     host.appendChild(wrap);
     resize();
+    // 처음 붙일 때는 너비가 아직 0일 수 있어, 다음 프레임과 크기 변화에서 다시 맞춥니다.
+    if (global.requestAnimationFrame) global.requestAnimationFrame(resize);
+    if (global.setTimeout) global.setTimeout(resize, 120);
+    if (global.ResizeObserver) {
+      try { new global.ResizeObserver(resize).observe(canvas); } catch (e) { /* noop */ }
+    }
     return wrap;
   }
 

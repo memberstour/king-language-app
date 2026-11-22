@@ -376,17 +376,14 @@
       ]),
       el("div", { class: "top-chips" }, [
         chip("flame", st.count > 0 ? st.count + "일" : "시작", "flame"),
-        chip("bolt", String(S.totalXp()), "xp")
+        chip("bolt", String(S.totalXp()), "xp"),
+        el("span", { class: "chip chip-goal" }, [
+          el("span", { class: "top-goal-label", text: "오늘" }),
+          el("b", { text: todayXp + " / " + D.dailyGoal })
+        ])
       ])
     ]));
-    top.appendChild(el("div", { class: "top-row top-row-2" }, [
-      seg,
-      el("span", { class: "top-goal" }, [
-        el("span", { class: "top-goal-label", text: "오늘" }),
-        el("b", { text: todayXp + " / " + D.dailyGoal }),
-        el("span", { class: "top-goal-unit", text: "XP" })
-      ])
-    ]));
+    top.appendChild(el("div", { class: "top-row top-row-2" }, [seg]));
   }
 
   /* ---------- 오늘 ---------- */
