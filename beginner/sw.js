@@ -1,5 +1,5 @@
 /* 킹링고 — 앱 껍데기를 캐시해 오프라인에서도 실행합니다. */
-var CACHE_NAME = "kinglingo-beginner-v1";
+var CACHE_NAME = "kinglingo-beginner-v2";
 var ASSETS = [
   "./",
   "./index.html",

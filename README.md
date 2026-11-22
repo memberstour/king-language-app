@@ -79,8 +79,12 @@ python3 tools/make_app_icons.py  # 앱 2·3
 # 앱 1 단일 파일 + 전체 zip 빌드
 python3 tools/build_standalone.py
 
+# 배포 전에 각 sw.js의 CACHE_NAME을 올려 주세요 (예: v3 → v4).
+# 올리지 않으면 이미 설치한 홈 화면 앱이 예전 파일을 계속 씁니다.
+sw.js, beginner/sw.js, hanja/sw.js
+
 # 배포 (main + gh-pages)
-./tools/deploy.sh
+bash tools/deploy.sh
 ```
 
 ## 기록

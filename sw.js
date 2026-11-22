@@ -1,7 +1,7 @@
 /* 킹링고 서비스 워커 — 앱 껍데기를 캐시해 오프라인에서도 실행
  * GitHub Pages의 /저장소이름/ 하위 경로에서도 동작하도록 모두 상대 경로를 씁니다.
  */
-var CACHE_NAME = "kinglingo-v2";
+var CACHE_NAME = "kinglingo-v3";
 var ASSETS = [
   "./",
   "./index.html",
