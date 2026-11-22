@@ -1,7 +1,7 @@
 /* 킹링고 서비스 워커 — 앱 껍데기를 캐시해 오프라인에서도 실행
  * GitHub Pages의 /저장소이름/ 하위 경로에서도 동작하도록 모두 상대 경로를 씁니다.
  */
-var CACHE_NAME = "kinglingo-v1";
+var CACHE_NAME = "kinglingo-v2";
 var ASSETS = [
   "./",
   "./index.html",
@@ -52,6 +52,8 @@ self.addEventListener("fetch", function (event) {
   var url;
   try { url = new URL(request.url); } catch (e) { return; }
   if (url.origin !== self.location.origin) return;
+  // 하위 앱(beginner·hanja)은 각자의 서비스 워커가 맡습니다.
+  if (url.pathname.indexOf("/beginner/") >= 0 || url.pathname.indexOf("/hanja/") >= 0) return;
 
   // 페이지 이동은 네트워크 우선, 실패하면 캐시된 앱 껍데기로.
   if (request.mode === "navigate") {

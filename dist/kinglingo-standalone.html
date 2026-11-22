@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>킹링고 — 매일 영어·중국어 (단일 파일)</title>
+  <title>킹링고 — 영어·중국어·일본어 (단일 파일)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="description" content="매일 5분, 초등 수준 영어와 중국어 문장을 듣고 따라 말하며 익히는 학습 앱. 오프라인에서도 실행됩니다.">
+  <meta name="description" content="매일 5분, 초등 수준 영어·중국어·일본어 문장을 듣고 따라 말하며 익히는 학습 앱. 오프라인에서도 실행됩니다.">
   <meta name="theme-color" content="#58cc02">
   <meta name="color-scheme" content="light">
   <meta name="format-detection" content="telephone=no">
@@ -1304,6 +1304,24 @@ body.in-lesson .main { padding-bottom: 0; }
   }
 }
 
+/* ---------- 함께 쓰는 앱 ---------- */
+.app-links { display: grid; gap: 8px; }
+.app-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+}
+.app-link.is-active { border-color: var(--green); background: #f8fff2; }
+.app-link-name { font-size: 14px; font-weight: 900; }
+.app-link-desc { font-size: 11px; font-weight: 700; color: var(--muted-2); text-align: right; }
+
 </style>
 </head>
 <body>
@@ -1659,8 +1677,165 @@ body.in-lesson .main { padding-bottom: 0; }
     }
   ];
 
+  var JA_UNITS = [
+    {
+      id: "ja-01", no: 1, title: "인사", emoji: "👋",
+      goal: "처음 만난 사람에게 일본어로 인사해요",
+      sentences: [
+        { id: "ja-01-1", text: "こんにちは！はじめまして。", read: "こんにちは！はじめまして。", ko: "안녕하세요! 만나서 반가워요.", tip: "はじめまして는 '하지메마시테'. 끝의 て는 가볍게 흘려요.", w: ["こんにちは！", "はじめまして。"] },
+        { id: "ja-01-2", text: "おはようございます。お元気ですか。", read: "おはようございます。おげんきですか。", ko: "좋은 아침이에요, 어떻게 지내세요?", tip: "お元気는 '오겐키', ですか는 끝을 살짝 올려요.", w: ["おはようございます。", "お元気ですか。"] },
+        { id: "ja-01-3", text: "元気です、ありがとう。", read: "げんきです、ありがとう。", ko: "잘 지내요, 고마워요.", tip: "ありがとう는 '아리가토-'로 마지막 오를 길게.", w: ["元気です、", "ありがとう。"] },
+        { id: "ja-01-4", text: "また明日！", read: "またあした！", ko: "내일 봐요!", tip: "また明日는 '마타 아시타'로 또박또박.", w: ["また", "明日！"] },
+        { id: "ja-01-5", text: "よい一日を！", read: "よいいちにちを！", ko: "좋은 하루 보내세요!", tip: "一日은 여기서 '이치니치'로 읽어요.", w: ["よい", "一日を！"] }
+      ]
+    },
+    {
+      id: "ja-02", no: 2, title: "자기소개", emoji: "🙋",
+      goal: "이름과 나라, 좋아하는 것을 말해요",
+      sentences: [
+        { id: "ja-02-1", text: "私の名前はスンユです。", read: "わたしのなまえはスンユです。", ko: "제 이름은 승우예요.", tip: "私는 '와타시', 名前는 '나마에'.", w: ["私の", "名前は", "スンユです。"] },
+        { id: "ja-02-2", text: "韓国から来ました。", read: "かんこくからきました。", ko: "저는 한국에서 왔어요.", tip: "韓国는 '칸코쿠', から는 '카라'.", w: ["韓国から", "来ました。"] },
+        { id: "ja-02-3", text: "会社で働いています。", read: "かいしゃではたらいています。", ko: "저는 회사에서 일해요.", tip: "会社는 '카이샤', 働いて는 '하타라이테'.", w: ["会社で", "働いています。"] },
+        { id: "ja-02-4", text: "コーヒーと音楽が好きです。", read: "コーヒーとおんがくがすきです。", ko: "저는 커피와 음악을 좋아해요.", tip: "好き는 '스키', 앞의 が를 살짝 세게.", w: ["コーヒーと", "音楽が", "好きです。"] },
+        { id: "ja-02-5", text: "みなさん、よろしくお願いします。", read: "みなさん、よろしくおねがいします。", ko: "여러분, 잘 부탁해요.", tip: "よろしくお願いします는 '요로시쿠 오네가이시마스'.", w: ["みなさん、", "よろしく", "お願いします。"] }
+      ]
+    },
+    {
+      id: "ja-03", no: 3, title: "카페에서", emoji: "☕",
+      goal: "카페에서 주문하고 계산해요",
+      sentences: [
+        { id: "ja-03-1", text: "アイスアメリカーノを一つください。", read: "アイスアメリカーノをひとつください。", ko: "아이스 아메리카노 한 잔 주세요.", tip: "一つ는 '히토츠', ください는 '쿠다사이'.", w: ["アイスアメリカーノを", "一つ", "ください。"] },
+        { id: "ja-03-2", text: "これはいくらですか。", read: "これはいくらですか。", ko: "이거 얼마예요?", tip: "いくら는 '이쿠라', 끝을 올려 물어요.", w: ["これは", "いくらですか。"] },
+        { id: "ja-03-3", text: "店内で食べます。", read: "てんないでたべます。", ko: "여기서 먹을게요.", tip: "店内는 '텐나이', 가게 안에서 먹는다는 뜻.", w: ["店内で", "食べます。"] },
+        { id: "ja-03-4", text: "レシートをもらえますか。", read: "レシートをもらえますか。", ko: "영수증 주시겠어요?", tip: "レシート는 '레시-토', もらえますか는 '모라에마스카'.", w: ["レシートを", "もらえますか。"] },
+        { id: "ja-03-5", text: "とてもおいしいです！", read: "とてもおいしいです！", ko: "아주 맛있어요!", tip: "おいしい는 '오이시-', とても는 '토테모'.", w: ["とても", "おいしいです！"] }
+      ]
+    },
+    {
+      id: "ja-04", no: 4, title: "식당에서", emoji: "🍜",
+      goal: "자리를 잡고 메뉴를 주문해요",
+      sentences: [
+        { id: "ja-04-1", text: "二人ですが、席はありますか。", read: "ふたりですが、せきはありますか。", ko: "두 명인데 자리 있나요?", tip: "二人는 '후타리', 席는 '세키'.", w: ["二人ですが、", "席は", "ありますか。"] },
+        { id: "ja-04-2", text: "メニューを見てもいいですか。", read: "メニューをみてもいいですか。", ko: "메뉴판 좀 볼 수 있을까요?", tip: "見てもいいですか는 '미테모 이이데스카', 허락을 구하는 말.", w: ["メニューを", "見ても", "いいですか。"] },
+        { id: "ja-04-3", text: "これをください。", read: "これをください。", ko: "이걸로 주세요.", tip: "これ는 '코레', ください는 '쿠다사이'.", w: ["これを", "ください。"] },
+        { id: "ja-04-4", text: "あまり辛くしないでください。", read: "あまりからくしないでください。", ko: "너무 맵지 않게 해주세요.", tip: "辛く는 '카라쿠', しないでください는 '시나이데 쿠다사이'.", w: ["あまり", "辛く", "しないでください。"] },
+        { id: "ja-04-5", text: "お会計をお願いします。", read: "おかいけいをおねがいします。", ko: "계산해 주세요.", tip: "お会計는 '오카이케이'.", w: ["お会計を", "お願いします。"] }
+      ]
+    },
+    {
+      id: "ja-05", no: 5, title: "길 묻기", emoji: "🗺️",
+      goal: "길을 묻고 방향을 알아들어요",
+      sentences: [
+        { id: "ja-05-1", text: "すみません、駅はどこですか。", read: "すみません、えきはどこですか。", ko: "실례합니다, 역이 어디예요?", tip: "すみません은 '스미마센', 駅는 '에키'.", w: ["すみません、", "駅は", "どこですか。"] },
+        { id: "ja-05-2", text: "ここから遠いですか。", read: "ここからとおいですか。", ko: "여기서 먼가요?", tip: "遠い는 '토오이', 오를 길게.", w: ["ここから", "遠いですか。"] },
+        { id: "ja-05-3", text: "まっすぐ行って、左に曲がってください。", read: "まっすぐいって、ひだりにまがってください。", ko: "직진해서 왼쪽으로 도세요.", tip: "まっすぐ는 '맛스구', 左는 '히다리'.", w: ["まっすぐ", "行って、", "左に", "曲がってください。"] },
+        { id: "ja-05-4", text: "歩いて五分ぐらいです。", read: "あるいてごふんぐらいです。", ko: "걸어서 5분쯤 걸려요.", tip: "五分는 '고훈', ぐらい는 '구라이'.", w: ["歩いて", "五分", "ぐらいです。"] },
+        { id: "ja-05-5", text: "助かりました、ありがとうございます。", read: "たすかりました、ありがとうございます。", ko: "도와주셔서 고마워요.", tip: "助かりました는 '타스카리마시타', 큰 도움이 됐다는 말.", w: ["助かりました、", "ありがとうございます。"] }
+      ]
+    },
+    {
+      id: "ja-06", no: 6, title: "쇼핑", emoji: "🛍️",
+      goal: "가격과 사이즈를 물어보고 계산해요",
+      sentences: [
+        { id: "ja-06-1", text: "このシャツはいくらですか。", read: "このシャツはいくらですか。", ko: "이 셔츠 얼마예요?", tip: "シャツ는 '샤츠'로 짧게.", w: ["この", "シャツは", "いくらですか。"] },
+        { id: "ja-06-2", text: "もう少し大きいサイズはありますか。", read: "もうすこしおおきいサイズはありますか。", ko: "더 큰 사이즈 있나요?", tip: "大きい는 '오오키이', 오를 길게.", w: ["もう少し", "大きい", "サイズは", "ありますか。"] },
+        { id: "ja-06-3", text: "試着してもいいですか。", read: "しちゃくしてもいいですか。", ko: "입어봐도 될까요?", tip: "試着는 '시차쿠', 입어 보기.", w: ["試着しても", "いいですか。"] },
+        { id: "ja-06-4", text: "これにします。", read: "これにします。", ko: "이걸로 할게요.", tip: "〜にします는 '~니 시마스', 고를 때 쓰는 말.", w: ["これに", "します。"] },
+        { id: "ja-06-5", text: "カードで払えますか。", read: "カードではらえますか。", ko: "카드로 계산할 수 있나요?", tip: "払えます는 '하라에마스'.", w: ["カードで", "払えますか。"] }
+      ]
+    },
+    {
+      id: "ja-07", no: 7, title: "하루 일과", emoji: "⏰",
+      goal: "내 하루를 순서대로 말해요",
+      sentences: [
+        { id: "ja-07-1", text: "七時に起きます。", read: "しちじにおきます。", ko: "저는 7시에 일어나요.", tip: "七時는 '시치지', 起きます는 '오키마스'.", w: ["七時に", "起きます。"] },
+        { id: "ja-07-2", text: "地下鉄で会社に行きます。", read: "ちかてつでかいしゃにいきます。", ko: "지하철로 출근해요.", tip: "地下鉄는 '치카테츠'.", w: ["地下鉄で", "会社に", "行きます。"] },
+        { id: "ja-07-3", text: "昼に昼ご飯を食べます。", read: "ひるにひるごはんをたべます。", ko: "정오에 점심을 먹어요.", tip: "昼ご飯는 '히루고한'.", w: ["昼に", "昼ご飯を", "食べます。"] },
+        { id: "ja-07-4", text: "六時ごろ家に帰ります。", read: "ろくじごろいえにかえります。", ko: "6시쯤 집에 와요.", tip: "ごろ는 '고로', ~쯤이라는 뜻.", w: ["六時ごろ", "家に", "帰ります。"] },
+        { id: "ja-07-5", text: "十一時前に寝ます。", read: "じゅういちじまえにねます。", ko: "11시 전에 자요.", tip: "寝ます는 '네마스'.", w: ["十一時", "前に", "寝ます。"] }
+      ]
+    },
+    {
+      id: "ja-08", no: 8, title: "날씨", emoji: "🌤️",
+      goal: "오늘과 내일 날씨를 이야기해요",
+      sentences: [
+        { id: "ja-08-1", text: "今日は晴れです。", read: "きょうははれです。", ko: "오늘은 맑아요.", tip: "今日는 '쿄-'로 읽어요.", w: ["今日は", "晴れです。"] },
+        { id: "ja-08-2", text: "明日は雨が降るでしょう。", read: "あしたはあめがふるでしょう。", ko: "내일은 비가 올 거예요.", tip: "降る는 '후루', でしょう는 '데쇼-'.", w: ["明日は", "雨が", "降るでしょう。"] },
+        { id: "ja-08-3", text: "外はとても寒いです。", read: "そとはとてもさむいです。", ko: "밖이 아주 추워요.", tip: "寒い는 '사무이'.", w: ["外は", "とても", "寒いです。"] },
+        { id: "ja-08-4", text: "傘を持って行ってください。", read: "かさをもっていってください。", ko: "우산 꼭 챙기세요.", tip: "傘는 '카사', 持って는 '못테'.", w: ["傘を", "持って", "行ってください。"] },
+        { id: "ja-08-5", text: "今日は空気がとてもきれいです。", read: "きょうはくうきがとてもきれいです。", ko: "오늘 공기가 정말 깨끗해요.", tip: "空気는 '쿠-키'.", w: ["今日は", "空気が", "とても", "きれいです。"] }
+      ]
+    },
+    {
+      id: "ja-09", no: 9, title: "취미", emoji: "🎸",
+      goal: "좋아하는 것과 주말 계획을 말해요",
+      sentences: [
+        { id: "ja-09-1", text: "音楽を聞くのが好きです。", read: "おんがくをきくのがすきです。", ko: "저는 음악 듣는 걸 좋아해요.", tip: "聞く는 '키쿠'.", w: ["音楽を", "聞くのが", "好きです。"] },
+        { id: "ja-09-2", text: "週末はギターを弾きます。", read: "しゅうまつはギターをひきます。", ko: "주말에는 기타를 쳐요.", tip: "弾きます는 '히키마스', 악기를 칠 때 써요.", w: ["週末は", "ギターを", "弾きます。"] },
+        { id: "ja-09-3", text: "スポーツは好きですか。", read: "スポーツはすきですか。", ko: "운동 좋아하세요?", tip: "スポーツ는 '스포-츠'.", w: ["スポーツは", "好きですか。"] },
+        { id: "ja-09-4", text: "たいてい公園を散歩します。", read: "たいていこうえんをさんぽします。", ko: "보통 공원에서 산책해요.", tip: "散歩는 '산포'.", w: ["たいてい", "公園を", "散歩します。"] },
+        { id: "ja-09-5", text: "楽しそうですね！", read: "たのしそうですね！", ko: "재미있겠네요!", tip: "楽しそう는 '타노시소-', 재미있을 것 같다는 말.", w: ["楽しそうですね！"] }
+      ]
+    },
+    {
+      id: "ja-10", no: 10, title: "전화와 약속", emoji: "📞",
+      goal: "전화로 약속을 잡고 미뤄요",
+      sentences: [
+        { id: "ja-10-1", text: "もしもし、スンユです。", read: "もしもし、スンユです。", ko: "여보세요, 승우입니다.", tip: "전화에서는 もしもし로 시작해요.", w: ["もしもし、", "スンユです。"] },
+        { id: "ja-10-2", text: "今晩、時間ありますか。", read: "こんばん、じかんありますか。", ko: "오늘 저녁 시간 있어요?", tip: "今晩는 '콘반', 時間은 '지칸'.", w: ["今晩、", "時間", "ありますか。"] },
+        { id: "ja-10-3", text: "六時に会いましょう。", read: "ろくじにあいましょう。", ko: "6시에 만나요.", tip: "会いましょう는 '아이마쇼-'.", w: ["六時に", "会いましょう。"] },
+        { id: "ja-10-4", text: "少し遅れます。", read: "すこしおくれます。", ko: "조금 늦을 것 같아요.", tip: "遅れます는 '오쿠레마스'.", w: ["少し", "遅れます。"] },
+        { id: "ja-10-5", text: "かけ直してもらえますか。", read: "かけなおしてもらえますか。", ko: "다시 전화해 주시겠어요?", tip: "かけ直す는 '카케나오스', 다시 걸다는 뜻.", w: ["かけ直して", "もらえますか。"] }
+      ]
+    },
+    {
+      id: "ja-11", no: 11, title: "감정과 상태", emoji: "😊",
+      goal: "내 기분과 상태를 솔직하게 말해요",
+      sentences: [
+        { id: "ja-11-1", text: "今日はとてもうれしいです。", read: "きょうはとてもうれしいです。", ko: "오늘 정말 행복해요.", tip: "うれしい는 '우레시-', 기쁘다.", w: ["今日は", "とても", "うれしいです。"] },
+        { id: "ja-11-2", text: "ちょっと疲れました。", read: "ちょっとつかれました。", ko: "조금 피곤해요.", tip: "疲れました는 '츠카레마시타'.", w: ["ちょっと", "疲れました。"] },
+        { id: "ja-11-3", text: "心配しないでください。", read: "しんぱいしないでください。", ko: "걱정하지 마세요.", tip: "心配는 '신파이'.", w: ["心配", "しないでください。"] },
+        { id: "ja-11-4", text: "とてもわくわくしています！", read: "とてもわくわくしています！", ko: "너무 신나요!", tip: "わくわく는 '와쿠와쿠', 들뜬 기분.", w: ["とても", "わくわくしています！"] },
+        { id: "ja-11-5", text: "それはいい気分ですね。", read: "それはいいきぶんですね。", ko: "그건 기분이 좋아져요.", tip: "気分는 '키분', 기분.", w: ["それは", "いい気分ですね。"] }
+      ]
+    },
+    {
+      id: "ja-12", no: 12, title: "가족과 친구", emoji: "👨‍👩‍👧",
+      goal: "가족과 친구를 소개해요",
+      sentences: [
+        { id: "ja-12-1", text: "これは家族の写真です。", read: "これはかぞくのしゃしんです。", ko: "이건 우리 가족 사진이에요.", tip: "家族는 '카조쿠', 写真은 '샤신'.", w: ["これは", "家族の", "写真です。"] },
+        { id: "ja-12-2", text: "姉が一人います。", read: "あねがひとりいます。", ko: "저는 누나가 한 명 있어요.", tip: "姉는 '아네', 一人은 '히토리'.", w: ["姉が", "一人", "います。"] },
+        { id: "ja-12-3", text: "両親は釜山に住んでいます。", read: "りょうしんはプサンにすんでいます。", ko: "부모님은 부산에 사세요.", tip: "両親은 '료-신', 부모님.", w: ["両親は", "釜山に", "住んでいます。"] },
+        { id: "ja-12-4", text: "毎週日曜日に会います。", read: "まいしゅうにちようびにあいます。", ko: "우리는 매주 일요일에 만나요.", tip: "毎週는 '마이슈-', 日曜日는 '니치요-비'.", w: ["毎週", "日曜日に", "会います。"] },
+        { id: "ja-12-5", text: "私の友だちはとても親切です。", read: "わたしのともだちはとてもしんせつです。", ko: "제 친구는 아주 친절해요.", tip: "親切는 '신세츠', 친절함.", w: ["私の", "友だちは", "とても", "親切です。"] }
+      ]
+    },
+    {
+      id: "ja-13", no: 13, title: "여행", emoji: "✈️",
+      goal: "공항과 호텔에서 필요한 말을 해요",
+      sentences: [
+        { id: "ja-13-1", text: "空港バスはどこですか。", read: "くうこうバスはどこですか。", ko: "공항 버스는 어디예요?", tip: "空港는 '쿠-코-'.", w: ["空港バスは", "どこですか。"] },
+        { id: "ja-13-2", text: "チェックインしたいです。", read: "チェックインしたいです。", ko: "체크인하고 싶어요.", tip: "〜したいです는 '~시타이데스', 하고 싶어요.", w: ["チェックイン", "したいです。"] },
+        { id: "ja-13-3", text: "どのくらいかかりますか。", read: "どのくらいかかりますか。", ko: "얼마나 걸려요?", tip: "かかります는 '카카리마스', 시간이 걸리다.", w: ["どのくらい", "かかりますか。"] },
+        { id: "ja-13-4", text: "窓側の席をお願いします。", read: "まどぎわのせきをおねがいします。", ko: "창가 자리로 주시겠어요?", tip: "窓側는 '마도기와'.", w: ["窓側の", "席を", "お願いします。"] },
+        { id: "ja-13-5", text: "三日間ここにいます。", read: "みっかかんここにいます。", ko: "3일 동안 여기 있어요.", tip: "三日間는 '밋카칸', 사흘 동안.", w: ["三日間", "ここに", "います。"] }
+      ]
+    },
+    {
+      id: "ja-14", no: 14, title: "숫자와 시간", emoji: "🔢",
+      goal: "시간과 가격을 숫자로 말해요",
+      sentences: [
+        { id: "ja-14-1", text: "今何時ですか。", read: "いまなんじですか。", ko: "지금 몇 시예요?", tip: "何時는 '난지', 今은 '이마'.", w: ["今", "何時ですか。"] },
+        { id: "ja-14-2", text: "三時半です。", read: "さんじはんです。", ko: "3시 30분이에요.", tip: "三時半는 '산지한'.", w: ["三時半です。"] },
+        { id: "ja-14-3", text: "二十ドルです。", read: "にじゅうドルです。", ko: "20달러예요.", tip: "二十는 '니주-'.", w: ["二十ドルです。"] },
+        { id: "ja-14-4", text: "あと十分必要です。", read: "あとじゅっぷんひつようです。", ko: "10분만 더 필요해요.", tip: "十分은 '줏푼', 必要는 '히츠요-'.", w: ["あと", "十分", "必要です。"] },
+        { id: "ja-14-5", text: "一時間後に会いましょう。", read: "いちじかんごにあいましょう。", ko: "한 시간 뒤에 만나요.", tip: "一時間은 '이치지칸', 後に는 '아토니'.", w: ["一時間後に", "会いましょう。"] }
+      ]
+    }
+  ];
+
   global.KING_DATA = {
-    version: 3,
+    version: 4,
     appName: "킹링고",
     dailyGoal: 30,
     lessons: LESSONS,
@@ -1673,6 +1848,10 @@ body.in-lesson .main { padding-bottom: 0; }
         flag: "🇺🇸",
         accent: "#1cb0f6",
         tipLabel: "발음 팁",
+        space: true,
+        rate: { normal: 0.95, slow: 0.6 },
+        heroSub: "영어 문장이 하루에 다섯 개씩 늘어나요",
+        tip: "영어는 문장을 통째로 외우면 말할 때 바로 나와요. 오늘 문장 5개만 소리 내어 읽어도 충분해요.",
         units: EN_UNITS
       },
       zh: {
@@ -1683,9 +1862,32 @@ body.in-lesson .main { padding-bottom: 0; }
         flag: "🇨🇳",
         accent: "#ff9600",
         tipLabel: "발음 팁",
+        space: false,
+        rate: { normal: 0.9, slow: 0.55 },
+        heroSub: "중국어 문장이 하루에 다섯 개씩 늘어나요",
+        tip: "중국어는 성조가 절반이에요. 병음을 보며 손으로 성조를 그리면서 따라 말해 보세요.",
         units: ZH_UNITS
+      },
+      ja: {
+        code: "ja",
+        name: "일본어",
+        native: "日本語",
+        locale: "ja-JP",
+        flag: "🇯🇵",
+        accent: "#ef5350",
+        tipLabel: "발음 팁",
+        space: false,
+        rate: { normal: 0.9, slow: 0.6 },
+        heroSub: "일본어 문장이 하루에 다섯 개씩 늘어나요",
+        tip: "일본어는 히라가나를 소리 내어 읽는 게 먼저예요. 오늘 문장 5개만 따라 읽으면 충분해요.",
+        units: JA_UNITS
       }
-    }
+    },
+    apps: [
+      { name: "킹링고", desc: "영어 · 중국어 · 일본어", href: "./", active: true },
+      { name: "킹링고 입문", desc: "러시아어 · 스페인어 · 베트남어 읽기·쓰기", href: "./beginner/" },
+      { name: "킹한자", desc: "한자 읽기 · 따라 쓰기", href: "./hanja/" }
+    ]
   };
 })(typeof window !== "undefined" ? window : this);
 
@@ -1890,7 +2092,7 @@ body.in-lesson .main { padding-bottom: 0; }
   function normalize(st) {
     var d = defaults();
     if (!isObj(st)) st = d;
-    if (st.lang !== "en" && st.lang !== "zh") st.lang = d.lang;
+    if (!D.courses[st.lang]) st.lang = d.lang;
     if (typeof st.xp !== "number" || !isFinite(st.xp) || st.xp < 0) st.xp = 0;
     st.xp = Math.floor(st.xp);
     if (!isObj(st.streak)) st.streak = d.streak;
@@ -1952,7 +2154,7 @@ body.in-lesson .main { padding-bottom: 0; }
   }
 
   function findUnit(unitId) {
-    var langs = ["en", "zh"];
+    var langs = Object.keys(D.courses);
     for (var i = 0; i < langs.length; i++) {
       var units = D.courses[langs[i]].units;
       for (var j = 0; j < units.length; j++) {
@@ -1963,7 +2165,7 @@ body.in-lesson .main { padding-bottom: 0; }
   }
 
   function setLang(code) {
-    get().lang = code === "zh" ? "zh" : "en";
+    get().lang = D.courses[code] ? code : Object.keys(D.courses)[0];
     save();
   }
 
@@ -2263,6 +2465,9 @@ body.in-lesson .main { padding-bottom: 0; }
     });
     return out;
   }
+  /** 읽기 안내(병음 · 히라가나 등). 중국어는 pinyin, 일본어는 read를 쓴다. */
+  function reading(s) { return (s && (s.read || s.pinyin)) || ""; }
+  function joiner() { return course().space ? " " : ""; }
 
   var UI = {
     view: "today",
@@ -2378,8 +2583,8 @@ body.in-lesson .main { padding-bottom: 0; }
   })();
 
   function rateFor(slow) {
-    if (L() === "zh") return slow ? 0.55 : 0.9;
-    return slow ? 0.6 : 0.95;
+    var r = course().rate || { normal: 0.95, slow: 0.6 };
+    return slow ? r.slow : r.normal;
   }
 
   function playSentence(s, slow) {
@@ -2525,7 +2730,7 @@ body.in-lesson .main { padding-bottom: 0; }
     top.className = "topbar";
     var st = S.streakInfo();
     var todayXp = S.todayXp();
-    var seg = el("div", { class: "seg", role: "tablist", "aria-label": "학습 언어" }, ["en", "zh"].map(function (code) {
+    var seg = el("div", { class: "seg", role: "tablist", "aria-label": "학습 언어" }, Object.keys(D.courses).map(function (code) { 
       var active = L() === code;
       return el("button", {
         class: "seg-btn" + (active ? " is-active" : ""),
@@ -2573,7 +2778,7 @@ body.in-lesson .main { padding-bottom: 0; }
         el("div", { class: "hero-copy" }, [
           el("p", { class: "hero-hello", text: C.greeting() + ", 킹님" }),
           el("h1", { class: "hero-title", text: pct >= 100 ? "오늘 목표 달성! 🎉" : "오늘도 5분, 가볍게!" }),
-          el("p", { class: "hero-sub", text: L() === "en" ? "영어 문장이 하루에 다섯 개씩 늘어나요" : "중국어 문장이 하루에 다섯 개씩 늘어나요" })
+          el("p", { class: "hero-sub", text: course().heroSub })
         ]),
         ring(pct)
       ]),
@@ -2680,7 +2885,7 @@ body.in-lesson .main { padding-bottom: 0; }
         el("span", { class: "section-right", text: unit.title })
       ]),
       el("p", { class: "target target-sm", lang: L(), text: sample.text }),
-      sample.pinyin ? el("p", { class: "pinyin", text: sample.pinyin }) : null,
+      reading(sample) ? el("p", { class: "pinyin", text: reading(sample) }) : null,
       el("p", { class: "ko-line", text: sample.ko }),
       el("div", { class: "audio-row" }, [
         el("button", { class: "btn btn-blue btn-small", type: "button", on: { click: function () { playSentence(sample, false); } } },
@@ -2697,9 +2902,7 @@ body.in-lesson .main { padding-bottom: 0; }
 
     wrap.appendChild(el("section", { class: "card tip-card" }, [
       el("span", { class: "tip-emoji", text: "💡" }),
-      el("p", { class: "tip-copy", text: L() === "en"
-        ? "영어는 문장을 통째로 외우면 말할 때 바로 나와요. 오늘 문장 5개만 소리 내어 읽어도 충분해요."
-        : "중국어는 성조가 절반이에요. 병음을 보며 손으로 성조를 그리면서 따라 말해 보세요." })
+      el("p", { class: "tip-copy", text: course().tip })
     ]));
 
     return wrap;
@@ -2734,7 +2937,7 @@ body.in-lesson .main { padding-bottom: 0; }
         el("div", { class: "flash-face flash-back" }, [
           el("span", { class: "flash-tag", text: course().native }),
           el("p", { class: "flash-text", lang: L(), text: s.text }),
-          s.pinyin ? el("p", { class: "flash-pinyin", text: s.pinyin }) : null,
+          reading(s) ? el("p", { class: "flash-pinyin", text: reading(s) }) : null,
           el("button", {
             class: "round-btn round-btn-blue",
             type: "button",
@@ -2882,7 +3085,7 @@ body.in-lesson .main { padding-bottom: 0; }
     var fallback = null;
 
     card.appendChild(el("p", { class: "target", lang: L(), text: s.text }));
-    if (s.pinyin) card.appendChild(el("p", { class: "pinyin", text: s.pinyin }));
+    if (reading(s)) card.appendChild(el("p", { class: "pinyin", text: reading(s) }));
     if (opts.showKo !== false) card.appendChild(el("p", { class: "ko-line", text: s.ko }));
 
     var speedBtns = [];
@@ -3095,8 +3298,8 @@ body.in-lesson .main { padding-bottom: 0; }
     });
     wrap.appendChild(list);
 
-    wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "다른 언어" })]));
-    wrap.appendChild(el("div", { class: "lang-summary" }, ["en", "zh"].map(function (code) {
+    wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "코스" })]));
+    wrap.appendChild(el("div", { class: "lang-summary" }, Object.keys(D.courses).map(function (code) {
       var c = D.courses[code];
       return el("button", {
         class: "lang-card" + (L() === code ? " is-active" : ""),
@@ -3108,6 +3311,19 @@ body.in-lesson .main { padding-bottom: 0; }
         el("span", { class: "lang-meta", text: S.doneDays(code) + "/14일 · " + S.masteredCount(code) + "문장" })
       ]);
     })));
+
+    if (D.apps && D.apps.length > 1) {
+      wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "함께 쓰는 앱" })]));
+      wrap.appendChild(el("div", { class: "app-links" }, D.apps.map(function (a) {
+        return el("a", {
+          class: "app-link" + (a.active ? " is-active" : ""),
+          href: a.href
+        }, [
+          el("span", { class: "app-link-name", text: a.name }),
+          el("span", { class: "app-link-desc", text: a.active ? "지금 보고 있는 앱" : a.desc })
+        ]);
+      })));
+    }
 
     var prefs = S.get().prefs;
     wrap.appendChild(el("section", { class: "card settings" }, [
@@ -3393,7 +3609,7 @@ body.in-lesson .main { padding-bottom: 0; }
   function finishDayAll() {
     beep("win");
     openSheet("14일 코스를 모두 끝냈어요!", [
-      el("p", { class: "sheet-lead", text: "영어와 중국어, 두 코스를 언제든 다시 복습할 수 있어요. 꾸준함이 제일 큰 실력이에요." }),
+      el("p", { class: "sheet-lead", text: "모든 코스를 언제든 다시 복습할 수 있어요. 꾸준함이 제일 큰 실력이에요." }),
       el("div", { class: "sheet-actions" }, [
         el("button", { class: "btn btn-primary btn-wide", type: "button", on: { click: function () { openSheetClose(); closeLesson(); } } }, ["확인"])
       ])
@@ -3415,7 +3631,7 @@ body.in-lesson .main { padding-bottom: 0; }
 
     body.appendChild(el("div", { class: "card learn-card" }, [
       el("p", { class: "target", lang: L(), text: s.text }),
-      s.pinyin ? el("p", { class: "pinyin", text: s.pinyin }) : null,
+      reading(s) ? el("p", { class: "pinyin", text: reading(s) }) : null,
       el("div", { class: "audio-row" }, [
         el("button", { class: "btn btn-blue btn-small", type: "button", on: { click: function () { playSentence(s, false); } } },
           [icon("speaker", "btn-ico"), "듣기"]),
@@ -3515,8 +3731,8 @@ body.in-lesson .main { padding-bottom: 0; }
       foot.appendChild(footButton("다음 문장", nextStep));
     } else {
       foot.appendChild(footButton("확인", function () {
-        var userText = step.placed.map(function (t) { return t.text; }).join(L() === "en" ? " " : "");
-        var answerText = step.tokens.join(L() === "en" ? " " : "");
+        var userText = step.placed.map(function (t) { return t.text; }).join(joiner());
+        var answerText = step.tokens.join(joiner());
         var ok = C.normalize(userText, L()) === C.normalize(answerText, L());
         lesson.total += 1;
         if (ok) {
@@ -3590,7 +3806,7 @@ body.in-lesson .main { padding-bottom: 0; }
       body.appendChild(el("div", { class: "banner " + (step.correct ? "banner-good" : "banner-bad") }, [
         step.correct ? "정답이에요! +2 XP" : "아쉬워요. 정답을 확인해 보세요."
       ]));
-      body.appendChild(el("p", { class: "quiz-reveal", lang: L(), text: q.sentence.text + (q.sentence.pinyin ? "  ·  " + q.sentence.pinyin : "") }));
+      body.appendChild(el("p", { class: "quiz-reveal", lang: L(), text: q.sentence.text + (reading(q.sentence) ? "  ·  " + reading(q.sentence) : "") }));
     }
 
     if (step.answered) {

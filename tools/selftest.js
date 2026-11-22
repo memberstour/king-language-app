@@ -122,6 +122,7 @@
     check("통계 카드 4개", byClass("stat").length === 4, byClass("stat").length);
     check("이번 주 7일", byClass("week-day").length === 7);
     check("코스 목록 14개", byClass("course-row").length === 14, byClass("course-row").length);
+    check("함께 쓰는 앱 3개", byClass("app-link").length === 3, byClass("app-link").length);
     var before = g.KingStore.get().prefs.sound;
     clickNode(first("switch"), "소리 토글");
     check("소리 설정 저장", g.KingStore.get().prefs.sound === !before);
@@ -135,14 +136,21 @@
   /* ---------- 5. 언어 전환 ---------- */
   function langChecks() {
     var segs = byClass("seg-btn", ids.topbar);
-    check("언어 스위치 2개", segs.length === 2, segs.length);
+    check("언어 스위치 3개", segs.length === 3, segs.length);
     clickNode(segs[1], "중국어");
     check("중국어 전환", g.KingStore.get().lang === "zh");
     goTab(0);
     check("중국어 오늘 화면", txt(ids.main).indexOf("중국어") >= 0);
     check("중국어 병음", byClass("pinyin").length >= 1);
     var segs2 = byClass("seg-btn", ids.topbar);
-    clickNode(segs2[0], "영어");
+    clickNode(segs2[2], "일본어");
+    check("일본어 전환", g.KingStore.get().lang === "ja");
+    goTab(0);
+    check("일본어 오늘 화면", txt(ids.main).indexOf("일본어") >= 0);
+    check("일본어 읽기 안내", byClass("pinyin").length >= 1);
+    check("일본어 첫 단원", txt(ids.main).indexOf("こんにちは") >= 0 || txt(first("target")) === g.KING_DATA.courses.ja.units[0].sentences[0].text);
+    var segs3 = byClass("seg-btn", ids.topbar);
+    clickNode(segs3[0], "영어 복귀");
     check("영어 복귀", g.KingStore.get().lang === "en");
   }
 
@@ -336,8 +344,42 @@
     check("다시 불러오기", g.KingStore.totalXp() > 0 && g.KingStore.get().lang === "en");
   }
 
+  /* ---------- 0. 데이터 무결성 ---------- */
+  function dataChecks() {
+    var D = g.KING_DATA;
+    var codes = Object.keys(D.courses);
+    check("코스 3개", codes.length === 3, codes.join(","));
+    var ids = {};
+    var dup = 0;
+    var total = 0;
+    var badJoin = [];
+    codes.forEach(function (code) {
+      var c = D.courses[code];
+      check("단원 14개 (" + code + ")", c.units.length === 14, c.units.length);
+      c.units.forEach(function (u, i) {
+        if (u.no !== i + 1) check("단원 번호 (" + u.id + ")", false);
+        if (u.id.indexOf(code + "-") !== 0) check("단원 접두어 (" + u.id + ")", false);
+        if (u.sentences.length !== 5) check("문장 5개 (" + u.id + ")", false, u.sentences.length);
+        u.sentences.forEach(function (s) {
+          total += 1;
+          if (ids[s.id]) dup += 1;
+          ids[s.id] = true;
+          if (!s.text || !s.ko || !s.tip) check("필수 필드 (" + s.id + ")", false);
+          if (code !== "en" && !s.read && !s.pinyin) check("읽기 안내 (" + s.id + ")", false);
+          var toks = s.w && s.w.length ? s.w : s.text.split(/\s+/);
+          var joined = toks.join(c.space ? " " : "");
+          if (joined !== s.text) badJoin.push(s.id);
+        });
+      });
+    });
+    check("중복 ID 없음", dup === 0, dup);
+    check("문장 합계 210", total === 210, total);
+    check("블록 연결 = 문장", badJoin.length === 0, badJoin.join(","));
+  }
+
   g.__run = function () {
     try {
+      dataChecks();
       bootChecks();
       cardChecks();
       cardsFinishChecks();

@@ -44,8 +44,8 @@ def build_standalone():
     html = html.replace('<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">',
                         '<link rel="icon" type="image/png" href="%s">' % data_uri("icon-192.png"))
     html = html.replace('<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">', "")
-    html = html.replace("<title>킹링고 — 매일 영어·중국어</title>",
-                        "<title>킹링고 — 매일 영어·중국어 (단일 파일)</title>")
+    html = html.replace("<title>킹링고 — 영어·중국어·일본어</title>",
+                        "<title>킹링고 — 영어·중국어·일본어 (단일 파일)</title>")
 
     os.makedirs(DIST, exist_ok=True)
     out = os.path.join(DIST, "kinglingo-standalone.html")
@@ -60,7 +60,13 @@ def build_zip():
     include = ["index.html", "manifest.json", "sw.js", "README.md",
                "css/styles.css", "js/data.js", "js/core.js", "js/store.js", "js/app.js",
                "icon-192.png", "icon-512.png", "icon-180.png", "icon-maskable-512.png",
-               "tools/make_icons.py", "tools/deploy.sh"]
+               "beginner/index.html", "beginner/manifest.json", "beginner/sw.js",
+               "beginner/css/styles.css", "beginner/js/data.js", "beginner/js/app.js",
+               "beginner/icon-192.png", "beginner/icon-512.png", "beginner/icon-180.png",
+               "hanja/index.html", "hanja/manifest.json", "hanja/sw.js",
+               "hanja/css/styles.css", "hanja/js/data.js", "hanja/js/app.js",
+               "hanja/icon-192.png", "hanja/icon-512.png", "hanja/icon-180.png",
+               "tools/make_icons.py", "tools/make_app_icons.py", "tools/deploy.sh"]
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for rel in include:
             z.write(os.path.join(HERE, rel), "king-language-app/" + rel)

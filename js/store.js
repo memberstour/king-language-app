@@ -30,7 +30,7 @@
   function normalize(st) {
     var d = defaults();
     if (!isObj(st)) st = d;
-    if (st.lang !== "en" && st.lang !== "zh") st.lang = d.lang;
+    if (!D.courses[st.lang]) st.lang = d.lang;
     if (typeof st.xp !== "number" || !isFinite(st.xp) || st.xp < 0) st.xp = 0;
     st.xp = Math.floor(st.xp);
     if (!isObj(st.streak)) st.streak = d.streak;
@@ -92,7 +92,7 @@
   }
 
   function findUnit(unitId) {
-    var langs = ["en", "zh"];
+    var langs = Object.keys(D.courses);
     for (var i = 0; i < langs.length; i++) {
       var units = D.courses[langs[i]].units;
       for (var j = 0; j < units.length; j++) {
@@ -103,7 +103,7 @@
   }
 
   function setLang(code) {
-    get().lang = code === "zh" ? "zh" : "en";
+    get().lang = D.courses[code] ? code : Object.keys(D.courses)[0];
     save();
   }
 

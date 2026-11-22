@@ -90,6 +90,9 @@
     });
     return out;
   }
+  /** 읽기 안내(병음 · 히라가나 등). 중국어는 pinyin, 일본어는 read를 쓴다. */
+  function reading(s) { return (s && (s.read || s.pinyin)) || ""; }
+  function joiner() { return course().space ? " " : ""; }
 
   var UI = {
     view: "today",
@@ -205,8 +208,8 @@
   })();
 
   function rateFor(slow) {
-    if (L() === "zh") return slow ? 0.55 : 0.9;
-    return slow ? 0.6 : 0.95;
+    var r = course().rate || { normal: 0.95, slow: 0.6 };
+    return slow ? r.slow : r.normal;
   }
 
   function playSentence(s, slow) {
@@ -352,7 +355,7 @@
     top.className = "topbar";
     var st = S.streakInfo();
     var todayXp = S.todayXp();
-    var seg = el("div", { class: "seg", role: "tablist", "aria-label": "학습 언어" }, ["en", "zh"].map(function (code) {
+    var seg = el("div", { class: "seg", role: "tablist", "aria-label": "학습 언어" }, Object.keys(D.courses).map(function (code) { 
       var active = L() === code;
       return el("button", {
         class: "seg-btn" + (active ? " is-active" : ""),
@@ -400,7 +403,7 @@
         el("div", { class: "hero-copy" }, [
           el("p", { class: "hero-hello", text: C.greeting() + ", 킹님" }),
           el("h1", { class: "hero-title", text: pct >= 100 ? "오늘 목표 달성! 🎉" : "오늘도 5분, 가볍게!" }),
-          el("p", { class: "hero-sub", text: L() === "en" ? "영어 문장이 하루에 다섯 개씩 늘어나요" : "중국어 문장이 하루에 다섯 개씩 늘어나요" })
+          el("p", { class: "hero-sub", text: course().heroSub })
         ]),
         ring(pct)
       ]),
@@ -507,7 +510,7 @@
         el("span", { class: "section-right", text: unit.title })
       ]),
       el("p", { class: "target target-sm", lang: L(), text: sample.text }),
-      sample.pinyin ? el("p", { class: "pinyin", text: sample.pinyin }) : null,
+      reading(sample) ? el("p", { class: "pinyin", text: reading(sample) }) : null,
       el("p", { class: "ko-line", text: sample.ko }),
       el("div", { class: "audio-row" }, [
         el("button", { class: "btn btn-blue btn-small", type: "button", on: { click: function () { playSentence(sample, false); } } },
@@ -524,9 +527,7 @@
 
     wrap.appendChild(el("section", { class: "card tip-card" }, [
       el("span", { class: "tip-emoji", text: "💡" }),
-      el("p", { class: "tip-copy", text: L() === "en"
-        ? "영어는 문장을 통째로 외우면 말할 때 바로 나와요. 오늘 문장 5개만 소리 내어 읽어도 충분해요."
-        : "중국어는 성조가 절반이에요. 병음을 보며 손으로 성조를 그리면서 따라 말해 보세요." })
+      el("p", { class: "tip-copy", text: course().tip })
     ]));
 
     return wrap;
@@ -561,7 +562,7 @@
         el("div", { class: "flash-face flash-back" }, [
           el("span", { class: "flash-tag", text: course().native }),
           el("p", { class: "flash-text", lang: L(), text: s.text }),
-          s.pinyin ? el("p", { class: "flash-pinyin", text: s.pinyin }) : null,
+          reading(s) ? el("p", { class: "flash-pinyin", text: reading(s) }) : null,
           el("button", {
             class: "round-btn round-btn-blue",
             type: "button",
@@ -709,7 +710,7 @@
     var fallback = null;
 
     card.appendChild(el("p", { class: "target", lang: L(), text: s.text }));
-    if (s.pinyin) card.appendChild(el("p", { class: "pinyin", text: s.pinyin }));
+    if (reading(s)) card.appendChild(el("p", { class: "pinyin", text: reading(s) }));
     if (opts.showKo !== false) card.appendChild(el("p", { class: "ko-line", text: s.ko }));
 
     var speedBtns = [];
@@ -922,8 +923,8 @@
     });
     wrap.appendChild(list);
 
-    wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "다른 언어" })]));
-    wrap.appendChild(el("div", { class: "lang-summary" }, ["en", "zh"].map(function (code) {
+    wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "코스" })]));
+    wrap.appendChild(el("div", { class: "lang-summary" }, Object.keys(D.courses).map(function (code) {
       var c = D.courses[code];
       return el("button", {
         class: "lang-card" + (L() === code ? " is-active" : ""),
@@ -935,6 +936,19 @@
         el("span", { class: "lang-meta", text: S.doneDays(code) + "/14일 · " + S.masteredCount(code) + "문장" })
       ]);
     })));
+
+    if (D.apps && D.apps.length > 1) {
+      wrap.appendChild(el("div", { class: "section-head" }, [el("h2", { text: "함께 쓰는 앱" })]));
+      wrap.appendChild(el("div", { class: "app-links" }, D.apps.map(function (a) {
+        return el("a", {
+          class: "app-link" + (a.active ? " is-active" : ""),
+          href: a.href
+        }, [
+          el("span", { class: "app-link-name", text: a.name }),
+          el("span", { class: "app-link-desc", text: a.active ? "지금 보고 있는 앱" : a.desc })
+        ]);
+      })));
+    }
 
     var prefs = S.get().prefs;
     wrap.appendChild(el("section", { class: "card settings" }, [
@@ -1220,7 +1234,7 @@
   function finishDayAll() {
     beep("win");
     openSheet("14일 코스를 모두 끝냈어요!", [
-      el("p", { class: "sheet-lead", text: "영어와 중국어, 두 코스를 언제든 다시 복습할 수 있어요. 꾸준함이 제일 큰 실력이에요." }),
+      el("p", { class: "sheet-lead", text: "모든 코스를 언제든 다시 복습할 수 있어요. 꾸준함이 제일 큰 실력이에요." }),
       el("div", { class: "sheet-actions" }, [
         el("button", { class: "btn btn-primary btn-wide", type: "button", on: { click: function () { openSheetClose(); closeLesson(); } } }, ["확인"])
       ])
@@ -1242,7 +1256,7 @@
 
     body.appendChild(el("div", { class: "card learn-card" }, [
       el("p", { class: "target", lang: L(), text: s.text }),
-      s.pinyin ? el("p", { class: "pinyin", text: s.pinyin }) : null,
+      reading(s) ? el("p", { class: "pinyin", text: reading(s) }) : null,
       el("div", { class: "audio-row" }, [
         el("button", { class: "btn btn-blue btn-small", type: "button", on: { click: function () { playSentence(s, false); } } },
           [icon("speaker", "btn-ico"), "듣기"]),
@@ -1342,8 +1356,8 @@
       foot.appendChild(footButton("다음 문장", nextStep));
     } else {
       foot.appendChild(footButton("확인", function () {
-        var userText = step.placed.map(function (t) { return t.text; }).join(L() === "en" ? " " : "");
-        var answerText = step.tokens.join(L() === "en" ? " " : "");
+        var userText = step.placed.map(function (t) { return t.text; }).join(joiner());
+        var answerText = step.tokens.join(joiner());
         var ok = C.normalize(userText, L()) === C.normalize(answerText, L());
         lesson.total += 1;
         if (ok) {
@@ -1417,7 +1431,7 @@
       body.appendChild(el("div", { class: "banner " + (step.correct ? "banner-good" : "banner-bad") }, [
         step.correct ? "정답이에요! +2 XP" : "아쉬워요. 정답을 확인해 보세요."
       ]));
-      body.appendChild(el("p", { class: "quiz-reveal", lang: L(), text: q.sentence.text + (q.sentence.pinyin ? "  ·  " + q.sentence.pinyin : "") }));
+      body.appendChild(el("p", { class: "quiz-reveal", lang: L(), text: q.sentence.text + (reading(q.sentence) ? "  ·  " + reading(q.sentence) : "") }));
     }
 
     if (step.answered) {

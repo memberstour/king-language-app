@@ -1,18 +1,25 @@
 {
-  "name": "킹링고 — 매일 영어·중국어",
+  "name": "킹링고 — 영어·중국어·일본어",
   "short_name": "킹링고",
-  "description": "매일 5분, 초등 수준 영어와 중국어 문장을 듣고 따라 말하며 익히는 학습 앱. 14일 코스, 단어 블록, 듣기 퀴즈, 말하기 연습, 스트릭 기록.",
+  "description": "매일 5분, 초등 수준 영어·중국어·일본어 문장을 듣고 따라 말하며 익히는 학습 앱. 14일 코스, 단어 블록, 듣기 퀴즈, 말하기 연습, 스트릭 기록.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#58cc02",
   "lang": "ko",
   "dir": "ltr",
-  "categories": ["education", "productivity"],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",
@@ -38,13 +45,23 @@
       "name": "오늘의 학습",
       "short_name": "오늘",
       "url": "./#today",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "말하기 연습",
       "short_name": "말하기",
       "url": "./#speak",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
