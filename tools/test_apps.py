@@ -98,6 +98,8 @@ TESTS = r"""
   /* --- 2. 첫 화면 --- */
   check("브랜드", txt(ids.topbar).indexOf(D.name) >= 0, txt(ids.topbar).slice(0, 40));
   check("탭 4개", byClass("tab", ids.tabbar).length === 4, byClass("tab", ids.tabbar).length);
+  var icons = byClass("ico");
+  check("아이콘 렌더", icons.length > 0 && icons.some(function (n) { return (n.innerHTML || "").indexOf("<svg") >= 0; }), icons.length);
   check("단원 pill", byClass("pill").length === 14, byClass("pill").length);
   var cards = byClass("item-card");
   check("오늘 항목 5개", cards.length === 5, cards.length);

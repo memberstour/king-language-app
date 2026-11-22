@@ -200,6 +200,7 @@
         if (v === null || typeof v === "undefined" || v === false) return;
         if (k === "class") node.className = v;
         else if (k === "text") node.textContent = String(v);
+        else if (k === "html") node.innerHTML = v;
         else if (k === "on") {
           Object.keys(v).forEach(function (ev) { node.addEventListener(ev, v[ev]); });
         } else if (k === "style") node.setAttribute("style", v);
