@@ -1,5 +1,5 @@
 /* 킹링고 — 앱 껍데기를 캐시해 오프라인에서도 실행합니다. */
-var CACHE_NAME = "kinglingo-beginner-v2";
+var CACHE_NAME = "kinglingo-beginner-v3";
 var ASSETS = [
   "./",
   "./index.html",
@@ -54,16 +54,17 @@ self.addEventListener("fetch", function (event) {
     return;
   }
 
+  // 정적 자산은 캐시를 먼저 보여 주고, 뒤에서 새 파일을 받아 둡니다.
   event.respondWith(
     caches.match(request).then(function (hit) {
-      if (hit) return hit;
-      return fetch(request).then(function (response) {
+      var network = fetch(request).then(function (response) {
         if (response && response.ok) {
           var copy = response.clone();
           caches.open(CACHE_NAME).then(function (cache) { cache.put(request, copy); });
         }
         return response;
-      });
+      }).catch(function () { return hit; });
+      return hit || network;
     })
   );
 });
