@@ -506,7 +506,7 @@
         el("h2", { text: "오늘의 한 문장" }),
         el("span", { class: "section-right", text: unit.title })
       ]),
-      el("p", { class: "target target-sm", text: sample.text }),
+      el("p", { class: "target target-sm", lang: L(), text: sample.text }),
       sample.pinyin ? el("p", { class: "pinyin", text: sample.pinyin }) : null,
       el("p", { class: "ko-line", text: sample.ko }),
       el("div", { class: "audio-row" }, [
@@ -560,7 +560,7 @@
         ]),
         el("div", { class: "flash-face flash-back" }, [
           el("span", { class: "flash-tag", text: course().native }),
-          el("p", { class: "flash-text", text: s.text }),
+          el("p", { class: "flash-text", lang: L(), text: s.text }),
           s.pinyin ? el("p", { class: "flash-pinyin", text: s.pinyin }) : null,
           el("button", {
             class: "round-btn round-btn-blue",
@@ -674,6 +674,9 @@
       onAttempt: function (ratio) { UI.speak.result = ratio; }
     });
     wrap.appendChild(voice.node);
+    if (!Speech.supported) {
+      wrap.appendChild(el("p", { class: "speech-note", text: "이 브라우저는 음성 재생을 지원하지 않아요. 병음과 뜻으로도 충분히 연습할 수 있어요." }));
+    }
 
     wrap.appendChild(el("div", { class: "speak-nav" }, [
       el("button", {
@@ -700,11 +703,12 @@
     opts = opts || {};
     var slow = !!S.get().prefs.slow;
     var card = el("div", { class: "voice-card" });
-    var status = el("p", { class: "mic-status" });
+    var status = el("p", { class: "mic-status", "aria-live": "polite" },
+      ["마이크를 누르고 문장을 따라 말해 보세요"]);
     var micBtn = null;
     var fallback = null;
 
-    card.appendChild(el("p", { class: "target", text: s.text }));
+    card.appendChild(el("p", { class: "target", lang: L(), text: s.text }));
     if (s.pinyin) card.appendChild(el("p", { class: "pinyin", text: s.pinyin }));
     if (opts.showKo !== false) card.appendChild(el("p", { class: "ko-line", text: s.ko }));
 
@@ -746,7 +750,7 @@
       ]));
     }
 
-    var feedbackSlot = el("div", { class: "feedback-slot" });
+    var feedbackSlot = el("div", { class: "feedback-slot", "aria-live": "polite" });
     card.appendChild(feedbackSlot);
 
     function attempt(ratio, transcript) {
@@ -1081,9 +1085,11 @@
   function closeLesson() {
     stopRecognize();
     var day = UI.lesson ? UI.lesson.unit.no : UI.day;
+    var unitId = UI.lesson ? UI.lesson.unit.id : null;
     UI.lesson = null;
     UI.view = "today";
-    UI.day = day;
+    // 방금 그날을 모두 끝냈으면 다음 날로 넘어가 있어요.
+    UI.day = unitId && S.isUnitDone(unitId) ? S.currentDayNo(L()) : day;
     render();
   }
 
@@ -1182,6 +1188,9 @@
     rows.appendChild(resultRow("이 단원", S.doneLessons(lesson.unit.id) + " / 4 수업"));
     wrap.appendChild(rows);
 
+    if (S.isUnitDone(lesson.unit.id)) {
+      wrap.appendChild(el("div", { class: "goal-banner" }, ["Day " + lesson.unit.no + " 완료! 이 단원 문장 5개를 모두 익혔어요 🎉"]));
+    }
     if (goalDone) {
       wrap.appendChild(el("div", { class: "goal-banner" }, ["오늘의 목표 달성! 🎉 내일도 이어서 만나요"]));
     }
@@ -1232,7 +1241,7 @@
     body.appendChild(el("p", { class: "eyebrow", text: "새 문장 " + (lesson.idx + 1) + " / " + lesson.steps.length }));
 
     body.appendChild(el("div", { class: "card learn-card" }, [
-      el("p", { class: "target", text: s.text }),
+      el("p", { class: "target", lang: L(), text: s.text }),
       s.pinyin ? el("p", { class: "pinyin", text: s.pinyin }) : null,
       el("div", { class: "audio-row" }, [
         el("button", { class: "btn btn-blue btn-small", type: "button", on: { click: function () { playSentence(s, false); } } },
@@ -1408,7 +1417,7 @@
       body.appendChild(el("div", { class: "banner " + (step.correct ? "banner-good" : "banner-bad") }, [
         step.correct ? "정답이에요! +2 XP" : "아쉬워요. 정답을 확인해 보세요."
       ]));
-      body.appendChild(el("p", { class: "quiz-reveal", text: q.sentence.text + (q.sentence.pinyin ? "  ·  " + q.sentence.pinyin : "") }));
+      body.appendChild(el("p", { class: "quiz-reveal", lang: L(), text: q.sentence.text + (q.sentence.pinyin ? "  ·  " + q.sentence.pinyin : "") }));
     }
 
     if (step.answered) {
@@ -1452,9 +1461,9 @@
 
   /* ---------- 탭바 ---------- */
   var TABS = [
-    { id: "today", label: "오늘", icon: "home" },
+    { id: "today", label: "오늘의 학습", icon: "home" },
     { id: "cards", label: "문장 암기", icon: "cards" },
-    { id: "speak", label: "말하기", icon: "mic" },
+    { id: "speak", label: "말하기 연습", icon: "mic" },
     { id: "progress", label: "진도", icon: "chart" }
   ];
 
@@ -1527,6 +1536,12 @@
     UI.day = S.currentDayNo(L());
     UI.card = { unit: UI.day, idx: 0, flipped: false };
     UI.speak = { unit: UI.day, idx: 0, result: null };
+
+    // 매니페스트 바로가기(./#speak 등)로 들어온 경우 해당 탭을 엽니다.
+    try {
+      var hash = global.location && global.location.hash ? String(global.location.hash).replace("#", "") : "";
+      if (hash === "today" || hash === "cards" || hash === "speak" || hash === "progress") UI.view = hash;
+    } catch (e) { /* 해시가 없어도 괜찮아요 */ }
     if (global.addEventListener) {
       global.addEventListener("popstate", function () {
         if (UI.view === "lesson") {
