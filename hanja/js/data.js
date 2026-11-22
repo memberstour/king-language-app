@@ -33,7 +33,7 @@
       items: [
         { id: "hanja-03-1", text: "日", read: "날 일", hun: "날", eum: "일", ko: "해·날", radical: "日", strokes: 4, tip: "해가 둥글게 빛나는 모양. '날'이라는 뜻도 있어요.", ex: ["일요일", "매일", "일기"] },
         { id: "hanja-03-2", text: "月", read: "달 월", hun: "달", eum: "월", ko: "달", radical: "月", strokes: 4, tip: "초승달 모양에서 왔어요. 달과 월을 뜻해요.", ex: ["월요일", "정월", "월급"] },
-        { id: "hanja-03-3", text: "天", read: "하늘 천", hun: "하늘", eum: "천", ko: "하늘", radical: "大", strokes: 4, tip: "사람(大) 위에 하늘이 있다는 모양이에요.", ex: ["천국", "천재", "하늘천"] },
+        { id: "hanja-03-3", text: "天", read: "하늘 천", hun: "하늘", eum: "천", ko: "하늘", radical: "大", strokes: 4, tip: "사람(大) 위에 하늘이 있다는 모양이에요.", ex: ["천국", "천재", "천지"] },
         { id: "hanja-03-4", text: "雨", read: "비 우", hun: "비", eum: "우", ko: "비", radical: "雨", strokes: 8, tip: "하늘에서 빗방울이 떨어지는 모양이에요.", ex: ["우산", "강우", "우기"] },
         { id: "hanja-03-5", text: "雲", read: "구름 운", hun: "구름", eum: "운", ko: "구름", radical: "雨", strokes: 12, tip: "비(雨)를 머금은 구름. 위에 雨가 있어요.", ex: ["성운", "운무", "흑운"] }
       ]
@@ -44,7 +44,7 @@
       items: [
         { id: "hanja-04-1", text: "人", read: "사람 인", hun: "사람", eum: "인", ko: "사람", radical: "人", strokes: 2, tip: "사람이 서 있는 옆모습. 왼쪽에 오면 亻가 돼요.", ex: ["인구", "인기", "한국인"] },
         { id: "hanja-04-2", text: "大", read: "큰 대", hun: "큰", eum: "대", ko: "크다", radical: "大", strokes: 3, tip: "팔을 벌린 사람 모양. '크다'를 뜻해요.", ex: ["대문", "대학", "대형"] },
-        { id: "hanja-04-3", text: "小", read: "작을 소", hun: "작을", eum: "소", ko: "작다", radical: "小", strokes: 3, tip: "작은 점 세 개 모양. '작다'를 뜻해요.", ex: ["소년", "소문", "축소"] },
+        { id: "hanja-04-3", text: "小", read: "작을 소", hun: "작을", eum: "소", ko: "작다", radical: "小", strokes: 3, tip: "작은 점 세 개 모양. '작다'를 뜻해요.", ex: ["소년", "소형", "축소"] },
         { id: "hanja-04-4", text: "子", read: "아들 자", hun: "아들", eum: "자", ko: "아이", radical: "子", strokes: 3, tip: "팔을 벌린 아기 모양. 아이를 뜻해요.", ex: ["자녀", "남자", "여자"] },
         { id: "hanja-04-5", text: "女", read: "계집 여", hun: "계집", eum: "여", ko: "여자", radical: "女", strokes: 3, tip: "여자가 앉아 있는 모양에서 왔어요.", ex: ["여자", "여성", "소녀"] }
       ]
@@ -64,7 +64,7 @@
       id: "hanja-06", no: 6, title: "가족", emoji: "👨‍👩‍👧",
       goal: "가족을 나타내는 한자를 익혀요",
       items: [
-        { id: "hanja-06-1", text: "父", read: "아비 부", hun: "아비", eum: "부", ko: "아버지", radical: "父", strokes: 4, tip: "아버지가 지팡이를 짚은 모양에서 왔어요.", ex: ["부모", "부친", "부부"] },
+        { id: "hanja-06-1", text: "父", read: "아비 부", hun: "아비", eum: "부", ko: "아버지", radical: "父", strokes: 4, tip: "아버지가 지팡이를 짚은 모양에서 왔어요.", ex: ["부모", "부친", "조부"] },
         { id: "hanja-06-2", text: "母", read: "어미 모", hun: "어미", eum: "모", ko: "어머니", radical: "母", strokes: 5, tip: "아이를 품은 어머니 모양이에요.", ex: ["모친", "부모", "모성"] },
         { id: "hanja-06-3", text: "兄", read: "형 형", hun: "형", eum: "형", ko: "형", radical: "儿", strokes: 5, tip: "입(口)과 다리(儿)로 된 형의 모양이에요.", ex: ["형제", "형님", "의형제"] },
         { id: "hanja-06-4", text: "弟", read: "아우 제", hun: "아우", eum: "제", ko: "동생", radical: "弓", strokes: 7, tip: "형을 따라가는 아우의 모양에서 왔어요.", ex: ["형제", "제자", "매제"] },
