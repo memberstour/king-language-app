@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# 저장소가 준비된 뒤 한 번에 배포합니다.
-#   1) main 브랜치 푸시  2) GitHub Pages 활성화(main 브랜치 루트)  3) 상태 확인
+# 킹링고를 GitHub Pages에 배포합니다. (2026-11-23 실제 배포 방식)
+#   main 브랜치에 소스를 올리고, 같은 내용을 gh-pages 브랜치에도 올립니다.
+#   Pages는 gh-pages 브랜치 루트에서 자동 배포됩니다
+#   (Pickle의 GitHub 앱 토큰에는 Pages 설정 권한이 없어서 API로는 켤 수 없었고,
+#    gh-pages 브랜치를 push하자 Pages가 자동으로 켜졌습니다).
 # 사용: ./tools/deploy.sh [owner/repo]
 set -euo pipefail
 
@@ -14,13 +17,9 @@ fi
 git branch -M main
 git push -u origin main
 
-if gh api "repos/${REPO_SLUG}/pages" >/dev/null 2>&1; then
-  gh api -X PUT "repos/${REPO_SLUG}/pages" \
-    -f 'source[branch]=main' -f 'source[path]=/' >/dev/null
-else
-  gh api -X POST "repos/${REPO_SLUG}/pages" \
-    -f 'source[branch]=main' -f 'source[path]=/' >/dev/null
-fi
+# Pages가 바라보는 gh-pages 브랜치를 main과 같은 내용으로 맞춥니다.
+git branch -f gh-pages main
+git push -f origin gh-pages
 
-echo "Pages URL: $(gh api "repos/${REPO_SLUG}/pages" --jq .html_url)"
-echo "확인: https://${REPO_SLUG%/*}.github.io/${REPO_SLUG#*/}/"
+echo "사이트: https://${REPO_SLUG%/*}.github.io/${REPO_SLUG#*/}/"
+echo "확인: curl -s -o /dev/null -w '%{http_code}\\n' https://${REPO_SLUG%/*}.github.io/${REPO_SLUG#*/}/"
