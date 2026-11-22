@@ -49,7 +49,7 @@
       streak: { count: 0, best: 0, last: null },
       progress: {},
       mastered: {},
-      prefs: { sound: true, slow: false, guide: true, pen: { width: 9, color: "#1f2937" }, letter: 0, char: 0 }
+      prefs: { sound: true, slow: false, guide: true, gridMode: "ta", pen: { width: 9, color: "#1f2937" }, letter: 0, char: 0, tone: -1 }
     };
   }
   function isObj(v) { return v && typeof v === "object" && !Array.isArray(v); }
@@ -77,6 +77,8 @@
     if (typeof st.prefs.pen.color !== "string") st.prefs.pen.color = d.prefs.pen.color;
     st.prefs.letter = Math.max(0, Math.floor(Number(st.prefs.letter) || 0));
     st.prefs.char = Math.max(0, Math.floor(Number(st.prefs.char) || 0));
+    st.prefs.tone = Math.max(-1, Math.floor(isFinite(Number(st.prefs.tone)) ? Number(st.prefs.tone) : -1));
+    if (st.prefs.gridMode !== "mi") st.prefs.gridMode = "ta";
     Object.keys(st.daily).forEach(function (k) {
       var v = Number(st.daily[k]);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !isFinite(v) || v <= 0) delete st.daily[k];
@@ -439,6 +441,18 @@
         }
       }
     }, [ico("grid"), guide ? "안내 보기" : "안내 숨김"]);
+    var gridLabel = el("span", { text: get().prefs.gridMode === "mi" ? "격자 米자" : "격자 田자" });
+    var gridBtn = mode === "hanja" ? el("button", {
+      class: "btn btn-ghost btn-small", type: "button",
+      on: {
+        click: function () {
+          get().prefs.gridMode = get().prefs.gridMode === "mi" ? "ta" : "mi";
+          save();
+          gridLabel.textContent = get().prefs.gridMode === "mi" ? "격자 米자" : "격자 田자";
+          redraw();
+        }
+      }
+    }, [ico("grid"), gridLabel]) : null;
     var actions = el("div", { class: "pad-row" }, [
       el("button", {
         class: "btn btn-ghost btn-small", type: "button",
@@ -448,7 +462,8 @@
         class: "btn btn-ghost btn-small", type: "button",
         on: { click: function () { strokes.length = 0; PAD_STROKES[glyph] = strokes; redraw(); } }
       }, [ico("trash"), "모두 지우기"]),
-      guideBtn
+      guideBtn,
+      gridBtn
     ]);
 
     wrap.appendChild(el("div", { class: "pad-tools" }, [widthRow, colorRow, actions]));
@@ -619,8 +634,11 @@
   function viewWriteBeginner() {
     var c = course();
     var letters = lettersOf(c);
+    var tones = (D.writing[c.code] || {}).tones || [];
     var idx = clamp(get().prefs.letter, 0, Math.max(0, letters.length - 1));
     var cur = letters[idx] || { ch: "A", name: "", sound: "", ex: "" };
+    var tone = tones[get().prefs.tone] || null;
+    var glyph = tone ? tone.ex : cur.ch;
     var wrap = el("div", { class: "view" });
     wrap.appendChild(el("div", { class: "day-head" }, [
       el("p", { class: "eyebrow", text: c.name + " 읽기·쓰기" }),
@@ -641,7 +659,7 @@
             "aria-pressed": active ? "true" : "false",
             on: {
               click: function () {
-                get().prefs.letter = i; save(); UI.letter = i; render();
+                get().prefs.letter = i; get().prefs.tone = -1; save(); UI.letter = i; render();
               }
             }
           }, [el("span", { class: "letter-ch", text: l.ch }), el("span", { class: "letter-name", text: l.name })]);
@@ -654,19 +672,50 @@
     var padHost = el("div", { class: "pad-host" });
     wrap.appendChild(el("section", { class: "focus-card" }, [
       el("div", { class: "focus-head" }, [
-        el("span", { class: "focus-ch", text: cur.ch }),
+        el("span", { class: "focus-ch", text: tone ? tone.mark : cur.ch }),
         el("div", { class: "focus-meta" }, [
-          el("p", { class: "focus-read", text: cur.name + " · " + cur.sound }),
-          el("p", { class: "focus-ko", text: cur.ex }),
+          el("p", { class: "focus-read", text: tone ? tone.name : cur.name + " · " + cur.sound }),
+          el("p", { class: "focus-ko", text: tone ? tone.ex + " (" + tone.ko + ") · " + tone.tip : cur.ex }),
           el("button", {
             class: "btn btn-blue btn-small", type: "button",
-            on: { click: function () { speak(cur.ex.replace(/\(.*$/, "").trim(), 0.85, c.locale); } }
-          }, [ico("speaker"), "예시 듣기"])
+            on: {
+              click: function () {
+                var say = tone ? tone.ex : cur.ex.replace(/\(.*$/, "").trim();
+                speak(say, 0.85, c.locale);
+              }
+            }
+          }, [ico("speaker"), tone ? "성조 듣기" : "예시 듣기"])
         ])
       ]),
       padHost
     ]));
-    mountPad(padHost, cur.ch, "letter");
+    mountPad(padHost, glyph, "letter");
+
+    if (tones.length) {
+      var toneWrap = el("section", { class: "card tones" }, [
+        el("h2", { class: "group-title", text: "성조 6가지 · 눌러서 따라 써 보세요" }),
+        el("div", { class: "tone-grid" }, tones.map(function (t, i) {
+          var active = get().prefs.tone === i;
+          return el("button", {
+            class: "tone" + (active ? " is-active" : ""), type: "button",
+            "aria-pressed": active ? "true" : "false",
+            on: {
+              click: function () {
+                get().prefs.tone = active ? -1 : i;
+                save();
+                if (!active) speak(t.ex, 0.8, c.locale);
+                render();
+              }
+            }
+          }, [
+            el("span", { class: "tone-mark", text: t.mark }),
+            el("span", { class: "tone-name", text: t.name }),
+            el("span", { class: "tone-ex", text: t.ex + " · " + t.ko })
+          ]);
+        }))
+      ]);
+      wrap.appendChild(toneWrap);
+    }
 
     if ((D.writing[c.code].rules || []).length) {
       var rules = el("section", { class: "card rules" }, [

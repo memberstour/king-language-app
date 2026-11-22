@@ -327,3 +327,16 @@ body {
 }
 .app-link-name { font-size: 14px; font-weight: 900; }
 .app-link-desc { font-size: 11px; font-weight: 700; color: var(--muted-2); text-align: right; }
+
+/* ---------- 성조 표 ---------- */
+.tones { margin-top: 12px; }
+.tone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.tone {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 9px 4px; border-radius: 12px; border: 2px solid var(--line);
+  background: #fff; cursor: pointer; font-family: inherit;
+}
+.tone-mark { font-size: 22px; font-weight: 900; line-height: 1.1; }
+.tone-name { font-size: 10px; font-weight: 800; color: var(--muted-2); text-align: center; }
+.tone-ex { font-size: 11px; font-weight: 700; color: var(--muted); }
+.tone.is-active { border-color: var(--brand); background: var(--brand-soft); }

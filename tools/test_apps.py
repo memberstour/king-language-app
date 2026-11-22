@@ -130,6 +130,13 @@ TESTS = r"""
     var before = txt(first("focus-ch"));
     tap(letters[letters.length - 1], "마지막 문자");
     check("문자 선택 반영", txt(first("focus-ch")) !== before, txt(first("focus-ch")));
+    var toneBtns = byClass("tone");
+    if (D.writing[D.courses[2].code] && D.writing[D.courses[2].code].tones) {
+      check("성조 버튼 6개", toneBtns.length === 6, toneBtns.length);
+      tap(toneBtns[1], "성조 선택");
+      check("성조 선택 반영", txt(first("focus-ch")) === "á", txt(first("focus-ch")));
+      tap(byClass("tone")[1], "성조 해제");
+    }
   } else {
     check("한자 칩 5개", byClass("char-chip").length === 5, byClass("char-chip").length);
     var chips = byClass("char-chip");

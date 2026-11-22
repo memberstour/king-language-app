@@ -614,6 +614,14 @@
           { ch: "X x", name: "ㅅ", sound: "[s]", ex: "xanh (푸른)" }
         ] }
       ],
+      tones: [
+        { mark: "a", name: "ngang · 평성", ex: "ma", ko: "유령", tip: "높이를 그대로 유지해요." },
+        { mark: "á", name: "sắc · 올림", ex: "má", ko: "뺨", tip: "끝을 위로 올려요." },
+        { mark: "à", name: "huyền · 내림", ex: "mà", ko: "그러나", tip: "낮게 내려요." },
+        { mark: "ả", name: "hỏi · 내렸다 올림", ex: "mả", ko: "무덤", tip: "내렸다 살짝 올려요." },
+        { mark: "ã", name: "ngã · 꺾어 올림", ex: "mã", ko: "말", tip: "한 번 꺾어 올려요." },
+        { mark: "ạ", name: "nặng · 끊어 내림", ex: "mạ", ko: "벼", tip: "짧고 낮게 끊어요." }
+      ],
       rules: [
         { title: "성조 6가지", body: "같은 'ma'도 성조에 따라 뜻이 달라져요: ngang(평) ma 유령, sắc(á) má 뺨, huyền(à) mà 그러나, hỏi(ả) mả 무덤, ngã(ã) mã 말, nặng(ạ) mạ 벼." },
         { title: "sắc은 올리고, huyền은 내려요", body: "á는 끝을 올리고 à는 낮게 내려요. 손으로 높낮이를 그리며 따라 해 보세요." },
