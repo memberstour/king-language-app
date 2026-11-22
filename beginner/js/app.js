@@ -745,7 +745,7 @@
       back = [
         el("span", { class: "card-tag", text: "漢字" }),
         el("p", { class: "card-char", text: it.text }),
-        el("p", { class: "card-sub", text: it.ko + " · " + it.strokes + "획" }),
+        el("p", { class: "card-sub", text: it.read + " · " + it.ko + " · " + it.strokes + "획" }),
         el("span", { class: "card-hint", text: "탭하면 훈·음으로" })
       ];
     } else {
@@ -824,7 +824,7 @@
     var wrap = el("div", { class: "view" });
     wrap.appendChild(el("div", { class: "day-head" }, [
       el("p", { class: "eyebrow", text: "퀴즈 · DAY " + u.no }),
-      el("h1", { class: "day-title", text: q.done ? "결과" : "뜻을 골라 보세요" }),
+      el("h1", { class: "day-title", text: q.done ? "결과" : (D.mode === "hanja" ? "훈과 음을 골라 보세요" : "뜻을 골라 보세요") }),
       el("p", { class: "day-goal", text: q.done ? q.correct + " / " + q.total + " 문제를 맞혔어요" : (q.idx + 1) + " / " + q.qs.length })
     ]));
 
