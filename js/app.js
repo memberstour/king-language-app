@@ -91,7 +91,12 @@
     return out;
   }
   /** 읽기 안내(병음 · 히라가나 등). 중국어는 pinyin, 일본어는 read를 쓴다. */
-  function reading(s) { return (s && (s.read || s.pinyin)) || ""; }
+  function reading(s) {
+    var r = (s && (s.read || s.pinyin)) || "";
+    // 히라가나만 있는 일본어 문장처럼 읽기 안내가 문장과 같으면 한 번만 보여 줍니다.
+    if (r && String(r).trim() === String(s.text).trim()) return "";
+    return r;
+  }
   function joiner() { return course().space ? " " : ""; }
 
   var UI = {

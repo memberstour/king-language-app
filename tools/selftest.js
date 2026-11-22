@@ -147,8 +147,11 @@
     check("일본어 전환", g.KingStore.get().lang === "ja");
     goTab(0);
     check("일본어 오늘 화면", txt(ids.main).indexOf("일본어") >= 0);
-    check("일본어 읽기 안내", byClass("pinyin").length >= 1);
-    check("일본어 첫 단원", txt(ids.main).indexOf("こんにちは") >= 0 || txt(first("target")) === g.KING_DATA.courses.ja.units[0].sentences[0].text);
+    check("일본어 읽기 데이터", g.KING_DATA.courses.ja.units.every(function (u) {
+      return u.sentences.every(function (s) { return !!s.read; });
+    }));
+    check("일본어 첫 단원", txt(ids.main).indexOf("こんにちは") >= 0);
+    check("일본어 중복 읽기 숨김", byClass("pinyin").filter(function (p) { return txt(p) === "こんにちは！はじめまして。"; }).length === 0);
     var segs3 = byClass("seg-btn", ids.topbar);
     clickNode(segs3[0], "영어 복귀");
     check("영어 복귀", g.KingStore.get().lang === "en");
