@@ -9,6 +9,17 @@ import quickjs
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHIM = os.path.join(HERE, "tools", "domshim.js")
 
+STUB = r"""
+(function (g) {
+  g.navigator = { serviceWorker: { register: function (url, opts) {
+    g.__sw = g.__sw || [];
+    g.__sw.push({ u: url, s: opts && opts.scope });
+    return { catch: function () { return this; } };
+  } } };
+  g.location = { protocol: "https:", href: "https://example.test/app/" };
+})(typeof window !== "undefined" ? window : globalThis);
+"""
+
 TESTS = r"""
 (function (g) {
   "use strict";
@@ -183,6 +194,7 @@ TESTS = r"""
   check("결과 화면", txt(ids.main).indexOf("100%") >= 0, txt(ids.main).slice(0, 40));
 
   /* --- 8. 저장 --- */
+  check("서비스 워커 등록", !!(g.__sw && g.__sw.length === 1 && g.__sw[0].u === "./sw.js"), JSON.stringify(g.__sw || []));
   var raw = g.localStorage.getItem(D.storageKey);
   check("저장 키 분리", !!raw, D.storageKey);
   var parsed = raw ? JSON.parse(raw) : {};
@@ -202,8 +214,7 @@ TESTS = r"""
 
 def run(folder):
     files = [SHIM,
-             os.path.join(HERE, folder, "js", "data.js"),
-             os.path.join(HERE, folder, "js", "app.js")]
+             os.path.join(HERE, folder, "js", "data.js")]
     ctx = quickjs.Context()
     for path in files:
         with open(path, encoding="utf-8") as f:
@@ -212,6 +223,13 @@ def run(folder):
             except Exception as e:  # noqa: BLE001
                 print("EVAL FAIL:", folder, os.path.basename(path), e)
                 return 1
+    ctx.eval(STUB)
+    with open(os.path.join(HERE, folder, "js", "app.js"), encoding="utf-8") as f:
+        try:
+            ctx.eval(f.read())
+        except Exception as e:  # noqa: BLE001
+            print("EVAL FAIL:", folder, "app.js", e)
+            return 1
     try:
         result = json.loads(ctx.eval(TESTS))
     except Exception as e:  # noqa: BLE001

@@ -968,6 +968,15 @@
     if (roots.main.scrollTop !== undefined) roots.main.scrollTop = 0;
   }
 
+  function registerServiceWorker() {
+    if (!global.navigator || !global.navigator.serviceWorker) return;
+    try {
+      var proto = global.location ? global.location.protocol : "";
+      if (proto !== "https:" && proto !== "http:") return;
+      global.navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(function () { /* 오프라인 캐시는 없어도 동작 */ });
+    } catch (e) { /* noop */ }
+  }
+
   function boot() {
     load();
     roots.top = document.getElementById("topbar");
@@ -975,6 +984,7 @@
     roots.tab = document.getElementById("tabbar");
     if (roots.tab) roots.tab.setAttribute("aria-label", "주요 메뉴");
     render();
+    registerServiceWorker();
   }
 
   global.KingApp = {
