@@ -372,7 +372,7 @@
         el("span", { class: "brand-name", text: "킹링고" })
       ]),
       el("div", { class: "top-chips" }, [
-        chip("flame", (st.count || 0) + "일", "flame"),
+        chip("flame", st.count > 0 ? st.count + "일" : "시작", "flame"),
         chip("bolt", String(S.totalXp()), "xp")
       ])
     ]));
