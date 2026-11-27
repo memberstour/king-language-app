@@ -1581,6 +1581,7 @@
   }
 
   function scoreTone(score) {
+    if (!score) return "new";
     if (score >= 80) return "good";
     if (score >= 50) return "mid";
     return "low";
@@ -1873,7 +1874,7 @@
     wrap.appendChild(el("div", { class: "run-meta" }, [
       el("span", { class: "run-type", text: BK().typeName(q.type) }),
       el("span", { class: "run-unit", text: run.kind === "exam" ? run.title : "DAY " + q.unitNo + " · " + q.unitTitle }),
-      el("span", { class: "run-count", text: (run.idx + 1) + " / " + run.questions.length })
+      el("span", { class: "run-sub", text: run.kind === "exam" ? "" : (run.sub || "") })
     ]));
 
     var body = el("div", { class: "run-body" });

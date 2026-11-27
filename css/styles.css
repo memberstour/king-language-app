@@ -1450,7 +1450,7 @@ body.in-lesson .main { padding-bottom: 0; }
 .wrong-type { font-size: 9.5px; font-weight: 900; color: var(--blue-dark); letter-spacing: 0.02em; }
 .wrong-text { font-size: 12.5px; font-weight: 800; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wrong-meta { font-size: 10px; color: var(--muted-2); font-weight: 700; }
-.wrong-del { width: 40px; border-left: 1px solid var(--line); border-radius: 0; color: var(--muted-2); }
+.wrong-del { width: 42px; height: auto; align-self: stretch; border-left: 1px solid var(--line); border-radius: 0; color: var(--muted-2); background: #fbfcfe; }
 .wrong-del .ico { width: 15px; height: 15px; }
 
 .empty-card {
@@ -1721,3 +1721,4 @@ body.in-lesson .main { padding-bottom: 0; }
   .book-grid { grid-template-columns: 1fr; }
   .reader-line { font-size: 16.5px; }
 }
+.run-sub { font-size: 10.5px; font-weight: 800; color: var(--muted-2); flex: 0 0 auto; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
