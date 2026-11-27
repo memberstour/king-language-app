@@ -29,7 +29,7 @@ def data_uri(path, mime="image/png"):
 def build_standalone():
     html = read("index.html")
     css = read("css/styles.css")
-    js_files = ["js/data.js", "js/core.js", "js/store.js", "js/app.js"]
+    js_files = ["js/data.js", "js/core.js", "js/store.js", "js/bank.js", "js/readers.js", "js/app.js"]
     js = "\n;\n".join(read(p) for p in js_files)
 
     html = html.replace('<link rel="stylesheet" href="./css/styles.css">',
@@ -58,7 +58,7 @@ def build_zip():
     os.makedirs(DOWNLOADS, exist_ok=True)
     out = os.path.join(DOWNLOADS, "kinglingo-app.zip")
     include = ["index.html", "manifest.json", "sw.js", "README.md",
-               "css/styles.css", "js/data.js", "js/core.js", "js/store.js", "js/app.js",
+               "css/styles.css", "js/data.js", "js/core.js", "js/store.js", "js/bank.js", "js/readers.js", "js/app.js",
                "icon-192.png", "icon-512.png", "icon-180.png", "icon-maskable-512.png",
                "beginner/index.html", "beginner/manifest.json", "beginner/sw.js",
                "beginner/css/styles.css", "beginner/js/data.js", "beginner/js/app.js",

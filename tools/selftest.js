@@ -40,6 +40,37 @@
     if (!tabs[i]) { check("탭 찾기 " + i, false); return; }
     tabs[i].click();
   }
+  function goTabId(label) {
+    var tabs = byClass("tab", ids.tabbar);
+    for (var i = 0; i < tabs.length; i++) {
+      if (tabs[i].getAttribute("aria-label") === label) { tabs[i].click(); return; }
+    }
+    check("탭 찾기: " + label, false);
+  }
+  function tapText(word, root) {
+    var btn = collect(root || ids.main).filter(function (n) {
+      return n.tagName === "BUTTON" && txt(n).indexOf(word) >= 0;
+    })[0];
+    if (!btn) { check("버튼 찾기: " + word, false); return null; }
+    btn.click();
+    return btn;
+  }
+  function openCards() {
+    goTabId("오늘");
+    tapText("문장 카드로 복습");
+  }
+  function openSpeak() {
+    goTabId("오늘");
+    tapText("따라 말하기 연습");
+  }
+  function runFootBtn() {
+    var f = first("run-foot");
+    if (!f) return null;
+    var kids = f.children.filter(function (c) {
+      return typeof c._text === "undefined" && c.className && c.className.indexOf("btn") >= 0;
+    });
+    return kids[0] || null;
+  }
   function footBtn() {
     var f = first("lesson-foot");
     if (!f) return null;
@@ -56,13 +87,13 @@
     check("14일 코스", byClass("day-pill").length === 14, byClass("day-pill").length);
     check("수업 4개", byClass("lesson-row").length === 4, byClass("lesson-row").length);
     check("오늘의 한 문장", txt(ids.main).indexOf("오늘의 한 문장") >= 0);
-    check("하단 탭 4개", byClass("tab", ids.tabbar).length === 4, byClass("tab", ids.tabbar).length);
+    check("하단 탭 5개", byClass("tab", ids.tabbar).length === 5, byClass("tab", ids.tabbar).length);
     check("설치 안내", byClass("install-strip").length === 1);
   }
 
   /* ---------- 2. 문장 암기 ---------- */
   function cardChecks() {
-    goTab(1);
+    openCards();
     check("카드 화면", byClass("flash").length === 1);
     check("카드 앞면 뜻", txt(first("flash")).length > 0);
     var before = Object.keys(g.KingStore.get().mastered).length;
@@ -79,7 +110,7 @@
   }
 
   function cardsFinishChecks() {
-    goTab(1);
+    openCards();
     var chips = byClass("unit-chip");
     clickNode(chips[0], "Day 1 카드");
     for (var i = 0; i < 5; i++) {
@@ -106,7 +137,7 @@
 
   /* ---------- 3. 말하기 ---------- */
   function speakChecks() {
-    goTab(2);
+    openSpeak();
     check("말하기 화면", byClass("voice-card").length === 1);
     check("속도 버튼", byClass("speed-btn").length >= 2);
     clickNode(first("fallback-btn"), "직접 말해봤어요");
@@ -118,7 +149,7 @@
 
   /* ---------- 4. 진도 ---------- */
   function progressChecks() {
-    goTab(3);
+    goTabId("진도");
     check("통계 카드 4개", byClass("stat").length === 4, byClass("stat").length);
     check("이번 주 7일", byClass("week-day").length === 7);
     check("코스 목록 14개", byClass("course-row").length === 14, byClass("course-row").length);
@@ -225,7 +256,7 @@
     check("스트릭 시작", store.streakInfo().count === 1, store.streakInfo().count);
     check("다음 날 안내", store.currentDayNo("en") === 2, store.currentDayNo("en"));
 
-    goTab(3);
+    goTabId("진도");
     var daysStat = byClass("stat")[3];
     check("완료한 날 1", txt(daysStat).indexOf("1 / 14") >= 0, txt(daysStat));
   }
@@ -310,7 +341,7 @@
 
   function resetChecks() {
     var store = g.KingStore;
-    goTab(3);
+    goTabId("진도");
     clickNode(first("btn-danger-ghost"), "초기화 열기");
     var wipe = byClass("btn-danger", ids.modal).filter(function (b) { return txt(b).indexOf("모두 지우기") >= 0; })[0];
     clickNode(wipe, "모두 지우기");
@@ -319,6 +350,9 @@
     check("초기화 후 스트릭 0", store.streakInfo().count === 0);
     check("초기화 후 외운 문장 0", store.masteredCount("en") === 0 && store.masteredCount("zh") === 0);
     check("초기화 후 언어 영어", store.get().lang === "en");
+    check("초기화 후 평가 기록 0", Object.keys(store.get().exams).length === 0);
+    check("초기화 후 오답노트 0", Object.keys(store.get().wrong).length === 0);
+    check("초기화 후 도서관 비움", Object.keys(store.get().library).length === 0);
   }
 
   function corruptedStateChecks() {
@@ -380,6 +414,249 @@
     check("블록 연결 = 문장", badJoin.length === 0, badJoin.join(","));
   }
 
+  /* ---------- 10. 단원평가 · 문제은행 · 도서관 ---------- */
+  function answerRun(correctly) {
+    var ui = g.KingApp.__ui;
+    var guard = 0;
+    while (ui.view === "run" && guard < 50) {
+      guard += 1;
+      var run = ui.run;
+      if (!run) break;
+      var q = run.questions[run.idx];
+      if (q.tokens) {
+        var seq = correctly ? q.tokens.slice() : q.tokens.slice().reverse();
+        seq.forEach(function (tok) {
+          var bank = first("bank");
+          var tile = bank && bank.children.filter(function (c) {
+            return c.className && c.className.indexOf("tile") >= 0 && c.textContent === tok;
+          })[0];
+          if (tile) tile.click();
+        });
+      } else {
+        var want = -1;
+        q.options.forEach(function (o, i) { if (o.correct === correctly && want < 0) want = i; });
+        var opts = byClass("option-btn");
+        if (opts[want]) opts[want].click();
+        else check("보기 클릭: " + q.key, false);
+      }
+      if (ui.view !== "run") break;
+      var btn = runFootBtn();
+      if (!btn) { check("문제 풀기 버튼", false, q.type); break; }
+      if (btn.disabled) { check("문제 풀기 버튼 활성화", false, q.type + "/" + q.key); break; }
+      btn.click();
+    }
+    if (guard >= 50) check("문제 풀기 무한 반복 방지", false);
+  }
+
+  function examDataChecks() {
+    var D = g.KING_DATA;
+    var B = g.KingBank;
+    var bad = [];
+    Object.keys(D.courses).forEach(function (code) {
+      var c = D.courses[code];
+      c.units.forEach(function (u) {
+        var qs = B.buildUnitExam(c, u);
+        if (qs.length !== 10) bad.push(u.id + ":count=" + qs.length);
+        var keys = {};
+        qs.forEach(function (q) {
+          if (!q.tokens) {
+            if (!q.options || q.options.length !== 4) bad.push(q.key + ":opt");
+            var correct = q.options.filter(function (o) { return o.correct; }).length;
+            if (correct !== 1) bad.push(q.key + ":correct=" + correct);
+            var texts = q.options.map(function (o) { return o.text; });
+            if (texts.filter(function (t, i) { return texts.indexOf(t) !== i; }).length) bad.push(q.key + ":dupopt");
+          }
+          if (q.type === "blank") {
+            var blanks = (q.parts || []).filter(function (p) { return p.blank; }).length;
+            if (blanks !== 1) bad.push(q.key + ":blank");
+          }
+          if (q.tokens) {
+            var joined = q.tokens.join(c.space ? " " : "");
+            if (joined !== q.text) bad.push(q.key + ":tokens");
+          }
+          if (keys[q.key]) bad.push(q.key + ":dupkey");
+          keys[q.key] = true;
+        });
+      });
+      var bank10 = B.buildBank(c, { count: 10 });
+      if (bank10.length !== 10) bad.push(code + ":bank=" + bank10.length);
+      var mock = B.mockExam(c, 10);
+      if (mock.length !== 10) bad.push(code + ":mock=" + mock.length);
+    });
+    check("단원평가 10문항·보기 점검", bad.length === 0, bad.slice(0, 6).join(","));
+  }
+
+  function readerDataChecks() {
+    var R = g.KING_READERS;
+    check("원서 6권 이상", R.books.length >= 6, R.books.length);
+    var ids = {};
+    var bad = [];
+    var total = 0;
+    R.books.forEach(function (b) {
+      if (ids[b.id]) bad.push(b.id + ":dup");
+      ids[b.id] = true;
+      if (!b.title || !b.ko || !b.emoji || !b.level) bad.push(b.id + ":field");
+      if (!(b.pages || []).length || b.pages.length < 6) bad.push(b.id + ":pages");
+      total += (b.pages || []).length;
+      b.pages.forEach(function (p) {
+        if (!p.lines || !p.lines.length || !p.ko) bad.push(b.id + ":page");
+        p.lines.forEach(function (l) {
+          if (!l || /[\uac00-\ud7a3]/.test(l)) bad.push(b.id + ":en");
+        });
+      });
+      if ((b.quiz || []).length < 3) bad.push(b.id + ":quiz");
+      b.quiz.forEach(function (q) {
+        if (!q.q || !q.ko || !q.why) bad.push(b.id + ":quizfield");
+        if (!q.options || q.options.length !== 4) bad.push(b.id + ":opt");
+        if (!(q.answer >= 0 && q.answer < 4)) bad.push(b.id + ":answer");
+      });
+    });
+    check("원서 데이터 점검", bad.length === 0, bad.slice(0, 6).join(","));
+    check("원서 총 페이지 60 이상", total >= 60, total);
+  }
+
+  function examChecks() {
+    var store = g.KingStore;
+    var ui = g.KingApp.__ui;
+    goTabId("단원평가");
+    check("단원평가 화면", byClass("view-exam").length === 1);
+    check("평가 단원 14개", byClass("exam-row").length === 14, byClass("exam-row").length);
+    var xpBefore = store.totalXp();
+
+    byClass("exam-row")[1].click();
+    check("평가 시작", ui.view === "run");
+    var run = ui.run;
+    check("평가 10문항", run && run.questions.length === 10, run && run.questions.length);
+    var types = {};
+    (run ? run.questions : []).forEach(function (q) { types[q.type] = true; });
+    check("평가 유형 4가지 이상", Object.keys(types).length >= 4, Object.keys(types).join(","));
+    check("평가 도중 채점 숨김", !!run && run.reveal === false);
+
+    answerRun(true);
+    check("평가 결과 화면", ui.view === "report");
+    var rep = ui.report;
+    check("평가 만점", !!rep && rep.result.score === 100, rep && rep.result.score);
+    check("평가 통과 판정", !!rep && rep.result.passed === true);
+    var unit = store.unitOf("en", 2);
+    var rec = store.examRecord(unit.id);
+    check("평가 최고 점수 저장", rec.best === 100 && rec.passed === true, rec.best);
+    check("평가 XP 지급", store.totalXp() > xpBefore, store.totalXp() - xpBefore);
+    check("만점이면 해설 없음", byClass("explain-card").length === 0, byClass("explain-card").length);
+
+    tapText("단원평가 목록");
+    check("평가 목록 복귀", ui.view === "exam");
+    check("통과 단원 표시", byClass("exam-row")[1].className.indexOf("is-passed") >= 0);
+    check("통과 수 표시", txt(first("exam-summary")).indexOf("1 / 14") >= 0, txt(first("exam-summary")));
+
+    byClass("exam-row")[2].click();
+    answerRun(false);
+    check("오답 응시 결과 화면", ui.view === "report");
+    var rep2 = ui.report;
+    check("오답 점수", !!rep2 && rep2.result.score < 80, rep2 && rep2.result.score);
+    check("오답 해설 개수", byClass("explain-card").length === rep2.result.wrong.length, byClass("explain-card").length);
+    check("오답노트 저장", store.wrongCount("en") === rep2.result.wrong.length, store.wrongCount("en"));
+    tapText("단원평가 목록");
+    goTabId("문제은행");
+    tapText("오답노트");
+    check("오답노트 화면", ui.view === "bank" && ui.bank.tab === "wrong");
+  }
+
+  function bankChecks() {
+    var ui = g.KingApp.__ui;
+    goTabId("문제은행");
+    tapText("문제은행");
+    check("문제은행 화면", byClass("view-bank").length === 1);
+    check("모의고사 카드", byClass("mock-card").length === 1);
+    tapText("듣기");
+    tapText("5문항");
+    var go = collect(ids.main).filter(function (n) {
+      return n.tagName === "BUTTON" && txt(n).indexOf("5문항 풀기") >= 0;
+    })[0];
+    check("문항 풀기 버튼", !!go);
+    if (go) go.click();
+    check("문제은행 시작", ui.view === "run");
+    check("고른 문항 수", !!ui.run && ui.run.questions.length === 5, ui.run && ui.run.questions.length);
+    check("듣기만 출제", !!ui.run && ui.run.questions.every(function (q) { return q.type === "listen"; }));
+    answerRun(true);
+    check("문제은행 결과", ui.view === "report");
+    tapText("문제은행으로");
+    check("문제은행 복귀", ui.view === "bank");
+
+    tapText("시작");
+    check("모의고사 시작", ui.view === "run");
+    check("모의고사 10문항", !!ui.run && ui.run.questions.length === 10, ui.run && ui.run.questions.length);
+    answerRun(true);
+    check("모의고사 결과", ui.view === "report");
+    tapText("문제은행으로");
+  }
+
+  function wrongNoteChecks() {
+    var store = g.KingStore;
+    var ui = g.KingApp.__ui;
+    goTabId("문제은행");
+    tapText("오답노트");
+    check("오답노트 탭", ui.bank.tab === "wrong");
+    var before = store.wrongCount("en");
+    check("오답노트 목록", byClass("wrong-row").length === before, byClass("wrong-row").length + "/" + before);
+    if (!before) { check("오답 재풀이 준비", false, "오답 없음"); return; }
+    tapText("모두 다시 풀기");
+    check("오답 재풀이 시작", ui.view === "run");
+    answerRun(true);
+    check("오답 정리", store.wrongCount("en") < before, before + " -> " + store.wrongCount("en"));
+    tapText("오답노트 보기");
+    check("오답노트 복귀", ui.view === "bank" && ui.bank.tab === "wrong");
+  }
+
+  function libraryChecks() {
+    var store = g.KingStore;
+    var ui = g.KingApp.__ui;
+    goTabId("도서관");
+    check("도서관 화면", byClass("view-library").length === 1);
+    var cards = byClass("book-card");
+    check("원서 카드", cards.length === g.KING_READERS.books.length, cards.length);
+    cards[0].click();
+    check("원서 열기", ui.view === "reader");
+    var b = g.KING_READERS.books[0];
+    check("첫 쪽 문장", byClass("reader-line").length === b.pages[0].lines.length, byClass("reader-line").length);
+    tapText("해석 보기");
+    check("해석 보기 토글", byClass("reader-ko").length === 1);
+    tapText("해석 숨기기");
+    check("해석 숨기기 토글", byClass("reader-ko").length === 0);
+
+    var guard = 0;
+    while (ui.view === "reader" && ui.reader.page < b.pages.length - 1 && guard < 30) {
+      guard += 1;
+      var nextPage = collect(ids.main).filter(function (n) {
+        return n.tagName === "BUTTON" && txt(n).indexOf("다음 쪽") >= 0;
+      })[0];
+      if (!nextPage) { check("다음 쪽 버튼", false, "page " + ui.reader.page); break; }
+      nextPage.click();
+    }
+    check("마지막 쪽 도달", ui.reader.page === b.pages.length - 1, ui.reader.page);
+    check("쪽 기록 저장", store.libraryOf(b.id).page === b.pages.length - 1, store.libraryOf(b.id).page);
+
+    tapText("독후 퀴즈");
+    check("독후 퀴즈 열림", ui.view === "readerQuiz");
+    var qz = ui.readerQuiz;
+    var guard2 = 0;
+    while (ui.view === "readerQuiz" && qz && !qz.done && guard2 < 20) {
+      guard2 += 1;
+      var item = b.quiz[qz.idx];
+      var opts = byClass("option-btn");
+      if (opts[item.answer]) opts[item.answer].click();
+      else check("퀴즈 보기 클릭", false);
+      var next = collect(ids.main).filter(function (n) {
+        return n.tagName === "BUTTON" && (txt(n).indexOf("다음 문제") >= 0 || txt(n).indexOf("결과 보기") >= 0);
+      })[0];
+      if (next) next.click();
+    }
+    check("퀴즈 결과 화면", byClass("report-score").length === 1, byClass("report-score").length);
+    var lib = store.libraryOf(b.id);
+    check("완독 기록 저장", lib.done === true && lib.quizBest === 100, lib.quizBest);
+    tapText("도서관으로");
+    check("도서관 복귀", ui.view === "library");
+  }
+
   g.__run = function () {
     try {
       dataChecks();
@@ -393,6 +670,12 @@
       lessonChecks();
       zhLessonChecks();
       playButtonChecks();
+      examDataChecks();
+      readerDataChecks();
+      examChecks();
+      bankChecks();
+      wrongNoteChecks();
+      libraryChecks();
       edgeChecks();
       storageChecks();
       resetChecks();

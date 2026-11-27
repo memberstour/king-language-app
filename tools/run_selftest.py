@@ -12,6 +12,8 @@ FILES = [
     "js/data.js",
     "js/core.js",
     "js/store.js",
+    "js/bank.js",
+    "js/readers.js",
     "js/app.js",
     "tools/selftest.js",
 ]

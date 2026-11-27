@@ -1310,3 +1310,414 @@ body.in-lesson .main { padding-bottom: 0; }
 .app-link.is-active { border-color: var(--green); background: #f8fff2; }
 .app-link-name { font-size: 14px; font-weight: 900; }
 .app-link-desc { font-size: 11px; font-weight: 700; color: var(--muted-2); text-align: right; }
+
+/* =========================================================
+ *  단원평가 · 문제은행 · 영어원서 도서관
+ * ========================================================= */
+
+/* ---------- 오늘 화면: 더 배우기 ---------- */
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.feature-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 12px 10px 11px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.feature-tile:active { transform: translateY(2px); }
+.feature-ico { width: 24px; height: 24px; display: inline-flex; margin-bottom: 3px; }
+.feature-ico .ico { width: 23px; height: 23px; }
+.feature-title { font-size: 13px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.feature-sub { font-size: 10.5px; font-weight: 800; color: var(--muted-2); }
+.ft-green { background: #f7fff0; border-color: #d9f2c0; }
+.ft-green .feature-ico { color: var(--green-dark); }
+.ft-blue { background: #f2f9ff; border-color: #d7ecff; }
+.ft-blue .feature-ico { color: var(--blue-dark); }
+.ft-orange { background: #fff9ef; border-color: #ffe6bd; }
+.ft-orange .feature-ico { color: #e08600; }
+
+.quick-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.quick-row .btn { width: 100%; }
+
+/* ---------- 단원평가 ---------- */
+.exam-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #60d10a, var(--green));
+  color: #fff;
+  box-shadow: 0 5px 0 var(--green-dark);
+  margin-bottom: 14px;
+}
+.exam-summary-main { display: flex; flex-direction: column; align-items: center; min-width: 96px; }
+.exam-summary-num { font-size: 26px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+.exam-summary-label { font-size: 10.5px; font-weight: 800; opacity: 0.92; margin-top: 4px; }
+.exam-summary-side { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; font-weight: 700; opacity: 0.94; line-height: 1.45; }
+
+.exam-list { display: flex; flex-direction: column; gap: 7px; }
+.exam-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.exam-row:active { transform: scale(0.99); background: #fafcfe; }
+.exam-row.is-passed { background: #fbfff5; border-color: #e0f5cd; }
+.exam-emoji {
+  width: 38px; height: 38px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  font-size: 19px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+.exam-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.exam-day { font-size: 9.5px; font-weight: 900; letter-spacing: 0.08em; color: var(--muted-2); }
+.exam-title { font-size: 14px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.exam-goal { font-size: 10.5px; color: var(--muted-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.exam-score { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex: 0 0 auto; }
+.exam-score b { font-size: 13px; font-weight: 900; color: var(--muted); }
+.exam-score span { font-size: 10px; font-weight: 800; color: var(--muted-2); }
+.exam-score.is-good b, .exam-score.is-good span { color: var(--green-dark); }
+.exam-score.is-mid b { color: #d98200; }
+.exam-score.is-low b { color: var(--red); }
+
+/* ---------- 공통: 가로 꽉 찬 세그먼트 ---------- */
+.seg-block { display: flex; width: 100%; margin: 12px 0 14px; }
+.seg-block .seg-btn { flex: 1; justify-content: center; padding: 9px 6px; }
+
+/* ---------- 문제은행 ---------- */
+.mock-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #2ec4ff, var(--blue));
+  color: #fff;
+  box-shadow: 0 4px 0 var(--blue-dark);
+  margin-bottom: 12px;
+}
+.mock-emoji { font-size: 26px; line-height: 1; }
+.mock-copy { flex: 1; min-width: 0; }
+.mock-title { margin: 0; font-size: 15px; font-weight: 900; letter-spacing: -0.4px; }
+.mock-sub { margin: 2px 0 0; font-size: 10.5px; font-weight: 700; opacity: 0.92; }
+.mock-card .btn-primary { flex: 0 0 auto; background: #fff; color: var(--blue-dark); box-shadow: 0 3px 0 rgba(0, 0, 0, 0.16); }
+
+.filter-card { padding: 14px; }
+.filter-label { margin: 12px 0 6px; font-size: 11px; font-weight: 900; color: var(--muted-2); letter-spacing: 0.02em; }
+.filter-card .filter-label:first-of-type { margin-top: 4px; }
+.filter-chip { font-size: 11.5px; padding: 7px 11px; }
+.seg-count { margin: 0 0 6px; }
+
+.wrong-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 2px 12px; }
+.wrong-count { font-size: 16px; font-weight: 900; display: block; letter-spacing: -0.3px; }
+.wrong-sub { font-size: 11px; color: var(--muted-2); font-weight: 700; }
+.wrong-list { display: flex; flex-direction: column; gap: 7px; }
+.wrong-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+.wrong-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 12px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.wrong-type { font-size: 9.5px; font-weight: 900; color: var(--blue-dark); letter-spacing: 0.02em; }
+.wrong-text { font-size: 12.5px; font-weight: 800; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wrong-meta { font-size: 10px; color: var(--muted-2); font-weight: 700; }
+.wrong-del { width: 40px; border-left: 1px solid var(--line); border-radius: 0; color: var(--muted-2); }
+.wrong-del .ico { width: 15px; height: 15px; }
+
+.empty-card {
+  padding: 26px 20px;
+  border: 2px dashed var(--line-2);
+  border-radius: 20px;
+  background: #fbfcfe;
+  text-align: center;
+}
+.empty-emoji { font-size: 34px; display: block; }
+.empty-title { margin: 8px 0 0; font-size: 16px; font-weight: 900; letter-spacing: -0.3px; }
+.empty-sub { margin: 6px 0 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ---------- 문제 풀기 ---------- */
+.view-run { display: flex; flex-direction: column; min-height: calc(100dvh - 140px); }
+.run-meta { display: flex; align-items: center; gap: 7px; margin: 12px 0 10px; }
+.run-type {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  background: var(--blue-soft);
+  padding: 4px 9px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.run-unit { font-size: 10.5px; font-weight: 800; color: var(--muted-2); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-count { font-size: 11px; font-weight: 900; color: var(--muted-2); flex: 0 0 auto; }
+.run-top-label { font-size: 14px; font-weight: 900; color: var(--ink); }
+.run-body { flex: 1 1 auto; padding-top: 4px; }
+.run-ask { margin: 6px 0 10px; font-size: 15px; font-weight: 900; color: var(--ink); letter-spacing: -0.4px; }
+.run-audio { display: flex; align-items: center; gap: 10px; margin: 2px 0 14px; }
+.run-ko {
+  margin: 0 0 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--bg-soft);
+  border: 2px solid var(--line);
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.42;
+  letter-spacing: -0.5px;
+  word-break: keep-all;
+}
+.blank-text { letter-spacing: 0.3px; }
+.blank-slot {
+  display: inline-block;
+  min-width: 46px;
+  padding: 0 4px;
+  border-bottom: 3px solid var(--blue);
+  color: var(--blue-dark);
+  text-align: center;
+}
+.option-key {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #f1f4f7;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 900;
+}
+.option-btn.is-picked { border-color: var(--blue); background: #f2f9ff; box-shadow: 0 3px 0 #d7ecff; }
+.option-btn.is-picked .option-key { background: var(--blue); color: #fff; }
+.option-btn.is-correct .option-key, .option-btn.is-wrong .option-key { background: transparent; }
+.run-foot { padding: 10px 0 4px; }
+.run-verdict {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.run-verdict b { font-size: 13px; font-weight: 900; }
+.run-verdict.is-good { background: #f4ffe9; border: 2px solid var(--green-line); color: #3c7a06; }
+.run-verdict.is-bad { background: #fff2f2; border: 2px solid #ffd1d1; color: #c92f2f; }
+.run-verdict .run-tip { font-style: normal; font-size: 11.5px; color: #6b7280; margin-top: 3px; }
+
+/* ---------- 결과 리포트 ---------- */
+.view-report { padding-bottom: 8px; }
+.report-hero { text-align: center; padding: 14px 0 2px; }
+.report-score { margin: 6px 0 0; font-size: 42px; font-weight: 900; letter-spacing: -1.6px; line-height: 1.05; }
+.report-title { margin: 4px 0 0; font-size: 16px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.report-sub { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+.report-perfect {
+  margin: 16px 0 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f1ffe3;
+  border: 2px solid var(--green-line);
+  color: #3c7a06;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: center;
+}
+.report-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+.explain-card {
+  margin-top: 8px;
+  padding: 13px 14px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+.explain-head { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.explain-no {
+  width: 20px; height: 20px;
+  display: inline-grid; place-items: center;
+  border-radius: 999px;
+  background: #fff2f2;
+  color: #c92f2f;
+  font-size: 10.5px;
+  font-weight: 900;
+}
+.explain-unit { font-size: 10px; font-weight: 800; color: var(--muted-2); margin-left: auto; }
+.explain-text { margin: 0; font-size: 15px; font-weight: 900; letter-spacing: -0.3px; line-height: 1.35; }
+.explain-ko { margin: 3px 0 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.explain-mine { margin: 8px 0 0; font-size: 11.5px; color: #c92f2f; font-weight: 700; }
+.explain-answer { margin: 3px 0 0; font-size: 11.5px; color: var(--green-dark); font-weight: 800; }
+.explain-tip { margin: 6px 0 0; font-size: 11.5px; color: #6b7280; line-height: 1.5; }
+
+/* ---------- 영어원서 도서관 ---------- */
+.lib-stats { display: flex; align-items: center; gap: 8px; margin: 6px 2px 14px; flex-wrap: wrap; }
+.lib-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 800;
+}
+.lib-stat b { font-size: 13px; font-weight: 900; }
+.lib-note { font-size: 10.5px; color: var(--muted-2); font-weight: 700; }
+
+.book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 10px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+}
+.book-card:active { transform: translateY(2px); }
+.book-card.is-done { border-color: var(--green-line); }
+.book-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 84px;
+  margin-bottom: 8px;
+  background: linear-gradient(150deg, #f3f8ff, #e9f2fb);
+}
+.book-emoji { font-size: 34px; line-height: 1; }
+.book-level {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  letter-spacing: 0.02em;
+}
+.book-card.tone-green .book-cover { background: linear-gradient(150deg, #f4ffe9, #e6f9d4); }
+.book-card.tone-green .book-level { color: var(--green-dark); }
+.book-card.tone-orange .book-cover { background: linear-gradient(150deg, #fff7ea, #ffedd2); }
+.book-card.tone-orange .book-level { color: #c97a00; }
+.book-card.tone-purple .book-cover { background: linear-gradient(150deg, #faf1ff, #f2e2ff); }
+.book-card.tone-purple .book-level { color: #8a45c4; }
+.book-title { padding: 0 10px; font-size: 12.5px; font-weight: 900; color: var(--ink); letter-spacing: -0.2px; line-height: 1.25; }
+.book-ko { padding: 0 10px; font-size: 10.5px; color: var(--muted); }
+.book-meta { padding: 3px 10px 6px; font-size: 10px; font-weight: 800; color: var(--muted-2); }
+.book-card .bar { height: 5px; margin: 0 10px; }
+
+/* ---------- 오디오북 읽기 ---------- */
+.reader-top-row { display: flex; align-items: center; gap: 8px; }
+.reader-top-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.reader-top-title { font-size: 14px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-top-sub { font-size: 10.5px; font-weight: 700; color: var(--muted-2); }
+.reader-top-flag {
+  font-size: 9.5px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  background: var(--blue-soft);
+  padding: 4px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+.view-reader { display: flex; flex-direction: column; }
+.reader-scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 108px;
+  margin: 12px 0 14px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #eaf7ff, #f6ffe9);
+  border: 2px solid #e6f2fb;
+}
+.reader-scene-text { font-size: 44px; line-height: 1; letter-spacing: 6px; }
+.reader-page {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  color: #6d92a8;
+}
+.reader-lines { display: flex; flex-direction: column; gap: 8px; }
+.reader-line {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.42;
+  letter-spacing: -0.2px;
+  color: var(--ink-2);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.reader-line.is-reading {
+  background: #f1ffe3;
+  border-color: var(--green);
+  color: #2f6b06;
+  box-shadow: 0 3px 0 #d9f2c0;
+}
+.reader-ko {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--bg-soft);
+  border: 2px solid var(--line);
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b6675;
+  line-height: 1.55;
+}
+.reader-controls { display: flex; align-items: center; justify-content: center; gap: 26px; margin: 18px 0 10px; }
+.reader-controls .round-btn { background: #fff; border: 2px solid var(--line-2); box-shadow: 0 3px 0 #eef1f4; color: var(--ink-2); }
+.reader-tools { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; }
+.reader-dots { justify-content: center; margin: 4px 0 10px; }
+.reader-hint { margin: 10px 0 0; font-size: 11px; color: var(--muted-2); text-align: center; font-weight: 700; }
+.quiz-ko { margin: -6px 0 12px; font-size: 12px; color: var(--muted); text-align: center; }
+
+@media (max-width: 360px) {
+  .tab { font-size: 9.5px; }
+  .feature-title { font-size: 12px; }
+  .feature-sub { font-size: 9.5px; }
+  .book-grid { grid-template-columns: 1fr; }
+  .reader-line { font-size: 16.5px; }
+}

@@ -1331,6 +1331,417 @@ body.in-lesson .main { padding-bottom: 0; }
 .app-link-name { font-size: 14px; font-weight: 900; }
 .app-link-desc { font-size: 11px; font-weight: 700; color: var(--muted-2); text-align: right; }
 
+/* =========================================================
+ *  단원평가 · 문제은행 · 영어원서 도서관
+ * ========================================================= */
+
+/* ---------- 오늘 화면: 더 배우기 ---------- */
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.feature-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 12px 10px 11px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.feature-tile:active { transform: translateY(2px); }
+.feature-ico { width: 24px; height: 24px; display: inline-flex; margin-bottom: 3px; }
+.feature-ico .ico { width: 23px; height: 23px; }
+.feature-title { font-size: 13px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.feature-sub { font-size: 10.5px; font-weight: 800; color: var(--muted-2); }
+.ft-green { background: #f7fff0; border-color: #d9f2c0; }
+.ft-green .feature-ico { color: var(--green-dark); }
+.ft-blue { background: #f2f9ff; border-color: #d7ecff; }
+.ft-blue .feature-ico { color: var(--blue-dark); }
+.ft-orange { background: #fff9ef; border-color: #ffe6bd; }
+.ft-orange .feature-ico { color: #e08600; }
+
+.quick-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.quick-row .btn { width: 100%; }
+
+/* ---------- 단원평가 ---------- */
+.exam-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #60d10a, var(--green));
+  color: #fff;
+  box-shadow: 0 5px 0 var(--green-dark);
+  margin-bottom: 14px;
+}
+.exam-summary-main { display: flex; flex-direction: column; align-items: center; min-width: 96px; }
+.exam-summary-num { font-size: 26px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+.exam-summary-label { font-size: 10.5px; font-weight: 800; opacity: 0.92; margin-top: 4px; }
+.exam-summary-side { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; font-weight: 700; opacity: 0.94; line-height: 1.45; }
+
+.exam-list { display: flex; flex-direction: column; gap: 7px; }
+.exam-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.exam-row:active { transform: scale(0.99); background: #fafcfe; }
+.exam-row.is-passed { background: #fbfff5; border-color: #e0f5cd; }
+.exam-emoji {
+  width: 38px; height: 38px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  font-size: 19px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+.exam-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.exam-day { font-size: 9.5px; font-weight: 900; letter-spacing: 0.08em; color: var(--muted-2); }
+.exam-title { font-size: 14px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.exam-goal { font-size: 10.5px; color: var(--muted-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.exam-score { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex: 0 0 auto; }
+.exam-score b { font-size: 13px; font-weight: 900; color: var(--muted); }
+.exam-score span { font-size: 10px; font-weight: 800; color: var(--muted-2); }
+.exam-score.is-good b, .exam-score.is-good span { color: var(--green-dark); }
+.exam-score.is-mid b { color: #d98200; }
+.exam-score.is-low b { color: var(--red); }
+
+/* ---------- 공통: 가로 꽉 찬 세그먼트 ---------- */
+.seg-block { display: flex; width: 100%; margin: 12px 0 14px; }
+.seg-block .seg-btn { flex: 1; justify-content: center; padding: 9px 6px; }
+
+/* ---------- 문제은행 ---------- */
+.mock-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #2ec4ff, var(--blue));
+  color: #fff;
+  box-shadow: 0 4px 0 var(--blue-dark);
+  margin-bottom: 12px;
+}
+.mock-emoji { font-size: 26px; line-height: 1; }
+.mock-copy { flex: 1; min-width: 0; }
+.mock-title { margin: 0; font-size: 15px; font-weight: 900; letter-spacing: -0.4px; }
+.mock-sub { margin: 2px 0 0; font-size: 10.5px; font-weight: 700; opacity: 0.92; }
+.mock-card .btn-primary { flex: 0 0 auto; background: #fff; color: var(--blue-dark); box-shadow: 0 3px 0 rgba(0, 0, 0, 0.16); }
+
+.filter-card { padding: 14px; }
+.filter-label { margin: 12px 0 6px; font-size: 11px; font-weight: 900; color: var(--muted-2); letter-spacing: 0.02em; }
+.filter-card .filter-label:first-of-type { margin-top: 4px; }
+.filter-chip { font-size: 11.5px; padding: 7px 11px; }
+.seg-count { margin: 0 0 6px; }
+
+.wrong-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 2px 12px; }
+.wrong-count { font-size: 16px; font-weight: 900; display: block; letter-spacing: -0.3px; }
+.wrong-sub { font-size: 11px; color: var(--muted-2); font-weight: 700; }
+.wrong-list { display: flex; flex-direction: column; gap: 7px; }
+.wrong-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+.wrong-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 12px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.wrong-type { font-size: 9.5px; font-weight: 900; color: var(--blue-dark); letter-spacing: 0.02em; }
+.wrong-text { font-size: 12.5px; font-weight: 800; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wrong-meta { font-size: 10px; color: var(--muted-2); font-weight: 700; }
+.wrong-del { width: 40px; border-left: 1px solid var(--line); border-radius: 0; color: var(--muted-2); }
+.wrong-del .ico { width: 15px; height: 15px; }
+
+.empty-card {
+  padding: 26px 20px;
+  border: 2px dashed var(--line-2);
+  border-radius: 20px;
+  background: #fbfcfe;
+  text-align: center;
+}
+.empty-emoji { font-size: 34px; display: block; }
+.empty-title { margin: 8px 0 0; font-size: 16px; font-weight: 900; letter-spacing: -0.3px; }
+.empty-sub { margin: 6px 0 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ---------- 문제 풀기 ---------- */
+.view-run { display: flex; flex-direction: column; min-height: calc(100dvh - 140px); }
+.run-meta { display: flex; align-items: center; gap: 7px; margin: 12px 0 10px; }
+.run-type {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  background: var(--blue-soft);
+  padding: 4px 9px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.run-unit { font-size: 10.5px; font-weight: 800; color: var(--muted-2); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-count { font-size: 11px; font-weight: 900; color: var(--muted-2); flex: 0 0 auto; }
+.run-top-label { font-size: 14px; font-weight: 900; color: var(--ink); }
+.run-body { flex: 1 1 auto; padding-top: 4px; }
+.run-ask { margin: 6px 0 10px; font-size: 15px; font-weight: 900; color: var(--ink); letter-spacing: -0.4px; }
+.run-audio { display: flex; align-items: center; gap: 10px; margin: 2px 0 14px; }
+.run-ko {
+  margin: 0 0 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--bg-soft);
+  border: 2px solid var(--line);
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.42;
+  letter-spacing: -0.5px;
+  word-break: keep-all;
+}
+.blank-text { letter-spacing: 0.3px; }
+.blank-slot {
+  display: inline-block;
+  min-width: 46px;
+  padding: 0 4px;
+  border-bottom: 3px solid var(--blue);
+  color: var(--blue-dark);
+  text-align: center;
+}
+.option-key {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #f1f4f7;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 900;
+}
+.option-btn.is-picked { border-color: var(--blue); background: #f2f9ff; box-shadow: 0 3px 0 #d7ecff; }
+.option-btn.is-picked .option-key { background: var(--blue); color: #fff; }
+.option-btn.is-correct .option-key, .option-btn.is-wrong .option-key { background: transparent; }
+.run-foot { padding: 10px 0 4px; }
+.run-verdict {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.run-verdict b { font-size: 13px; font-weight: 900; }
+.run-verdict.is-good { background: #f4ffe9; border: 2px solid var(--green-line); color: #3c7a06; }
+.run-verdict.is-bad { background: #fff2f2; border: 2px solid #ffd1d1; color: #c92f2f; }
+.run-verdict .run-tip { font-style: normal; font-size: 11.5px; color: #6b7280; margin-top: 3px; }
+
+/* ---------- 결과 리포트 ---------- */
+.view-report { padding-bottom: 8px; }
+.report-hero { text-align: center; padding: 14px 0 2px; }
+.report-score { margin: 6px 0 0; font-size: 42px; font-weight: 900; letter-spacing: -1.6px; line-height: 1.05; }
+.report-title { margin: 4px 0 0; font-size: 16px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.report-sub { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+.report-perfect {
+  margin: 16px 0 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f1ffe3;
+  border: 2px solid var(--green-line);
+  color: #3c7a06;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: center;
+}
+.report-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+.explain-card {
+  margin-top: 8px;
+  padding: 13px 14px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+.explain-head { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.explain-no {
+  width: 20px; height: 20px;
+  display: inline-grid; place-items: center;
+  border-radius: 999px;
+  background: #fff2f2;
+  color: #c92f2f;
+  font-size: 10.5px;
+  font-weight: 900;
+}
+.explain-unit { font-size: 10px; font-weight: 800; color: var(--muted-2); margin-left: auto; }
+.explain-text { margin: 0; font-size: 15px; font-weight: 900; letter-spacing: -0.3px; line-height: 1.35; }
+.explain-ko { margin: 3px 0 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.explain-mine { margin: 8px 0 0; font-size: 11.5px; color: #c92f2f; font-weight: 700; }
+.explain-answer { margin: 3px 0 0; font-size: 11.5px; color: var(--green-dark); font-weight: 800; }
+.explain-tip { margin: 6px 0 0; font-size: 11.5px; color: #6b7280; line-height: 1.5; }
+
+/* ---------- 영어원서 도서관 ---------- */
+.lib-stats { display: flex; align-items: center; gap: 8px; margin: 6px 2px 14px; flex-wrap: wrap; }
+.lib-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 800;
+}
+.lib-stat b { font-size: 13px; font-weight: 900; }
+.lib-note { font-size: 10.5px; color: var(--muted-2); font-weight: 700; }
+
+.book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 10px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+}
+.book-card:active { transform: translateY(2px); }
+.book-card.is-done { border-color: var(--green-line); }
+.book-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 84px;
+  margin-bottom: 8px;
+  background: linear-gradient(150deg, #f3f8ff, #e9f2fb);
+}
+.book-emoji { font-size: 34px; line-height: 1; }
+.book-level {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  letter-spacing: 0.02em;
+}
+.book-card.tone-green .book-cover { background: linear-gradient(150deg, #f4ffe9, #e6f9d4); }
+.book-card.tone-green .book-level { color: var(--green-dark); }
+.book-card.tone-orange .book-cover { background: linear-gradient(150deg, #fff7ea, #ffedd2); }
+.book-card.tone-orange .book-level { color: #c97a00; }
+.book-card.tone-purple .book-cover { background: linear-gradient(150deg, #faf1ff, #f2e2ff); }
+.book-card.tone-purple .book-level { color: #8a45c4; }
+.book-title { padding: 0 10px; font-size: 12.5px; font-weight: 900; color: var(--ink); letter-spacing: -0.2px; line-height: 1.25; }
+.book-ko { padding: 0 10px; font-size: 10.5px; color: var(--muted); }
+.book-meta { padding: 3px 10px 6px; font-size: 10px; font-weight: 800; color: var(--muted-2); }
+.book-card .bar { height: 5px; margin: 0 10px; }
+
+/* ---------- 오디오북 읽기 ---------- */
+.reader-top-row { display: flex; align-items: center; gap: 8px; }
+.reader-top-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.reader-top-title { font-size: 14px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-top-sub { font-size: 10.5px; font-weight: 700; color: var(--muted-2); }
+.reader-top-flag {
+  font-size: 9.5px;
+  font-weight: 900;
+  color: var(--blue-dark);
+  background: var(--blue-soft);
+  padding: 4px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+.view-reader { display: flex; flex-direction: column; }
+.reader-scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 108px;
+  margin: 12px 0 14px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #eaf7ff, #f6ffe9);
+  border: 2px solid #e6f2fb;
+}
+.reader-scene-text { font-size: 44px; line-height: 1; letter-spacing: 6px; }
+.reader-page {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  color: #6d92a8;
+}
+.reader-lines { display: flex; flex-direction: column; gap: 8px; }
+.reader-line {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.42;
+  letter-spacing: -0.2px;
+  color: var(--ink-2);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.reader-line.is-reading {
+  background: #f1ffe3;
+  border-color: var(--green);
+  color: #2f6b06;
+  box-shadow: 0 3px 0 #d9f2c0;
+}
+.reader-ko {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--bg-soft);
+  border: 2px solid var(--line);
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b6675;
+  line-height: 1.55;
+}
+.reader-controls { display: flex; align-items: center; justify-content: center; gap: 26px; margin: 18px 0 10px; }
+.reader-controls .round-btn { background: #fff; border: 2px solid var(--line-2); box-shadow: 0 3px 0 #eef1f4; color: var(--ink-2); }
+.reader-tools { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; }
+.reader-dots { justify-content: center; margin: 4px 0 10px; }
+.reader-hint { margin: 10px 0 0; font-size: 11px; color: var(--muted-2); text-align: center; font-weight: 700; }
+.quiz-ko { margin: -6px 0 12px; font-size: 12px; color: var(--muted); text-align: center; }
+
+@media (max-width: 360px) {
+  .tab { font-size: 9.5px; }
+  .feature-title { font-size: 12px; }
+  .feature-sub { font-size: 9.5px; }
+  .book-grid { grid-template-columns: 1fr; }
+  .reader-line { font-size: 16.5px; }
+}
+
 </style>
 </head>
 <body>
@@ -1353,6 +1764,8 @@ body.in-lesson .main { padding-bottom: 0; }
     <div class="noscript">킹링고는 자바스크립트가 필요해요. 브라우저 설정에서 자바스크립트를 켜 주세요.</div>
   </noscript>
 
+  
+  
   
   
   
@@ -2089,7 +2502,10 @@ body.in-lesson .main { padding-bottom: 0; }
       progress: {},
       mastered: {},
       daily: {},
-      prefs: { sound: true, slow: false, installDismissed: false },
+      exams: {},
+      wrong: {},
+      library: {},
+      prefs: { sound: true, slow: false, installDismissed: false, readerRate: 0.9, readerKo: false },
       createdAt: C.dateKey()
     };
   }
@@ -2115,6 +2531,12 @@ body.in-lesson .main { padding-bottom: 0; }
     if (typeof st.prefs.sound !== "boolean") st.prefs.sound = true;
     if (typeof st.prefs.slow !== "boolean") st.prefs.slow = false;
     if (typeof st.prefs.installDismissed !== "boolean") st.prefs.installDismissed = false;
+    var rate = Number(st.prefs.readerRate);
+    st.prefs.readerRate = isFinite(rate) && rate >= 0.5 && rate <= 1.5 ? rate : 0.9;
+    if (typeof st.prefs.readerKo !== "boolean") st.prefs.readerKo = false;
+    st.exams = normalizeExams(st.exams);
+    st.wrong = normalizeWrong(st.wrong);
+    st.library = normalizeLibrary(st.library);
     Object.keys(st.daily).forEach(function (k) {
       var v = Number(st.daily[k]);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !isFinite(v) || v <= 0) delete st.daily[k];
@@ -2126,6 +2548,61 @@ body.in-lesson .main { padding-bottom: 0; }
       if (k < cutoff) delete st.daily[k];
     });
     return st;
+  }
+
+  function normalizeExams(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var r = raw[k];
+      if (!isObj(r)) return;
+      var best = Math.floor(Number(r.best) || 0);
+      var last = Math.floor(Number(r.last) || 0);
+      out[k] = {
+        best: C.clamp(best, 0, 100),
+        last: C.clamp(last, 0, 100),
+        passed: !!r.passed,
+        tries: Math.max(0, Math.floor(Number(r.tries) || 0)),
+        at: typeof r.at === "string" ? r.at : null
+      };
+    });
+    return out;
+  }
+
+  function normalizeWrong(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var w = raw[k];
+      if (!isObj(w) || typeof w.sentenceId !== "string" || typeof w.unitId !== "string") return;
+      out[k] = {
+        key: k,
+        lang: typeof w.lang === "string" ? w.lang : "en",
+        unitId: w.unitId,
+        unitNo: Math.max(0, Math.floor(Number(w.unitNo) || 0)),
+        sentenceId: w.sentenceId,
+        type: typeof w.type === "string" ? w.type : "",
+        count: Math.max(1, Math.floor(Number(w.count) || 1)),
+        at: typeof w.at === "string" ? w.at : null
+      };
+    });
+    return out;
+  }
+
+  function normalizeLibrary(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var r = raw[k];
+      if (!isObj(r)) return;
+      out[k] = {
+        page: Math.max(0, Math.floor(Number(r.page) || 0)),
+        done: !!r.done,
+        quizBest: C.clamp(Math.floor(Number(r.quizBest) || 0), 0, 100),
+        at: typeof r.at === "string" ? r.at : null
+      };
+    });
+    return out;
   }
 
   function load() {
@@ -2340,6 +2817,95 @@ body.in-lesson .main { padding-bottom: 0; }
     save();
   }
 
+  /* ---------- 단원평가 기록 ---------- */
+  function examRecord(unitId) {
+    var r = get().exams[unitId];
+    return isObj(r) ? r : { best: 0, last: 0, passed: false, tries: 0, at: null };
+  }
+
+  function passedExamCount(lang) {
+    var code = lang || get().lang;
+    return Object.keys(get().exams).filter(function (k) {
+      return k.indexOf(code + "-") === 0 && get().exams[k].passed;
+    }).length;
+  }
+
+  /** 평가 결과를 저장하고 최고 점수·첫 통과 여부를 돌려줍니다. */
+  function recordExam(unitId, result) {
+    var st = get();
+    var rec = isObj(st.exams[unitId]) ? st.exams[unitId] : { best: 0, last: 0, passed: false, tries: 0, at: null };
+    var wasPassed = !!rec.passed;
+    var score = C.clamp(Math.round(Number(result && result.score) || 0), 0, 100);
+    rec.last = score;
+    rec.tries = (rec.tries || 0) + 1;
+    rec.at = new Date().toISOString();
+    if (score > rec.best) rec.best = score;
+    if (result && result.passed) rec.passed = true;
+    st.exams[unitId] = rec;
+    save();
+    return { record: rec, best: rec.best, firstPass: !!(result && result.passed) && !wasPassed };
+  }
+
+  /* ---------- 오답노트 ---------- */
+  function addWrong(q) {
+    if (!q || !q.key) return;
+    var st = get();
+    var cur = isObj(st.wrong[q.key]) ? st.wrong[q.key] : null;
+    st.wrong[q.key] = {
+      key: q.key,
+      lang: q.lang || get().lang,
+      unitId: q.unitId,
+      unitNo: q.unitNo || 0,
+      sentenceId: q.sentenceId,
+      type: q.type || "",
+      count: (cur ? cur.count : 0) + 1,
+      at: new Date().toISOString()
+    };
+    save();
+  }
+
+  function removeWrong(key) {
+    var st = get();
+    if (st.wrong[key]) {
+      delete st.wrong[key];
+      save();
+    }
+  }
+
+  function wrongEntries(lang) {
+    var code = lang || get().lang;
+    return Object.keys(get().wrong).map(function (k) { return get().wrong[k]; }).filter(function (w) {
+      return w.lang === code;
+    }).sort(function (a, b) {
+      return String(b.at || "").localeCompare(String(a.at || ""));
+    });
+  }
+
+  function wrongCount(lang) {
+    return wrongEntries(lang).length;
+  }
+
+  /* ---------- 영어원서 도서관 ---------- */
+  function libraryOf(bookId) {
+    var r = get().library[bookId];
+    return isObj(r) ? r : { page: 0, done: false, quizBest: 0, at: null };
+  }
+
+  function saveLibrary(bookId, patch) {
+    var st = get();
+    var cur = isObj(st.library[bookId]) ? st.library[bookId] : { page: 0, done: false, quizBest: 0, at: null };
+    Object.keys(patch || {}).forEach(function (k) { cur[k] = patch[k]; });
+    cur.at = new Date().toISOString();
+    st.library[bookId] = cur;
+    save();
+    return cur;
+  }
+
+  function libraryDoneCount() {
+    var lib = get().library;
+    return Object.keys(lib).filter(function (k) { return lib[k].done; }).length;
+  }
+
   function resetAll() {
     state = defaults();
     save();
@@ -2374,10 +2940,601 @@ body.in-lesson .main { padding-bottom: 0; }
     unitMastered: unitMastered,
     todayXp: todayXp,
     totalXp: totalXp,
+    examRecord: examRecord,
+    passedExamCount: passedExamCount,
+    recordExam: recordExam,
+    addWrong: addWrong,
+    removeWrong: removeWrong,
+    wrongEntries: wrongEntries,
+    wrongCount: wrongCount,
+    libraryOf: libraryOf,
+    saveLibrary: saveLibrary,
+    libraryDoneCount: libraryDoneCount,
     streakInfo: streakInfo,
     last7: last7,
     setPref: setPref,
     resetAll: resetAll
+  };
+})(typeof window !== "undefined" ? window : this);
+
+;
+/* 킹링고 — 단원평가 · 문제은행 문제 만들기 (순수 로직)
+ * DOM에 의존하지 않습니다. 같은 문장에서 듣기·뜻·읽기·빈칸·배열·문장 고르기 문제를 만듭니다.
+ * 문제 하나는 다음 모양입니다.
+ *   { key, type, lang, unitId, unitNo, sentenceId, text, read, ko, tip,
+ *     speak, options: [{text, correct}], parts: [{t, blank}], tokens: [...] }
+ * 정답은  4지선다 → 보기 번호(0~3),  문장 배열 → 문자열 배열  입니다.
+ */
+(function (global) {
+  "use strict";
+
+  var C = global.KingCore;
+
+  var PASS_SCORE = 80;
+
+  var TYPES = [
+    { id: "listen", name: "듣기", ico: "🎧", desc: "듣고 뜻 고르기" },
+    { id: "meaning", name: "뜻 고르기", ico: "📖", desc: "문장의 뜻 고르기" },
+    { id: "read", name: "읽기", ico: "🔤", desc: "병음·발음 고르기" },
+    { id: "blank", name: "빈칸", ico: "✳️", desc: "빈칸에 들어갈 말" },
+    { id: "order", name: "문장 배열", ico: "🧩", desc: "단어 순서 맞추기" },
+    { id: "pick", name: "문장 고르기", ico: "🎯", desc: "뜻에 맞는 문장 찾기" }
+  ];
+
+  function typeName(id) {
+    for (var i = 0; i < TYPES.length; i++) if (TYPES[i].id === id) return TYPES[i].name;
+    return id;
+  }
+
+  function reading(s) {
+    return (s && (s.read || s.pinyin)) || "";
+  }
+
+  function sep(course) {
+    return course && course.space ? " " : "";
+  }
+
+  function tokensOf(sentence) {
+    if (sentence.w && sentence.w.length) return sentence.w.slice();
+    return String(sentence.text || "").split(/\s+/).filter(function (t) { return t.length > 0; });
+  }
+
+  function uniquePush(list, value, seen) {
+    if (value === null || typeof value === "undefined" || value === "") return;
+    var key = String(value);
+    if (seen[key]) return;
+    seen[key] = true;
+    list.push(value);
+  }
+
+  /** 같은 코스의 다른 문장에서 보기를 골라 4지선다 보기를 만듭니다. */
+  function choiceOptions(correctText, pool, mapper) {
+    var seen = {};
+    var wrong = [];
+    seen[String(correctText)] = true;
+    var bag = C.shuffle(pool);
+    for (var i = 0; i < bag.length && wrong.length < 3; i++) {
+      var value = mapper(bag[i]);
+      if (!value) continue;
+      uniquePush(wrong, value, seen);
+    }
+    var options = wrong.map(function (t) { return { text: t, correct: false }; });
+    options.push({ text: correctText, correct: true });
+    return C.shuffle(options);
+  }
+
+  function baseQuestion(course, unit, s, type) {
+    return {
+      key: s.id + "|" + type,
+      type: type,
+      lang: course.code,
+      unitId: unit.id,
+      unitNo: unit.no,
+      unitTitle: unit.title,
+      sentenceId: s.id,
+      text: s.text,
+      read: reading(s),
+      ko: s.ko,
+      tip: s.tip || "",
+      speak: s.text,
+      options: [],
+      parts: null,
+      tokens: null
+    };
+  }
+
+  /** 문장 하나에서 유형 하나의 문제를 만듭니다. 만들 수 없으면 null. */
+  function makeQuestion(course, unit, s, type, pool) {
+    pool = pool || [];
+    var q = baseQuestion(course, unit, s, type);
+
+    if (type === "listen" || type === "meaning") {
+      q.options = choiceOptions(s.ko, pool, function (x) { return x.ko; });
+      return q;
+    }
+
+    if (type === "pick") {
+      q.options = choiceOptions(s.text, pool, function (x) { return x.text; });
+      return q;
+    }
+
+    if (type === "read") {
+      if (!reading(s)) return null;
+      q.options = choiceOptions(reading(s), pool, function (x) {
+        return reading(x);
+      });
+      return q;
+    }
+
+    if (type === "blank") {
+      var tokens = tokensOf(s);
+      if (tokens.length < 2) return null;
+      // 너무 짧은 토큰(조사 한 글자 등)은 빈칸으로 쓰지 않습니다.
+      var candidates = [];
+      tokens.forEach(function (t, i) {
+        if (String(t).replace(/[^\w\u00c0-\u024f\u4e00-\u9fff\u3040-\u30ff]/g, "").length >= 1) candidates.push(i);
+      });
+      if (!candidates.length) candidates = [0];
+      // 긴 토큰을 우선 빈칸으로 냅니다.
+      candidates.sort(function (a, b) { return String(tokens[b]).length - String(tokens[a]).length; });
+      var bi = candidates[Math.min(1, candidates.length - 1)];
+      var answer = tokens[bi];
+      var wordPool = [];
+      pool.forEach(function (x) {
+        tokensOf(x).forEach(function (t) { wordPool.push(t); });
+      });
+      q.options = choiceOptions(answer, wordPool, function (t) { return t; });
+      q.parts = tokens.map(function (t, i) { return { t: t, blank: i === bi }; });
+      q.answerWord = answer;
+      return q;
+    }
+
+    if (type === "order") {
+      var toks = tokensOf(s);
+      if (toks.length < 2) return null;
+      // 화면에서 누르기 좋게 최대 7조각까지만 냅니다.
+      if (toks.length > 7) return null;
+      q.tokens = toks;
+      return q;
+    }
+
+    return null;
+  }
+
+  function allTypes(course, unit) {
+    var list = ["listen", "meaning", "blank", "order", "pick"];
+    var hasRead = unit.sentences.every(function (s) { return !!reading(s); });
+    if (hasRead) list.push("read");
+    return list;
+  }
+
+  /** 한 단원의 모든 문제(문제은행 재료). */
+  function unitQuestions(course, unit) {
+    var pool = [];
+    course.units.forEach(function (u) {
+      u.sentences.forEach(function (s) { pool.push(s); });
+    });
+    var types = allTypes(course, unit);
+    var out = [];
+    unit.sentences.forEach(function (s) {
+      types.forEach(function (t) {
+        var q = makeQuestion(course, unit, s, t, pool);
+        if (q) out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /** 단원평가 10문항 — 듣기·뜻·빈칸·배열·문장 고르기를 섞고, 다섯 문장을 두 번씩 다룹니다. */
+  function buildUnitExam(course, unit) {
+    var pool = [];
+    course.units.forEach(function (u) {
+      u.sentences.forEach(function (s) { pool.push(s); });
+    });
+    var sents = unit.sentences;
+    var hasRead = sents.every(function (s) { return !!reading(s); });
+    var plan = [
+      [0, "listen"], [0, "order"],
+      [1, "meaning"], [1, "blank"],
+      [2, "listen"], [2, "order"],
+      [3, "meaning"], [3, "blank"],
+      [4, "pick"], [4, hasRead ? "read" : "listen"]
+    ];
+    var out = [];
+    var used = {};
+    plan.forEach(function (pair) {
+      var s = sents[Math.min(pair[0], sents.length - 1)];
+      var q = makeQuestion(course, unit, s, pair[1], pool);
+      if (!q || used[q.key]) return;
+      used[q.key] = true;
+      out.push(q);
+    });
+    // 문장이 5개보다 적은 경우를 대비해 남은 문제로 채웁니다.
+    var spare = C.shuffle(unitQuestions(course, unit));
+    for (var i = 0; i < spare.length && out.length < 10; i++) {
+      if (!used[spare[i].key]) { used[spare[i].key] = true; out.push(spare[i]); }
+    }
+    return C.shuffle(out);
+  }
+
+  /** 문제은행 — 언어·단원·유형으로 골라 뽑습니다. */
+  function buildBank(course, opts) {
+    opts = opts || {};
+    var unitNo = Number(opts.unitNo) || 0;
+    var type = opts.type && opts.type !== "all" ? opts.type : null;
+    var count = Math.max(1, Number(opts.count) || 10);
+    var pool = [];
+    course.units.forEach(function (u) {
+      if (unitNo && u.no !== unitNo) return;
+      var qs = unitQuestions(course, u);
+      qs.forEach(function (q) { if (!type || q.type === type) pool.push(q); });
+    });
+    return C.shuffle(pool).slice(0, count);
+  }
+
+  function bankCount(course, opts) {
+    opts = opts || {};
+    var unitNo = Number(opts.unitNo) || 0;
+    var type = opts.type && opts.type !== "all" ? opts.type : null;
+    var n = 0;
+    course.units.forEach(function (u) {
+      if (unitNo && u.no !== unitNo) return;
+      unitQuestions(course, u).forEach(function (q) { if (!type || q.type === type) n += 1; });
+    });
+    return n;
+  }
+
+  /** 랜덤 모의고사 — 여러 단원에서 고르게 뽑습니다(한 단원 최대 2문항). */
+  function mockExam(course, count) {
+    count = Math.max(1, Number(count) || 10);
+    var all = [];
+    course.units.forEach(function (u) {
+      unitQuestions(course, u).forEach(function (q) { all.push(q); });
+    });
+    var bag = C.shuffle(all);
+    var perUnit = {};
+    var out = [];
+    bag.forEach(function (q) {
+      if (out.length >= count) return;
+      var n = perUnit[q.unitId] || 0;
+      if (n >= 2) return;
+      perUnit[q.unitId] = n + 1;
+      out.push(q);
+    });
+    // 단원 수가 적어 2문항 제한에 걸리면 남은 문제로 채웁니다.
+    for (var i = 0; i < bag.length && out.length < count; i++) {
+      if (out.indexOf(bag[i]) < 0) out.push(bag[i]);
+    }
+    return C.shuffle(out);
+  }
+
+  /** 오답노트에 모아 둔 문제 키로 다시 풀 문제를 만듭니다. */
+  function byKeys(course, keys) {
+    var want = {};
+    (keys || []).forEach(function (k) { want[k] = true; });
+    var out = [];
+    course.units.forEach(function (u) {
+      unitQuestions(course, u).forEach(function (q) {
+        if (want[q.key]) out.push(q);
+      });
+    });
+    return out;
+  }
+
+  function isCorrect(q, answer) {
+    if (!q) return false;
+    if (q.tokens) {
+      if (!answer || answer.length !== q.tokens.length) return false;
+      return answer.join("\u0001") === q.tokens.join("\u0001");
+    }
+    return !!(q.options && q.options[answer] && q.options[answer].correct);
+  }
+
+  function correctText(q) {
+    if (!q) return "";
+    if (q.tokens) return q.tokens.join(" ");
+    for (var i = 0; i < q.options.length; i++) if (q.options[i].correct) return q.options[i].text;
+    return "";
+  }
+
+  function answerText(q, answer) {
+    if (!q) return "";
+    if (q.tokens) {
+      if (!answer || !answer.length) return "고르지 않음";
+      return answer.join(" ");
+    }
+    if (typeof answer !== "number" || !q.options[answer]) return "고르지 않음";
+    return q.options[answer].text;
+  }
+
+  function grade(questions, answers) {
+    var total = questions.length;
+    var correct = 0;
+    var wrong = [];
+    questions.forEach(function (q, i) {
+      if (isCorrect(q, answers[i])) correct += 1;
+      else wrong.push({ q: q, answer: answers[i] });
+    });
+    var score = total ? Math.round((correct / total) * 100) : 0;
+    return {
+      total: total,
+      correct: correct,
+      score: score,
+      passed: score >= PASS_SCORE,
+      wrong: wrong
+    };
+  }
+
+  global.KingBank = {
+    PASS_SCORE: PASS_SCORE,
+    TYPES: TYPES,
+    typeName: typeName,
+    tokensOf: tokensOf,
+    unitQuestions: unitQuestions,
+    buildUnitExam: buildUnitExam,
+    buildBank: buildBank,
+    bankCount: bankCount,
+    mockExam: mockExam,
+    byKeys: byKeys,
+    isCorrect: isCorrect,
+    correctText: correctText,
+    answerText: answerText,
+    grade: grade
+  };
+})(typeof window !== "undefined" ? window : this);
+
+;
+/* 킹링고 — 영어원서 오디오북 도서관
+ * 초등 입문~초급 수준의 짧은 영어 이야기 8권.
+ * 각 책은 페이지(문장 2~3개 + 한국어 해석 + 장면 이모지)와 독후 퀴즈로 이루어집니다.
+ * 문장은 Web Speech API로 한 줄씩 읽어 주고, 읽는 줄을 화면에서 강조합니다.
+ */
+(function (global) {
+  "use strict";
+
+  var BOOKS = [
+    {
+      id: "red-hen",
+      title: "The Little Red Hen",
+      ko: "빨간 암탉",
+      level: "입문",
+      levelNo: 1,
+      emoji: "🐔",
+      scene: "🐔 🌾",
+      tone: "orange",
+      minutes: 4,
+      blurb: "밀을 심고 빵을 만드는 빨간 암탉. 친구들은 도와줄까요?",
+      pages: [
+        { scene: "🐔🏡", lines: ["Little Red Hen lives on a farm.", "She has three friends: a duck, a cat, and a dog."], ko: "빨간 암탉은 농장에 살아요. 그녀에게는 오리, 고양이, 개 세 친구가 있어요." },
+        { scene: "🌾👀", lines: ["One day, she finds some wheat.", "\"Who will help me plant the wheat?\""], ko: "어느 날 그녀는 밀을 발견해요. \"누가 나를 도와 밀을 심을래?\"" },
+        { scene: "🦆🐱🐶", lines: ["\"Not I,\" says the duck.", "\"Not I,\" say the cat and the dog."], ko: "\"난 싫어.\" 오리가 말해요. \"난 싫어.\" 고양이와 개도 말해요." },
+        { scene: "🐔💪", lines: ["So the hen plants the wheat by herself.", "The sun is hot, but she works hard."], ko: "그래서 암탉은 혼자 밀을 심어요. 해는 뜨겁지만 그녀는 열심히 일해요." },
+        { scene: "🌾🌾", lines: ["The wheat grows tall and yellow.", "\"Who will help me cut the wheat?\""], ko: "밀이 크고 노랗게 자랐어요. \"누가 나를 도와 밀을 벨래?\"" },
+        { scene: "🦆🙅", lines: ["\"Not I,\" say her friends again.", "So she cuts it by herself."], ko: "친구들은 또 \"난 싫어\"라고 해요. 그래서 그녀는 혼자 밀을 베어요." },
+        { scene: "🍞❓", lines: ["\"Who will help me make the bread?\"", "No one answers."], ko: "\"누가 나를 도와 빵을 만들래?\" 아무도 대답하지 않아요." },
+        { scene: "🍞😋", lines: ["The hen makes soft, warm bread.", "It smells very good."], ko: "암탉은 폭신하고 따뜻한 빵을 만들어요. 아주 좋은 냄새가 나요." },
+        { scene: "🐔🍞🐾", lines: ["\"Who will help me eat the bread?\"", "\"I will!\" say all her friends."], ko: "\"누가 나를 도와 빵을 먹을래?\" \"내가 할게!\" 친구들이 모두 말해요." },
+        { scene: "🐔🙅", lines: ["\"No,\" says the hen.", "\"I made it by myself. I will eat it by myself.\""], ko: "\"안 돼.\" 암탉이 말해요. \"나는 혼자 만들었어. 혼자 먹을 거야.\"" },
+        { scene: "🐔🐤🍞", lines: ["So she eats the bread with her little chicks.", "Her friends learn: help first, then you can share."], ko: "그래서 그녀는 병아리들과 빵을 먹어요. 친구들은 배워요. 먼저 도와야 함께 나눌 수 있다는 것을." }
+      ],
+      quiz: [
+        { q: "Who lives on the farm?", ko: "농장에 사는 것은 누구인가요?", options: ["Little Red Hen", "A big fox", "A little boy", "A white cat"], answer: 0, why: "이야기의 주인공은 빨간 암탉(Little Red Hen)이에요." },
+        { q: "What does the hen find?", ko: "암탉이 발견한 것은 무엇인가요?", options: ["Some wheat", "A book", "A coin", "An egg"], answer: 0, why: "\"she finds some wheat\" — 밀을 발견했어요." },
+        { q: "Who helps the hen plant the wheat?", ko: "밀을 심을 때 도와준 친구는 누구인가요?", options: ["No one", "The duck", "The cat", "The dog"], answer: 0, why: "세 친구 모두 \"Not I\"라고 했어요. 아무도 돕지 않았어요." },
+        { q: "What do the friends want at the end?", ko: "마지막에 친구들이 원하는 것은 무엇인가요?", options: ["To eat the bread", "To plant wheat", "To go home", "To sleep"], answer: 0, why: "빵을 먹고 싶어 했지만, 암탉은 혼자 만든 빵을 나눠 주지 않았어요." }
+      ]
+    },
+    {
+      id: "three-pigs",
+      title: "The Three Little Pigs",
+      ko: "아기 돼지 삼형제",
+      level: "입문",
+      levelNo: 1,
+      emoji: "🐷",
+      scene: "🐷🐷🐷",
+      tone: "blue",
+      minutes: 4,
+      blurb: "짚, 나무, 벽돌로 집을 지은 세 아기 돼지와 늑대 이야기.",
+      pages: [
+        { scene: "🐷👋", lines: ["Three little pigs leave home.", "They want to build their own houses."], ko: "아기 돼지 삼형제가 집을 떠나요. 그들은 자기 집을 짓고 싶어 해요." },
+        { scene: "🐷🌾", lines: ["The first pig builds a house of straw.", "It is fast and easy."], ko: "첫 번째 돼지는 짚으로 집을 지어요. 빠르고 쉬워요." },
+        { scene: "🐷🌳", lines: ["The second pig builds a house of sticks.", "It is a little stronger."], ko: "두 번째 돼지는 나뭇가지로 집을 지어요. 조금 더 튼튼해요." },
+        { scene: "🐷🧱", lines: ["The third pig works all day.", "He builds a house of bricks."], ko: "세 번째 돼지는 하루 종일 일해요. 그는 벽돌로 집을 지어요." },
+        { scene: "🐺🌾", lines: ["A big bad wolf comes to the straw house.", "\"Little pig, let me in!\""], ko: "나쁜 늑대가 짚집에 와요. \"아기 돼지야, 문 열어!\"" },
+        { scene: "🐺💨", lines: ["The wolf huffs and puffs.", "The straw house falls down."], ko: "늑대가 후욱 불어요. 짚집이 무너져요." },
+        { scene: "🐷🏃🧱", lines: ["The first pig runs to the brick house.", "The second pig runs there, too."], ko: "첫 번째 돼지가 벽돌집으로 달려가요. 두 번째 돼지도 그리로 달려가요." },
+        { scene: "🐺🧱💨", lines: ["The wolf huffs and puffs at the brick house.", "He cannot blow it down."], ko: "늑대가 벽돌집에 후욱 불어요. 하지만 집을 무너뜨릴 수 없어요." },
+        { scene: "🐺🕳", lines: ["The wolf tries to come down the chimney.", "But there is a hot pot of water!"], ko: "늑대가 굴뚝으로 내려오려고 해요. 그런데 뜨거운 물이 담긴 냄비가 있어요!" },
+        { scene: "🐷🍲", lines: ["The wolf runs away.", "The three pigs laugh and eat dinner together."], ko: "늑대가 도망가요. 세 돼지는 웃으며 함께 저녁을 먹어요." }
+      ],
+      quiz: [
+        { q: "What is the first house made of?", ko: "첫 번째 집은 무엇으로 만들었나요?", options: ["Straw", "Bricks", "Sticks", "Glass"], answer: 0, why: "첫 번째 돼지는 짚(straw)으로 집을 지었어요." },
+        { q: "Which house is the strongest?", ko: "가장 튼튼한 집은 어느 집인가요?", options: ["The brick house", "The straw house", "The stick house", "The tree house"], answer: 0, why: "벽돌집만 늑대가 무너뜨리지 못했어요." },
+        { q: "Where do the pigs eat dinner?", ko: "돼지들은 어디서 저녁을 먹나요?", options: ["In the brick house", "In the straw house", "In the woods", "At the river"], answer: 0, why: "안전한 벽돌집에서 함께 저녁을 먹었어요." }
+      ]
+    },
+    {
+      id: "gingerbread-man",
+      title: "The Gingerbread Man",
+      ko: "과자 인간",
+      level: "입문",
+      levelNo: 1,
+      emoji: "🍪",
+      scene: "🍪🏃",
+      tone: "orange",
+      minutes: 4,
+      blurb: "오븐에서 뛰어나온 과자 인간은 누구도 잡을 수 없어요. 정말 그럴까요?",
+      pages: [
+        { scene: "👵🍪", lines: ["A little old woman makes a gingerbread man.", "She puts him in the oven."], ko: "작은 할머니가 과자 인간을 만들어요. 그를 오븐에 넣어요." },
+        { scene: "🏃😄", lines: ["The oven opens. The gingerbread man jumps out!", "\"Run, run, as fast as you can!\""], ko: "오븐이 열려요. 과자 인간이 뛰어나와요! \"빨리, 빨리 달려!\"" },
+        { scene: "🍪💨", lines: ["\"You can't catch me, I'm the gingerbread man!\"", "He runs down the road."], ko: "\"나를 잡을 수 없어, 나는 과자 인간이니까!\" 그는 길을 따라 달려요." },
+        { scene: "🐄🍪", lines: ["He runs past a cow.", "\"Stop!\" says the cow. But he runs faster."], ko: "그는 소 옆을 지나 달려요. \"멈춰!\" 소가 말해요. 하지만 그는 더 빨리 달려요." },
+        { scene: "🐴🐔🍪", lines: ["He runs past a horse and a chicken.", "No one can catch him."], ko: "그는 말과 닭 옆을 지나 달려요. 아무도 그를 잡을 수 없어요." },
+        { scene: "🌊🍪", lines: ["Then he comes to a river.", "He cannot swim."], ko: "그때 그가 강에 다다라요. 그는 헤엄을 칠 수 없어요." },
+        { scene: "🦊💬", lines: ["A fox says, \"I can help you.\"", "\"Sit on my nose and I will carry you.\""], ko: "여우가 말해요. \"내가 도와줄게.\" \"내 코에 앉아. 그러면 내가 데려다줄게.\"" },
+        { scene: "🦊🌊🍪", lines: ["The gingerbread man sits on the fox's nose.", "The fox swims across the river."], ko: "과자 인간이 여우의 코에 앉아요. 여우가 강을 헤엄쳐 건너요." },
+        { scene: "🦊😋", lines: ["But the fox is hungry.", "Snap! The gingerbread man is gone."], ko: "하지만 여우는 배가 고파요. 아작! 과자 인간이 사라졌어요." }
+      ],
+      quiz: [
+        { q: "Who makes the gingerbread man?", ko: "과자 인간을 만든 사람은 누구인가요?", options: ["A little old woman", "A little boy", "A cat", "A farmer"], answer: 0, why: "\"A little old woman makes a gingerbread man.\"" },
+        { q: "What stops the gingerbread man?", ko: "과자 인간을 멈추게 한 것은 무엇인가요?", options: ["A river", "A wall", "A tree", "A dog"], answer: 0, why: "그는 헤엄을 칠 수 없어서 강 앞에서 멈췄어요." },
+        { q: "Who helps him cross the river?", ko: "강을 건너도록 도와준 동물은 누구인가요?", options: ["A fox", "A cow", "A horse", "A chicken"], answer: 0, why: "여우가 코에 태워 강을 건네 주었어요." }
+      ]
+    },
+    {
+      id: "goldilocks",
+      title: "Goldilocks and the Three Bears",
+      ko: "골디락스와 곰 세 마리",
+      level: "입문",
+      levelNo: 1,
+      emoji: "🐻",
+      scene: "🐻🐻🐻🥣",
+      tone: "green",
+      minutes: 5,
+      blurb: "숲속 곰의 집에 들어간 골디락스. 죽도 의자도 침대도 딱 맞는 건 하나뿐!",
+      pages: [
+        { scene: "🐻🏡", lines: ["Three bears live in a small house in the woods.", "There is Papa Bear, Mama Bear, and Baby Bear."], ko: "곰 세 마리가 숲속 작은 집에 살아요. 아빠 곰, 엄마 곰, 아기 곰이 있어요." },
+        { scene: "🐻🚶", lines: ["One morning they go for a walk.", "Their porridge is too hot."], ko: "어느 아침 그들은 산책을 나가요. 그들의 죽이 너무 뜨거워요." },
+        { scene: "👧🚪", lines: ["A girl named Goldilocks comes to the house.", "She knocks, but no one answers."], ko: "골디락스라는 여자아이가 그 집에 와요. 노크하지만 아무도 대답하지 않아요." },
+        { scene: "👧🥣🥣🥣", lines: ["She tastes the porridge.", "The first is too hot, the second is too cold, the third is just right."], ko: "그녀는 죽을 맛봐요. 첫 번째는 너무 뜨겁고, 두 번째는 너무 차갑고, 세 번째는 딱 좋아요." },
+        { scene: "👧🪑💥", lines: ["She sits on the chairs.", "Baby Bear's chair breaks!"], ko: "그녀가 의자에 앉아요. 아기 곰의 의자가 부서져요!" },
+        { scene: "👧🛏💤", lines: ["She goes upstairs and lies on the beds.", "Baby Bear's bed is just right. She falls asleep."], ko: "그녀는 위층으로 올라가 침대에 눕어요. 아기 곰의 침대가 딱 좋아요. 그녀는 잠이 들어요." },
+        { scene: "🐻🐻🐻🏠", lines: ["The bears come home.", "\"Someone ate my porridge!\" says Baby Bear."], ko: "곰들이 집에 돌아와요. \"누가 내 죽을 먹었어!\" 아기 곰이 말해요." },
+        { scene: "🐻😮👧", lines: ["They find Goldilocks in the bed.", "She wakes up and sees three bears!"], ko: "그들은 침대에서 골디락스를 발견해요. 그녀는 깨어나 곰 세 마리를 봐요!" },
+        { scene: "👧🏃🌳", lines: ["Goldilocks runs out of the house.", "She never goes into the woods alone again."], ko: "골디락스는 집 밖으로 달려나가요. 그녀는 다시는 혼자 숲에 들어가지 않아요." }
+      ],
+      quiz: [
+        { q: "Whose porridge is just right?", ko: "누구의 죽이 딱 좋았나요?", options: ["Baby Bear's", "Papa Bear's", "Mama Bear's", "Goldilocks'"], answer: 0, why: "아기 곰의 죽만 먹기 딱 좋았어요." },
+        { q: "What breaks in the house?", ko: "집에서 부서진 것은 무엇인가요?", options: ["Baby Bear's chair", "The door", "A window", "A bed"], answer: 0, why: "\"Baby Bear's chair breaks!\" — 아기 곰의 의자가 부서졌어요." },
+        { q: "Where does Goldilocks go at the end?", ko: "마지막에 골디락스는 어디로 가나요?", options: ["She runs out of the house", "She sleeps again", "She eats more porridge", "She sits in a chair"], answer: 0, why: "곰들을 보고 놀라 집 밖으로 달려나갔어요." }
+      ]
+    },
+    {
+      id: "tortoise-hare",
+      title: "The Tortoise and the Hare",
+      ko: "거북이와 토끼",
+      level: "초급",
+      levelNo: 2,
+      emoji: "🐢",
+      scene: "🐢🐇🏁",
+      tone: "green",
+      minutes: 5,
+      blurb: "느린 거북이와 빠른 토끼의 달리기 시합. 끝까지 꾸준한 쪽이 이겨요.",
+      pages: [
+        { scene: "🐇😆🐢", lines: ["A hare laughs at a tortoise.", "\"You are so slow! You cannot do anything fast.\""], ko: "토끼가 거북이를 비웃어요. \"너는 정말 느려! 아무것도 빨리 못 하잖아.\"" },
+        { scene: "🐢💬", lines: ["\"I can race you,\" says the tortoise.", "\"Let's run to the big tree.\""], ko: "\"나랑 경주할 수 있어.\" 거북이가 말해요. \"큰 나무까지 달리자.\"" },
+        { scene: "🦊🏁", lines: ["The fox says, \"Ready, set, go!\"", "The hare runs very fast."], ko: "여우가 말해요. \"준비, 땅! 출발!\" 토끼가 아주 빨리 달려요." },
+        { scene: "🐢🚶", lines: ["The tortoise walks slowly, step by step.", "The hare is soon far away."], ko: "거북이는 한 걸음씩 천천히 걸어요. 토끼는 곧 아주 멀리 가 있어요." },
+        { scene: "🐇👀", lines: ["The hare looks back.", "He cannot see the tortoise."], ko: "토끼가 뒤를 돌아봐요. 거북이가 보이지 않아요." },
+        { scene: "🐇🌳💤", lines: ["\"I have time,\" he says.", "\"I will take a little nap.\""], ko: "\"시간이 많아.\" 그가 말해요. \"잠깐 낮잠을 자야겠다.\"" },
+        { scene: "🐢🚶🐇💤", lines: ["The hare sleeps under a tree.", "The tortoise keeps walking."], ko: "토끼가 나무 아래에서 자요. 거북이는 계속 걸어요." },
+        { scene: "🐢🛣", lines: ["The tortoise passes the hare.", "He does not stop."], ko: "거북이가 토끼를 지나쳐요. 그는 멈추지 않아요." },
+        { scene: "🐇🏃💨", lines: ["The hare wakes up and runs fast.", "But it is too late."], ko: "토끼가 깨어나 빨리 달려요. 하지만 너무 늦었어요." },
+        { scene: "🐢🏆", lines: ["The tortoise wins the race.", "Slow and steady wins the race."], ko: "거북이가 경주에서 이겨요. 꾸준한 느림이 경주를 이겨요." }
+      ],
+      quiz: [
+        { q: "Who races in the story?", ko: "이야기에서 경주하는 동물은 누구인가요?", options: ["A tortoise and a hare", "A fox and a bear", "A cat and a dog", "Two hares"], answer: 0, why: "거북이와 토끼가 큰 나무까지 경주했어요." },
+        { q: "What does the hare do during the race?", ko: "경주 중에 토끼는 무엇을 하나요?", options: ["He takes a nap", "He drinks water", "He helps the tortoise", "He goes home"], answer: 0, why: "토끼는 나무 아래에서 낮잠을 잤어요." },
+        { q: "Who wins the race?", ko: "경주에서 이긴 동물은 누구인가요?", options: ["The tortoise", "The hare", "The fox", "Nobody"], answer: 0, why: "꾸준히 걸은 거북이가 이겼어요." }
+      ]
+    },
+    {
+      id: "lion-mouse",
+      title: "The Lion and the Mouse",
+      ko: "사자와 생쥐",
+      level: "초급",
+      levelNo: 2,
+      emoji: "🦁",
+      scene: "🦁🐭",
+      tone: "orange",
+      minutes: 4,
+      blurb: "작은 생쥐가 큰 사자를 살려 줘요. 작은 친구도 큰 도움이 돼요.",
+      pages: [
+        { scene: "🦁☀️💤", lines: ["A big lion is sleeping in the sun.", "A little mouse runs over his nose."], ko: "큰 사자가 햇볕에서 자고 있어요. 작은 생쥐가 그의 코 위를 달려가요." },
+        { scene: "🦁😠🐭", lines: ["The lion wakes up and catches the mouse.", "\"Please let me go,\" says the mouse."], ko: "사자가 깨어나 생쥐를 잡아요. \"제발 놓아주세요.\" 생쥐가 말해요." },
+        { scene: "🐭🤝", lines: ["\"I am small, but one day I can help you.\"", "The lion laughs, but he lets the mouse go."], ko: "\"저는 작지만, 언젠가 사자를 도울 수 있어요.\" 사자는 웃지만 생쥐를 놓아줘요." },
+        { scene: "🦁🕸", lines: ["One day, the lion is caught in a net.", "He roars and roars."], ko: "어느 날 사자가 그물에 걸려요. 그는 계속 으르렁거려요." },
+        { scene: "🐭👂", lines: ["The mouse hears the lion.", "She runs to the net."], ko: "생쥐가 사자 소리를 들어요. 그녀는 그물로 달려가요." },
+        { scene: "🐭🦷🪢", lines: ["She bites the ropes with her small teeth.", "Snap, snap, snap!"], ko: "그녀는 작은 이로 밧줄을 갉아요. 아작, 아작, 아작!" },
+        { scene: "🦁😊🐭", lines: ["The net opens and the lion is free.", "\"Thank you, little friend,\" says the lion."], ko: "그물이 열리고 사자가 자유로워져요. \"고마워, 작은 친구.\" 사자가 말해요." },
+        { scene: "🦁🐭💛", lines: ["\"You helped me first,\" says the mouse.", "A kind friend is a big help."], ko: "\"먼저 도와주셨잖아요.\" 생쥐가 말해요. 친절한 친구는 큰 도움이에요." }
+      ],
+      quiz: [
+        { q: "What does the lion catch?", ko: "사자가 잡은 것은 무엇인가요?", options: ["A little mouse", "A big fish", "A bird", "A rabbit"], answer: 0, why: "코 위를 지나가던 작은 생쥐를 잡았어요." },
+        { q: "How does the mouse help the lion?", ko: "생쥐는 어떻게 사자를 도와주나요?", options: ["She bites the net", "She brings water", "She calls the fox", "She pushes the tree"], answer: 0, why: "작은 이로 그물의 밧줄을 갉아 끊었어요." },
+        { q: "What is the lesson of the story?", ko: "이 이야기가 알려 주는 것은 무엇인가요?", options: ["Small friends can help too", "Never sleep in the sun", "Big animals are bad", "Nets are dangerous"], answer: 0, why: "작은 친구도 큰 도움을 줄 수 있다는 이야기예요." }
+      ]
+    },
+    {
+      id: "ugly-duckling",
+      title: "The Ugly Duckling",
+      ko: "미운 아기 오리",
+      level: "초급",
+      levelNo: 2,
+      emoji: "🦢",
+      scene: "🦆🌊",
+      tone: "blue",
+      minutes: 5,
+      blurb: "회색 아기 오리는 왜 다른 오리와 다를까요? 봄이 오면 알게 돼요.",
+      pages: [
+        { scene: "🦆🥚", lines: ["A mother duck sits on her eggs.", "One morning, five eggs open."], ko: "엄마 오리가 알 위에 앉아 있어요. 어느 아침, 알 다섯 개가 깨져요." },
+        { scene: "🐤🐤🐤🐤🩶", lines: ["Four ducklings are yellow and small.", "The last one is big and grey."], ko: "네 마리 아기 오리는 노랗고 작아요. 마지막 한 마리는 크고 회색이에요." },
+        { scene: "🦆🙅🩶", lines: ["\"You are not like us,\" say the other ducks.", "\"You are too big and too grey.\""], ko: "\"너는 우리와 달라.\" 다른 오리들이 말해요. \"너는 너무 크고 너무 회색이야.\"" },
+        { scene: "🩶😢🌊", lines: ["The little duck feels sad.", "He swims away alone."], ko: "아기 오리는 슬퍼져요. 그는 혼자 헤엄쳐 떠나요." },
+        { scene: "🍂🩶", lines: ["Autumn comes and the leaves fall.", "He hides in the cold reeds."], ko: "가을이 오고 나뭇잎이 떨어져요. 그는 차가운 갈대숲에 숨어요." },
+        { scene: "❄️🩶", lines: ["Winter is very cold and hard.", "But spring comes again."], ko: "겨울은 아주 춥고 힘들어요. 그러나 봄이 다시 와요." },
+        { scene: "🦢🦢🦢", lines: ["He sees three beautiful white birds in the lake.", "They have long necks and wide wings."], ko: "그는 호수에서 아름다운 흰 새 세 마리를 봐요. 그들은 긴 목과 넓은 날개를 가졌어요." },
+        { scene: "🩶💧🦢", lines: ["He looks into the water.", "\"It's me! I am a swan, not a duck.\""], ko: "그는 물속을 들여다봐요. \"나야! 나는 오리가 아니라 백조였어.\"" },
+        { scene: "🦢☀️🎉", lines: ["The white swans call to him.", "He is happy and flies with them."], ko: "흰 백조들이 그를 불러요. 그는 행복하게 그들과 함께 날아가요." }
+      ],
+      quiz: [
+        { q: "What color is the last duckling?", ko: "마지막 아기 오리는 무슨 색인가요?", options: ["Grey", "Yellow", "White", "Brown"], answer: 0, why: "\"The last one is big and grey.\"" },
+        { q: "What is the ugly duckling really?", ko: "미운 아기 오리의 진짜 모습은 무엇인가요?", options: ["A swan", "A goose", "A chicken", "A pigeon"], answer: 0, why: "\"I am a swan, not a duck.\" — 백조였어요." },
+        { q: "When does he find out?", ko: "그는 언제 그것을 알게 되나요?", options: ["In spring", "In autumn", "In winter", "In summer"], answer: 0, why: "겨울이 지나 봄이 왔을 때 호수에서 알게 됐어요." }
+      ]
+    },
+    {
+      id: "two-mice",
+      title: "The Town Mouse and the Country Mouse",
+      ko: "도시 생쥐와 시골 생쥐",
+      level: "초급",
+      levelNo: 2,
+      emoji: "🐭",
+      scene: "🐭🏙🌾",
+      tone: "purple",
+      minutes: 5,
+      blurb: "화려한 도시의 음식과 조용한 시골의 평화. 시골 생쥐의 선택은?",
+      pages: [
+        { scene: "🌾🐭", lines: ["A country mouse lives in a field.", "His cousin comes from the city."], ko: "시골 생쥐가 들판에 살아요. 그의 사촌이 도시에서 와요." },
+        { scene: "🧀🐭", lines: ["The country mouse gives him bread and cheese.", "\"This is simple food,\" says the town mouse."], ko: "시골 생쥐가 빵과 치즈를 줘요. \"이건 너무 간단한 음식이야.\" 도시 생쥐가 말해요." },
+        { scene: "🏙🐭💬", lines: ["\"Come to my house,\" says the town mouse.", "\"My food is much better.\""], ko: "\"우리 집에 와.\" 도시 생쥐가 말해요. \"내 음식이 훨씬 좋아.\"" },
+        { scene: "🏠🐭🐭", lines: ["They go to the city.", "The house is big and beautiful."], ko: "그들은 도시로 가요. 집은 크고 아름다워요." },
+        { scene: "🍰🍯🐭", lines: ["There is cake, fruit, and honey on the table.", "The country mouse is happy."], ko: "탁자 위에 케이크와 과일, 꿀이 있어요. 시골 생쥐는 기뻐요." },
+        { scene: "🐶💥🐭", lines: ["But then a big dog runs in.", "The two mice hide under a chair."], ko: "그런데 큰 개가 뛰어들어와요. 두 생쥐는 의자 밑에 숨어요." },
+        { scene: "🐭😰🐭", lines: ["\"Is it always like this?\" asks the country mouse.", "\"Yes,\" says the town mouse. \"We must be careful.\""], ko: "\"항상 이래?\" 시골 생쥐가 물어요. \"응.\" 도시 생쥐가 말해요. \"우리는 조심해야 해.\"" },
+        { scene: "🌾🐭🏃", lines: ["The country mouse runs back home.", "\"I like my simple food and quiet field.\""], ko: "시골 생쥐는 집으로 달려가요. \"나는 간단한 음식과 조용한 들판이 좋아.\"" },
+        { scene: "☀️🧀🐭", lines: ["He eats his cheese in the sun.", "Small and simple can be happy and safe."], ko: "그는 햇볕에서 치즈를 먹어요. 작고 간단한 것이 행복하고 안전할 수 있어요." }
+      ],
+      quiz: [
+        { q: "Where does the town mouse live?", ko: "도시 생쥐는 어디에 사나요?", options: ["In the city", "In a field", "In the woods", "At the river"], answer: 0, why: "도시 생쥐는 크고 아름다운 도시 집에 살아요." },
+        { q: "What runs into the room?", ko: "방으로 뛰어든 것은 무엇인가요?", options: ["A big dog", "A cat", "A boy", "A bird"], answer: 0, why: "\"a big dog runs in\" — 큰 개가 뛰어들었어요." },
+        { q: "What does the country mouse choose?", ko: "시골 생쥐는 무엇을 선택하나요?", options: ["His simple home", "The city cake", "A new house", "The town mouse's chair"], answer: 0, why: "화려한 음식보다 조용하고 안전한 자기 집을 택했어요." }
+      ]
+    }
+  ];
+
+  function byId(id) {
+    for (var i = 0; i < BOOKS.length; i++) {
+      if (BOOKS[i].id === id) return BOOKS[i];
+    }
+    return null;
+  }
+
+  global.KING_READERS = {
+    version: 1,
+    locale: "en-US",
+    books: BOOKS,
+    byId: byId
   };
 })(typeof window !== "undefined" ? window : this);
 
@@ -2409,7 +3566,14 @@ body.in-lesson .main { padding-bottom: 0; }
     back: SVG_OPEN + '<path d="M15 5l-7 7 7 7"/>',
     star: SVG_OPEN + '<path d="m12 4 2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8L12 4Z"/>',
     share: SVG_OPEN + '<path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><path d="M6 13v6h12v-6"/>',
-    refresh: SVG_OPEN + '<path d="M4 12a8 8 0 1 1 3 6.2"/><path d="M4 20v-5h5"/>'
+    refresh: SVG_OPEN + '<path d="M4 12a8 8 0 1 1 3 6.2"/><path d="M4 20v-5h5"/>',
+    exam: SVG_OPEN + '<rect x="4.5" y="4.5" width="15" height="16" rx="2.6"/><path d="M9 4.5V3h6v1.5"/><path d="M8.6 12.2l2 2 4-4"/><path d="M8.6 17.2h6.8"/>',
+    bank: SVG_OPEN + '<rect x="4" y="4" width="6.6" height="6.6" rx="1.8"/><rect x="13.4" y="4" width="6.6" height="6.6" rx="1.8"/><rect x="4" y="13.4" width="6.6" height="6.6" rx="1.8"/><rect x="13.4" y="13.4" width="6.6" height="6.6" rx="1.8"/>',
+    book: SVG_OPEN + '<path d="M4 4.6h5.4a2.6 2.6 0 0 1 2.6 2.6V20a2.6 2.6 0 0 0-2.6-2.6H4V4.6Z"/><path d="M20 4.6h-5.4A2.6 2.6 0 0 0 12 7.2V20a2.6 2.6 0 0 1 2.6-2.6H20V4.6Z"/>',
+    play: SVG_OPEN + '<path d="M7.5 4.8 19 12 7.5 19.2V4.8Z"/>',
+    pause: SVG_OPEN + '<path d="M9 4.8v14.4"/><path d="M15 4.8v14.4"/>',
+    note: SVG_OPEN + '<path d="M6 5h9l4 4v10.2H6V5Z"/><path d="M14.6 5v4.2H19"/><path d="M9 12.4h6"/><path d="M9 15.8h4"/>',
+    trophy: SVG_OPEN + '<path d="M8 4h8v4.6a4 4 0 0 1-8 0V4Z"/><path d="M8 5.6H5.5V8a3 3 0 0 0 3 3"/><path d="M16 5.6h2.5V8a3 3 0 0 1-3 3"/><path d="M12 12.6V17"/><path d="M8.5 20h7l-1-3h-5l-1 3Z"/>'
   };
 
   /* ---------- 작은 도우미 ---------- */
@@ -2489,6 +3653,12 @@ body.in-lesson .main { padding-bottom: 0; }
     card: { unit: 1, idx: 0, flipped: false },
     speak: { unit: 1, idx: 0, result: null },
     lesson: null,
+    exam: { unit: 1, count: 10, type: "all" },
+    bank: { tab: "bank", unitNo: 0, type: "all", count: 10 },
+    run: null,
+    report: null,
+    reader: { bookId: null, page: 0, line: 0, playing: false, showKo: false },
+    readerQuiz: null,
     micOn: false,
     recog: null
   };
@@ -2593,7 +3763,30 @@ body.in-lesson .main { padding-bottom: 0; }
         }
       } catch (e) { /* noop */ }
     }
-    return { supported: supported, speak: speak, stop: stop, refresh: refresh };
+    /** 한 문장을 읽고 끝나면 알려 줍니다. (오디오북 연속 재생용) */
+    function speakCue(text, loc, rate, onEnd) {
+      if (!supported || !text) {
+        if (onEnd) onEnd(false);
+        return false;
+      }
+      try {
+        global.speechSynthesis.cancel();
+        var u = new global.SpeechSynthesisUtterance(text);
+        u.lang = loc;
+        u.rate = rate || 1;
+        u.pitch = 1;
+        var v = pick(loc);
+        if (v) u.voice = v;
+        u.onend = function () { if (onEnd) onEnd(true); };
+        u.onerror = function () { if (onEnd) onEnd(false); };
+        global.speechSynthesis.speak(u);
+        return true;
+      } catch (e) {
+        if (onEnd) onEnd(false);
+        return false;
+      }
+    }
+    return { supported: supported, speak: speak, speakCue: speakCue, stop: stop, refresh: refresh };
   })();
 
   function rateFor(slow) {
@@ -2739,6 +3932,18 @@ body.in-lesson .main { padding-bottom: 0; }
     clear(top);
     if (UI.view === "lesson") {
       renderLessonTop(top);
+      return;
+    }
+    if (UI.view === "run") {
+      renderRunTop(top);
+      return;
+    }
+    if (UI.view === "report") {
+      renderReportTop(top);
+      return;
+    }
+    if (UI.view === "reader" || UI.view === "readerQuiz") {
+      renderReaderTop(top);
       return;
     }
     top.className = "topbar";
@@ -2889,7 +4094,39 @@ body.in-lesson .main { padding-bottom: 0; }
     ]));
 
     var tipIndex = (unit.no - 1) % unit.sentences.length;
-    var sample = unit.sentences[tipIndex];
+    var sample = unit.sentences[tipIndex];    wrap.appendChild(el("div", { class: "section-head" }, [
+      el("h2", { text: "더 배우기" }),
+      el("span", { class: "section-right", text: course().name + " 14단원" })
+    ]));
+    var featureGrid = el("div", { class: "feature-grid" });
+    featureGrid.appendChild(featureTile("exam", "단원평가", "통과 " + S.passedExamCount() + " / " + course().units.length, "green", function () {
+      UI.view = "exam";
+      render();
+    }));
+    featureGrid.appendChild(featureTile("bank", "문제은행", "오답 " + S.wrongCount() + "문항", "blue", function () {
+      UI.bank.tab = "bank";
+      UI.view = "bank";
+      render();
+    }));
+    featureGrid.appendChild(featureTile("book", "영어원서", "완독 " + S.libraryDoneCount() + " / " + RD().books.length, "orange", function () {
+      UI.view = "library";
+      render();
+    }));
+    wrap.appendChild(featureGrid);
+
+    wrap.appendChild(el("div", { class: "quick-row" }, [
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: { click: function () { UI.card.unit = unit.no; UI.card.idx = 0; UI.card.flipped = false; UI.view = "cards"; render(); } }
+      }, ["🃏 문장 카드로 복습"]),
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: { click: function () { UI.speak.unit = unit.no; UI.speak.idx = 0; UI.speak.result = null; UI.view = "speak"; render(); } }
+      }, ["🎤 따라 말하기 연습"])
+    ]));
+
     wrap.appendChild(el("section", { class: "card today-sentence" }, [
       el("div", { class: "section-head section-head-tight" }, [
         el("h2", { text: "오늘의 한 문장" }),
@@ -2917,6 +4154,19 @@ body.in-lesson .main { padding-bottom: 0; }
     ]));
 
     return wrap;
+  }
+
+  /* ---------- 오늘: 더 배우기 카드 ---------- */
+  function featureTile(iconName, title, sub, tone, handler) {
+    return el("button", {
+      class: "feature-tile ft-" + tone,
+      type: "button",
+      on: { click: handler }
+    }, [
+      el("span", { class: "feature-ico" }, [icon(iconName)]),
+      el("span", { class: "feature-title", text: title }),
+      el("span", { class: "feature-sub", text: sub })
+    ]);
   }
 
   /* ---------- 문장 암기(플래시카드) ---------- */
@@ -3859,35 +5109,1165 @@ body.in-lesson .main { padding-bottom: 0; }
     body.appendChild(voice.node);
   }
 
+  /* =========================================================
+   *  단원평가 · 문제은행 · 영어원서 도서관
+   * ========================================================= */
+  function BK() { return global.KingBank; }
+  function RD() { return global.KING_READERS; }
+
+  function playText(text, loc, rate) {
+    var ok = Speech.speak(text, loc, rate);
+    if (!ok) toast("이 브라우저에서는 음성 재생을 지원하지 않아요.");
+    return ok;
+  }
+
+  function scoreTone(score) {
+    if (score >= 80) return "good";
+    if (score >= 50) return "mid";
+    return "low";
+  }
+
+  /* ---------- 단원평가 목록 ---------- */
+  function viewExam() {
+    var c = course();
+    var units = c.units;
+    var passed = 0;
+    var sum = 0;
+    var tried = 0;
+    var tries = 0;
+    units.forEach(function (u) {
+      var r = S.examRecord(u.id);
+      if (r.best > 0) { tried += 1; sum += r.best; }
+      if (r.passed) passed += 1;
+      tries += r.tries || 0;
+    });
+
+    var wrap = el("div", { class: "view view-exam" });
+    wrap.appendChild(viewHead("단원평가", c.name + " 단원마다 10문항 · " + BK().PASS_SCORE + "점이면 통과예요"));
+
+    wrap.appendChild(el("section", { class: "exam-summary" }, [
+      el("div", { class: "exam-summary-main" }, [
+        el("span", { class: "exam-summary-num", text: passed + " / " + units.length }),
+        el("span", { class: "exam-summary-label", text: "통과한 단원" })
+      ]),
+      el("div", { class: "exam-summary-side" }, [
+        el("span", { text: tried ? "평균 최고 " + Math.round(sum / tried) + "점" : "아직 응시 전이에요" }),
+        el("span", { text: "응시 " + tries + "회 · 최고 점수는 계속 남아요" })
+      ])
+    ]));
+
+    var list = el("div", { class: "exam-list" });
+    units.forEach(function (u) {
+      var r = S.examRecord(u.id);
+      list.appendChild(el("button", {
+        class: "exam-row" + (r.passed ? " is-passed" : ""),
+        type: "button",
+        on: { click: function () { startExam(u.no); } }
+      }, [
+        el("span", { class: "exam-emoji", text: u.emoji }),
+        el("span", { class: "exam-copy" }, [
+          el("span", { class: "exam-day", text: "DAY " + u.no }),
+          el("span", { class: "exam-title", text: u.title }),
+          el("span", { class: "exam-goal", text: u.goal })
+        ]),
+        el("span", { class: "exam-score is-" + scoreTone(r.best) }, [
+          el("b", { text: r.best ? r.best + "점" : "미응시" }),
+          el("span", { text: r.passed ? "통과 ✓" : (r.tries ? "다시 도전" : "10문항") })
+        ])
+      ]));
+    });
+    wrap.appendChild(list);
+    wrap.appendChild(el("p", { class: "footnote", text: "듣기·뜻·빈칸·문장 배열·문장 고르기를 섞어 냅니다. 다시 응시해도 최고 점수가 남아요." }));
+    return wrap;
+  }
+
+  function startExam(unitNo) {
+    var c = course();
+    var u = S.unitOf(L(), unitNo);
+    var qs = BK().buildUnitExam(c, u);
+    if (!qs.length) { toast("이 단원은 아직 문제를 만들 수 없어요."); return; }
+    UI.exam.unit = unitNo;
+    UI.run = {
+      kind: "exam",
+      unitId: u.id,
+      unitNo: u.no,
+      title: "DAY " + u.no + " · " + u.title,
+      sub: "단원평가",
+      questions: qs,
+      idx: 0,
+      answers: [],
+      reveal: false,
+      locked: false,
+      pickIndex: null,
+      order: null,
+      pool: null
+    };
+    Speech.stop();
+    UI.view = "run";
+    render();
+  }
+
+  /* ---------- 문제은행 ---------- */
+  function viewBank() {
+    var c = course();
+    var wrap = el("div", { class: "view view-bank" });
+    wrap.appendChild(viewHead("문제은행", c.name + " 14단원 문제에서 골라 풀고, 틀린 문제는 오답노트에 모아요"));
+
+    var wrongN = S.wrongCount();
+    var seg = el("div", { class: "seg seg-block", role: "tablist", "aria-label": "문제은행 메뉴" }, [
+      segBlockBtn("문제은행", UI.bank.tab !== "wrong", function () { UI.bank.tab = "bank"; render(); }),
+      segBlockBtn("오답노트 " + wrongN, UI.bank.tab === "wrong", function () { UI.bank.tab = "wrong"; render(); })
+    ]);
+    wrap.appendChild(seg);
+
+    if (UI.bank.tab === "wrong") {
+      wrap.appendChild(wrongNoteSection());
+    } else {
+      wrap.appendChild(bankSection());
+    }
+    return wrap;
+  }
+
+  function segBlockBtn(label, active, handler) {
+    return el("button", {
+      class: "seg-btn" + (active ? " is-active" : ""),
+      type: "button",
+      role: "tab",
+      "aria-selected": active ? "true" : "false",
+      on: { click: handler }
+    }, [el("span", { text: label })]);
+  }
+
+  function bankSection() {
+    var c = course();
+    var box = el("div", { class: "bank-wrap" });
+
+    box.appendChild(el("section", { class: "mock-card" }, [
+      el("span", { class: "mock-emoji", text: "🎲" }),
+      el("div", { class: "mock-copy" }, [
+        el("h2", { class: "mock-title", text: "랜덤 모의고사" }),
+        el("p", { class: "mock-sub", text: "14단원에서 고르게 10문항이 나와요" })
+      ]),
+      el("button", { class: "btn btn-primary btn-small", type: "button", on: { click: startMock } }, ["시작"])
+    ]));
+
+    var filters = el("section", { class: "card filter-card" }, [
+      el("div", { class: "section-head section-head-tight" }, [
+        el("h2", { text: "직접 고르기" }),
+        el("span", { class: "section-right", text: "지금 " + BK().bankCount(c, UI.bank) + "문항" })
+      ])
+    ]);
+
+    var unitRow = el("div", { class: "chips" });
+    unitRow.appendChild(filterChip("전체 단원", UI.bank.unitNo === 0, function () { UI.bank.unitNo = 0; render(); }));
+    c.units.forEach(function (u) {
+      unitRow.appendChild(filterChip("Day " + u.no, UI.bank.unitNo === u.no, function () { UI.bank.unitNo = u.no; render(); }));
+    });
+    filters.appendChild(el("p", { class: "filter-label", text: "단원" }));
+    filters.appendChild(unitRow);
+
+    var typeRow = el("div", { class: "chips" });
+    typeRow.appendChild(filterChip("전체 유형", UI.bank.type === "all", function () { UI.bank.type = "all"; render(); }));
+    BK().TYPES.forEach(function (t) {
+      if (t.id === "read" && !course().units[0].sentences.every(function (s) { return !!(s.read || s.pinyin); })) return;
+      typeRow.appendChild(filterChip(t.ico + " " + t.name, UI.bank.type === t.id, function () { UI.bank.type = t.id; render(); }));
+    });
+    filters.appendChild(el("p", { class: "filter-label", text: "유형" }));
+    filters.appendChild(typeRow);
+
+    var countSeg = el("div", { class: "seg seg-block seg-count" }, [5, 10, 20].map(function (n) {
+      return segBlockBtn(n + "문항", UI.bank.count === n, function () { UI.bank.count = n; render(); });
+    }));
+    filters.appendChild(el("p", { class: "filter-label", text: "문항 수" }));
+    filters.appendChild(countSeg);
+
+    var available = BK().bankCount(c, UI.bank);
+    var go = el("button", {
+      class: "btn btn-primary btn-wide",
+      type: "button",
+      on: { click: startBankRun }
+    }, [available ? UI.bank.count + "문항 풀기" : "조건에 맞는 문제가 없어요"]);
+    if (!available) { go.disabled = true; go.classList.add("is-disabled"); }
+    filters.appendChild(go);
+    filters.appendChild(el("p", { class: "foot-hint", text: "듣기 문제는 소리로 나오고, 풀면 바로 채점해요" }));
+    box.appendChild(filters);
+    return box;
+  }
+
+  function filterChip(label, active, handler) {
+    return el("button", {
+      class: "unit-chip filter-chip" + (active ? " is-active" : ""),
+      type: "button",
+      "aria-pressed": active ? "true" : "false",
+      on: { click: handler }
+    }, [el("span", { class: "unit-chip-label", text: label })]);
+  }
+
+  function wrongNoteSection() {
+    var entries = S.wrongEntries();
+    var box = el("div", { class: "wrong-wrap" });
+
+    if (!entries.length) {
+      box.appendChild(el("section", { class: "empty-card" }, [
+        el("span", { class: "empty-emoji", text: "🎯" }),
+        el("h2", { class: "empty-title", text: "오답노트가 비어 있어요" }),
+        el("p", { class: "empty-sub", text: "단원평가나 문제은행에서 틀린 문제가 여기에 자동으로 모여요. 다시 풀어 맞히면 사라져요." })
+      ]));
+      return box;
+    }
+
+    box.appendChild(el("div", { class: "wrong-head" }, [
+      el("div", {}, [
+        el("b", { class: "wrong-count", text: entries.length + "문항" }),
+        el("span", { class: "wrong-sub", text: "틀린 문제만 모아 두었어요" })
+      ]),
+      el("button", { class: "btn btn-primary btn-small", type: "button", on: { click: function () { startWrongRun(null); } } }, ["모두 다시 풀기"])
+    ]));
+
+    var list = el("div", { class: "wrong-list" });
+    entries.forEach(function (w) {
+      var q = findQuestion(w);
+      var label = q ? q.text : w.sentenceId;
+      list.appendChild(el("div", { class: "wrong-row" }, [
+        el("button", {
+          class: "wrong-main",
+          type: "button",
+          on: { click: function () { startWrongRun([w.key]); } }
+        }, [
+          el("span", { class: "wrong-type", text: BK().typeName(w.type) }),
+          el("span", { class: "wrong-text", text: label }),
+          el("span", { class: "wrong-meta", text: "DAY " + w.unitNo + " · " + (w.count || 1) + "번 틀림" })
+        ]),
+        iconBtn("close", "오답노트에서 지우기", function () {
+          S.removeWrong(w.key);
+          render();
+          toast("오답노트에서 지웠어요");
+        }, "wrong-del")
+      ]));
+    });
+    box.appendChild(list);
+    return box;
+  }
+
+  /** 오답노트 항목의 문제를 현재 코스에서 다시 찾습니다. */
+  function findQuestion(w) {
+    var qs = BK().byKeys(course(), [w.key]);
+    return qs[0] || null;
+  }
+
+  function startBankRun() {
+    var c = course();
+    var qs = BK().buildBank(c, UI.bank);
+    if (!qs.length) { toast("조건에 맞는 문제가 없어요."); return; }
+    var parts = [];
+    parts.push(UI.bank.unitNo ? "DAY " + UI.bank.unitNo : "전체 단원");
+    parts.push(UI.bank.type === "all" ? "모든 유형" : BK().typeName(UI.bank.type));
+    openRun({
+      kind: "bank",
+      title: "문제은행",
+      sub: parts.join(" · "),
+      questions: qs
+    });
+  }
+
+  function startMock() {
+    var qs = BK().mockExam(course(), 10);
+    if (!qs.length) { toast("문제를 만들 수 없어요."); return; }
+    openRun({ kind: "mock", title: "랜덤 모의고사", sub: "14단원 고르게 10문항", questions: qs });
+  }
+
+  function startWrongRun(keys) {
+    var list = keys || S.wrongEntries().map(function (w) { return w.key; });
+    var qs = BK().byKeys(course(), list);
+    if (!qs.length) { toast("다시 풀 문제가 없어요."); return; }
+    openRun({ kind: "wrong", title: "오답노트", sub: qs.length + "문항 다시 풀기", questions: qs });
+  }
+
+  function openRun(opts) {
+    UI.run = {
+      kind: opts.kind,
+      unitId: opts.unitId || null,
+      unitNo: opts.unitNo || 0,
+      title: opts.title,
+      sub: opts.sub || "",
+      questions: opts.questions,
+      idx: 0,
+      answers: [],
+      reveal: true,
+      locked: false,
+      pickIndex: null,
+      order: null,
+      pool: null
+    };
+    Speech.stop();
+    UI.view = "run";
+    render();
+  }
+
+  /* ---------- 문제 풀기 (단원평가·문제은행 공통) ---------- */
+  function viewRun() {
+    var run = UI.run;
+    if (!run || !run.questions.length) { UI.view = "today"; return el("div", { class: "view" }); }
+    var q = run.questions[run.idx];
+    var wrap = el("div", { class: "view view-run" });
+
+    wrap.appendChild(el("div", { class: "run-meta" }, [
+      el("span", { class: "run-type", text: BK().typeName(q.type) }),
+      el("span", { class: "run-unit", text: run.kind === "exam" ? run.title : "DAY " + q.unitNo + " · " + q.unitTitle }),
+      el("span", { class: "run-count", text: (run.idx + 1) + " / " + run.questions.length })
+    ]));
+
+    var body = el("div", { class: "run-body" });
+    renderQuestion(q, run, body);
+    wrap.appendChild(body);
+    wrap.appendChild(runFoot(run, q));
+    return wrap;
+  }
+
+  function renderQuestion(q, run, body) {
+    if (q.type === "listen") {
+      body.appendChild(el("p", { class: "run-ask", text: "듣고 뜻을 고르세요" }));
+      body.appendChild(el("div", { class: "run-audio" }, [
+        el("button", {
+          class: "play-btn",
+          type: "button",
+          "aria-label": "문장 듣기",
+          on: { click: function () { playText(q.speak, locale(), (course().rate || {}).normal || 0.95); } }
+        }, [icon("speaker")]),
+        el("button", {
+          class: "btn btn-ghost btn-small",
+          type: "button",
+          on: { click: function () { playText(q.speak, locale(), (course().rate || {}).slow || 0.6); } }
+        }, [icon("slow", "btn-ico"), "천천히"])
+      ]));
+      if (run.locked) {
+        body.appendChild(el("p", { class: "target target-sm", lang: q.lang, text: q.text }));
+        if (q.read) body.appendChild(el("p", { class: "pinyin", text: q.read }));
+      }
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "meaning" || q.type === "read") {
+      body.appendChild(el("p", { class: "run-ask", text: q.type === "read" ? "이 문장은 어떻게 읽을까요?" : "이 문장의 뜻은 무엇일까요?" }));
+      body.appendChild(el("p", { class: "target target-sm", lang: q.lang, text: q.text }));
+      if (q.type === "meaning" && q.read) body.appendChild(el("p", { class: "pinyin", text: q.read }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "blank") {
+      body.appendChild(el("p", { class: "run-ask", text: "빈칸에 들어갈 말을 고르세요" }));
+      body.appendChild(blankLine(q));
+      body.appendChild(el("p", { class: "ko-line", text: q.ko }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "pick") {
+      body.appendChild(el("p", { class: "run-ask", text: "이 뜻에 맞는 문장을 고르세요" }));
+      body.appendChild(el("p", { class: "run-ko", text: q.ko }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "order") {
+      body.appendChild(el("p", { class: "run-ask", text: "단어를 순서대로 놓아 문장을 만드세요" }));
+      body.appendChild(el("p", { class: "run-ko", text: q.ko }));
+      renderOrderQuestion(q, run, body);
+    }
+  }
+
+  /** 빈칸 문장을 조각으로 그립니다. */
+  function blankLine(q) {
+    var parts = [];
+    (q.parts || []).forEach(function (p) {
+      if (p.blank) parts.push(el("span", { class: "blank-slot", text: "____" }));
+      else parts.push(p.t + (course().space ? " " : ""));
+    });
+    return el("p", { class: "target target-sm blank-text", lang: q.lang }, parts);
+  }
+
+  function renderChoiceOptions(q, run, body) {
+    var picked = run.pickIndex;
+    var locked = !!run.locked;
+    var opts = el("div", { class: "options" });
+    q.options.forEach(function (o, i) {
+      var cls = "option-btn";
+      if (locked) {
+        if (o.correct) cls += " is-correct";
+        else if (i === picked) cls += " is-wrong";
+        cls += " is-locked";
+      } else if (i === picked) {
+        cls += " is-picked";
+      }
+      opts.appendChild(el("button", {
+        class: cls,
+        type: "button",
+        on: {
+          click: function () {
+            if (locked) return;
+            run.pickIndex = i;
+            if (run.reveal) { submitRunAnswer(); return; }
+            render();
+          }
+        }
+      }, [
+        el("span", { class: "option-key", text: String(i + 1) }),
+        el("span", { class: "option-text", text: o.text, lang: q.type === "pick" ? q.lang : null })
+      ]));
+    });
+    body.appendChild(opts);
+    if (locked) body.appendChild(runVerdict(q, run));
+  }
+
+  function renderOrderQuestion(q, run, body) {
+    if (!run.order) run.order = [];
+    if (!run.pool) run.pool = q.tokens.map(function (t, i) { return { id: i, text: t }; });
+    var used = {};
+    run.order.forEach(function (o) { used[o.id] = true; });
+
+    var slots = el("div", { class: "slots" + (run.order.length ? "" : " is-empty") });
+    if (!run.order.length) slots.appendChild(el("span", { class: "slots-empty", text: "아래 단어를 순서대로 눌러 보세요" }));
+    run.order.forEach(function (o, i) {
+      slots.appendChild(el("button", {
+        class: "tile tile-placed",
+        type: "button",
+        on: {
+          click: function () {
+            if (run.locked) return;
+            run.order.splice(i, 1);
+            render();
+          }
+        }
+      }, [o.text]));
+    });
+    body.appendChild(slots);
+
+    var bankRow = el("div", { class: "bank" });
+    run.pool.forEach(function (o) {
+      if (used[o.id]) return;
+      bankRow.appendChild(el("button", {
+        class: "tile",
+        type: "button",
+        on: {
+          click: function () {
+            if (run.locked) return;
+            run.order.push(o);
+            render();
+          }
+        }
+      }, [o.text]));
+    });
+    body.appendChild(bankRow);
+    if (run.locked) body.appendChild(runVerdict(q, run));
+  }
+
+  function runVerdict(q, run) {
+    var ok = BK().isCorrect(q, run.answers[run.idx]);
+    return el("div", { class: "run-verdict " + (ok ? "is-good" : "is-bad") }, [
+      el("b", { text: ok ? "정답이에요!" : "아쉬워요" }),
+      el("span", { text: ok ? q.ko : "정답: " + BK().correctText(q) + " — " + q.ko }),
+      q.tip ? el("em", { class: "run-tip", text: "💡 " + q.tip }) : null
+    ]);
+  }
+
+  function runFoot(run, q) {
+    var foot = el("div", { class: "run-foot" });
+    var ready;
+    if (run.locked) ready = true;
+    else if (q.tokens) ready = !!run.order && run.order.length === q.tokens.length;
+    else ready = typeof run.pickIndex === "number";
+
+    var last = run.idx >= run.questions.length - 1;
+    var label;
+    if (run.locked) label = last ? "결과 보기" : "다음 문항";
+    else if (run.reveal) label = last ? "채점하기" : "다음 문항";
+    else label = last ? "채점하기" : "다음 문항";
+
+    var btn = el("button", {
+      class: "btn btn-primary btn-wide",
+      type: "button",
+      on: {
+        click: function () {
+          if (!ready) return;
+          if (run.locked) { advanceRun(); return; }
+          submitRunAnswer();
+        }
+      }
+    }, [label]);
+    if (!ready) { btn.disabled = true; btn.classList.add("is-disabled"); }
+    foot.appendChild(btn);
+    if (!ready) foot.appendChild(el("p", { class: "foot-hint", text: q.tokens ? "단어를 모두 놓으면 다음으로 갈 수 있어요" : "보기를 고르면 다음으로 갈 수 있어요" }));
+    return foot;
+  }
+
+  function submitRunAnswer() {
+    var run = UI.run;
+    if (!run) return;
+    var q = run.questions[run.idx];
+    var answer;
+    if (q.tokens) {
+      if (!run.order || run.order.length !== q.tokens.length) return;
+      answer = run.order.map(function (o) { return o.text; });
+    } else {
+      if (typeof run.pickIndex !== "number") return;
+      answer = run.pickIndex;
+    }
+    run.answers[run.idx] = answer;
+
+    if (run.reveal) {
+      run.locked = true;
+      if (BK().isCorrect(q, answer)) {
+        beep("win");
+        S.removeWrong(q.key);
+      } else {
+        beep("wrong");
+        S.addWrong(q);
+      }
+      render();
+      return;
+    }
+
+    beep();
+    advanceRun();
+  }
+
+  function advanceRun() {
+    var run = UI.run;
+    if (!run) return;
+    if (run.idx >= run.questions.length - 1) { finishRun(); return; }
+    run.idx += 1;
+    run.locked = false;
+    run.pickIndex = null;
+    run.order = null;
+    run.pool = null;
+    Speech.stop();
+    render();
+  }
+
+  function finishRun() {
+    var run = UI.run;
+    if (!run) return;
+    var res = BK().grade(run.questions, run.answers);
+    var xp = 0;
+    var best = 0;
+    var firstPass = false;
+    var record = null;
+
+    if (run.kind === "exam") {
+      record = S.recordExam(run.unitId, res);
+      best = record.best;
+      firstPass = record.firstPass;
+      xp = res.correct * 2 + (firstPass ? 10 : 0);
+      res.wrong.forEach(function (w) { S.addWrong(w.q); });
+      if (xp) S.addXp(xp);
+    } else {
+      // 연습 모드: 이미 문항마다 오답노트를 반영했고, 남은 오답만 다시 더해 둡니다.
+      res.wrong.forEach(function (w) { if (!S.get().wrong[w.q.key]) S.addWrong(w.q); });
+    }
+
+    UI.report = {
+      kind: run.kind,
+      title: run.title,
+      unitId: run.unitId,
+      unitNo: run.unitNo,
+      result: res,
+      questions: run.questions,
+      answers: run.answers,
+      xp: xp,
+      best: best,
+      firstPass: firstPass,
+      back: run.kind === "exam" ? "exam" : "bank"
+    };
+    UI.run = null;
+    UI.view = "report";
+    render();
+    if (res.passed) {
+      beep("win");
+      confetti();
+    }
+  }
+
+  function exitRun() {
+    var kind = UI.run ? UI.run.kind : "exam";
+    Speech.stop();
+    UI.run = null;
+    UI.view = kind === "exam" ? "exam" : "bank";
+    render();
+  }
+
+  function closeReport() {
+    var back = UI.report ? UI.report.back : "exam";
+    UI.report = null;
+    UI.view = back;
+    render();
+  }
+
+  /* ---------- 결과 · 해설 리포트 ---------- */
+  function viewReport() {
+    var r = UI.report;
+    if (!r) { UI.view = "today"; return el("div", { class: "view" }); }
+    var res = r.result;
+    var isExam = r.kind === "exam";
+    var wrap = el("div", { class: "view view-report" });
+
+    wrap.appendChild(el("section", { class: "report-hero" }, [
+      el("span", { class: "result-emoji", text: res.passed ? "🎉" : (res.score >= 50 ? "💪" : "🌱") }),
+      el("h1", { class: "report-score", text: res.score + "점" }),
+      el("p", { class: "report-title", text: isExam ? (res.passed ? "통과했어요!" : "조금만 더 힘내요") : (res.score >= 80 ? "아주 잘 풀었어요!" : "틀린 문제는 오답노트에 모았어요") }),
+      el("p", { class: "report-sub", text: r.title + " · " + res.correct + " / " + res.total + " 정답" }),
+      r.xp ? el("span", { class: "result-xp" }, [icon("bolt", "result-xp-ico"), "+" + r.xp + " XP"]) : null
+    ]));
+
+    wrap.appendChild(el("div", { class: "result-rows" }, [
+      resultRow("정답", res.correct + "문항"),
+      resultRow("틀린 문항", res.wrong.length + "문항"),
+      resultRow("통과 기준", BK().PASS_SCORE + "점"),
+      isExam ? resultRow("이 단원 최고", r.best + "점") : resultRow("오답노트", S.wrongCount() + "문항"),
+      isExam ? resultRow("통과 여부", res.passed ? "통과" : "다시 도전") : null
+    ]));
+
+    if (res.wrong.length) {
+      wrap.appendChild(el("div", { class: "section-head" }, [
+        el("h2", { text: "틀린 문항 해설" }),
+        el("span", { class: "section-right", text: res.wrong.length + "문항" })
+      ]));
+      res.wrong.forEach(function (w, i) { wrap.appendChild(explainCard(w, i)); });
+    } else {
+      wrap.appendChild(el("p", { class: "report-perfect", text: "모든 문항을 맞혔어요. 다음 단원에 도전해 볼까요?" }));
+    }
+
+    var actions = el("div", { class: "report-actions" });
+    if (res.wrong.length) {
+      actions.appendChild(el("button", {
+        class: "btn btn-orange-ghost btn-wide",
+        type: "button",
+        on: {
+          click: function () {
+            var keys = res.wrong.map(function (w) { return w.q.key; });
+            UI.report = null;
+            UI.view = "bank";
+            startWrongRun(keys);
+          }
+        }
+      }, ["틀린 문항만 다시 풀기"]));
+    }
+    if (isExam) {
+      actions.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { var no = r.unitNo; UI.report = null; startExam(no); } }
+      }, ["이 단원 다시 응시"]));
+      actions.appendChild(el("button", { class: "btn btn-ghost btn-wide", type: "button", on: { click: function () { UI.report = null; UI.view = "exam"; render(); } } }, ["단원평가 목록"]));
+    } else {
+      actions.appendChild(el("button", { class: "btn btn-primary btn-wide", type: "button", on: { click: function () { UI.report = null; UI.bank.tab = "wrong"; UI.view = "bank"; render(); } } }, ["오답노트 보기"]));
+      actions.appendChild(el("button", { class: "btn btn-ghost btn-wide", type: "button", on: { click: function () { UI.report = null; UI.view = "bank"; render(); } } }, ["문제은행으로"]));
+    }
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  function explainCard(w, i) {
+    var q = w.q;
+    var mine = BK().answerText(q, w.answer);
+    return el("section", { class: "explain-card" }, [
+      el("div", { class: "explain-head" }, [
+        el("span", { class: "explain-no", text: String(i + 1) }),
+        el("span", { class: "run-type", text: BK().typeName(q.type) }),
+        el("span", { class: "explain-unit", text: "DAY " + q.unitNo })
+      ]),
+      el("p", { class: "explain-text", text: q.text, lang: q.lang }),
+      q.read ? el("p", { class: "pinyin", text: q.read }) : null,
+      el("p", { class: "explain-ko", text: q.ko }),
+      el("p", { class: "explain-mine", text: "내 답: " + mine }),
+      el("p", { class: "explain-answer", text: "정답: " + BK().correctText(q) }),
+      q.tip ? el("p", { class: "explain-tip", text: "💡 " + q.tip }) : null
+    ]);
+  }
+
+  /* ---------- 영어원서 도서관 ---------- */
+  function viewLibrary() {
+    var lib = RD();
+    var wrap = el("div", { class: "view view-library" });
+    wrap.appendChild(viewHead("영어원서 도서관", "초등 입문~초급 원서 " + lib.books.length + "권 · 문장을 눌러 듣고 따라 읽어요"));
+
+    wrap.appendChild(el("div", { class: "lib-stats" }, [
+      el("span", { class: "lib-stat" }, [el("b", { text: String(S.libraryDoneCount()) }), el("span", { text: "완독" })]),
+      el("span", { class: "lib-stat" }, [el("b", { text: String(lib.books.length) }), el("span", { text: "권 보유" })]),
+      el("span", { class: "lib-note", text: "🔊 아이폰 사파리·홈 화면 앱에서 소리가 나요" })
+    ]));
+
+    var grid = el("div", { class: "book-grid" });
+    lib.books.forEach(function (b) {
+      var st = S.libraryOf(b.id);
+      var pct = C.percent(st.done ? b.pages.length : st.page, b.pages.length);
+      grid.appendChild(el("button", {
+        class: "book-card tone-" + b.tone + (st.done ? " is-done" : ""),
+        type: "button",
+        on: { click: function () { openReader(b.id); } }
+      }, [
+        el("span", { class: "book-cover" }, [
+          el("span", { class: "book-emoji", text: b.emoji }),
+          el("span", { class: "book-level", text: b.level })
+        ]),
+        el("span", { class: "book-title", text: b.title }),
+        el("span", { class: "book-ko", text: b.ko }),
+        el("span", { class: "book-meta", text: st.done ? "완독 · 퀴즈 " + st.quizBest + "점" : (st.page ? "읽는 중 " + (st.page + 1) + " / " + b.pages.length + "쪽" : b.pages.length + "쪽 · " + b.minutes + "분") }),
+        bar(pct, "green")
+      ]));
+    });
+    wrap.appendChild(grid);
+
+    wrap.appendChild(el("section", { class: "card tip-card" }, [
+      el("span", { class: "tip-emoji", text: "📚" }),
+      el("p", { class: "tip-copy", text: "한 쪽씩 소리 내어 따라 읽고, 해석이 궁금할 때만 '해석 보기'를 눌러요. 마지막 쪽에서 독후 퀴즈를 풀면 내용이 오래 남아요." })
+    ]));
+    return wrap;
+  }
+
+  var readerToken = 0;
+
+  function openReader(bookId) {
+    var b = RD().byId(bookId);
+    if (!b) return;
+    stopReader();
+    var st = S.libraryOf(bookId);
+    UI.reader = {
+      bookId: bookId,
+      page: C.clamp(st.page || 0, 0, b.pages.length - 1),
+      line: 0,
+      playing: false,
+      rate: S.get().prefs.readerRate || 0.9,
+      showKo: !!S.get().prefs.readerKo,
+      nodes: []
+    };
+    UI.view = "reader";
+    render();
+  }
+
+  function stopReader() {
+    readerToken += 1;
+    if (UI.reader) UI.reader.playing = false;
+    Speech.stop();
+  }
+
+  function viewReader() {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) { UI.view = "library"; return el("div", { class: "view" }); }
+    var st = UI.reader;
+    var page = b.pages[C.clamp(st.page, 0, b.pages.length - 1)];
+    var wrap = el("div", { class: "view view-reader" });
+
+    wrap.appendChild(el("div", { class: "reader-scene" }, [
+      el("span", { class: "reader-scene-text", text: page.scene || b.scene }),
+      el("span", { class: "reader-page", text: (st.page + 1) + " / " + b.pages.length })
+    ]));
+
+    var nodes = [];
+    wrap.appendChild(el("div", { class: "reader-lines" }, page.lines.map(function (text, i) {
+      var node = el("button", {
+        class: "reader-line" + (st.playing && st.line === i ? " is-reading" : ""),
+        type: "button",
+        on: { click: function () { readerJump(i); } }
+      }, [text]);
+      nodes.push(node);
+      return node;
+    })));
+    st.nodes = nodes;
+
+    if (st.showKo) wrap.appendChild(el("p", { class: "reader-ko", text: page.ko }));
+
+    wrap.appendChild(el("div", { class: "reader-controls" }, [
+      iconBtn("back", "이전 쪽", function () { goPage(-1); }, "round-btn"),
+      el("button", {
+        class: "play-btn play-btn-lg",
+        type: "button",
+        "aria-label": st.playing ? "멈춤" : "재생",
+        on: { click: toggleReaderPlay }
+      }, [icon(st.playing ? "pause" : "play")]),
+      iconBtn("chevron", "다음 쪽", function () { goPage(1); }, "round-btn")
+    ]));
+
+    var rates = [0.7, 0.9, 1.1];
+    var speed = el("div", { class: "speed" }, rates.map(function (r) {
+      return el("button", {
+        class: "speed-btn" + (Math.abs((st.rate || 0.9) - r) < 0.01 ? " is-active" : ""),
+        type: "button",
+        on: {
+          click: function () {
+            st.rate = r;
+            S.setPref("readerRate", r);
+            render();
+            if (st.playing) { stopReader(); render(); readerPlay(); }
+          }
+        }
+      }, [r + "×"]);
+    }));
+
+    wrap.appendChild(el("div", { class: "reader-tools" }, [
+      speed,
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: {
+          click: function () {
+            st.showKo = !st.showKo;
+            S.setPref("readerKo", st.showKo);
+            render();
+          }
+        }
+      }, [st.showKo ? "해석 숨기기" : "해석 보기"])
+    ]));
+
+    wrap.appendChild(el("div", { class: "dots reader-dots" }, b.pages.map(function (_, i) {
+      return el("span", { class: "dot" + (i === st.page ? " is-on" : "") });
+    })));
+
+    if (st.page >= b.pages.length - 1) {
+      wrap.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { openReaderQuiz(b.id); } }
+      }, ["독후 퀴즈 · " + b.quiz.length + "문항"]));
+    } else {
+      wrap.appendChild(el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { goPage(1); } }
+      }, ["다음 쪽"]));
+    }
+
+    wrap.appendChild(el("p", { class: "reader-hint", text: st.playing ? "읽는 문장이 초록색으로 표시돼요" : "문장을 누르면 그 문장부터 이어서 읽어 줘요" }));
+    return wrap;
+  }
+
+  function readerJump(line) {
+    var st = UI.reader;
+    stopReader();
+    readerPlay(st.page, line);
+  }
+
+  function goPage(delta) {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) return;
+    var next = C.clamp(UI.reader.page + delta, 0, b.pages.length - 1);
+    stopReader();
+    if (next !== UI.reader.page) {
+      UI.reader.page = next;
+      UI.reader.line = 0;
+      S.saveLibrary(b.id, { page: next });
+    }
+    render();
+  }
+
+  function toggleReaderPlay() {
+    if (UI.reader.playing) {
+      stopReader();
+      render();
+      return;
+    }
+    readerPlay(UI.reader.page, UI.reader.line);
+  }
+
+  /** 문장을 하나씩 읽고, 쪽이 끝나면 다음 쪽으로 넘어갑니다. */
+  function readerPlay(fromPage, fromLine) {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) return;
+    var st = UI.reader;
+    var my = ++readerToken;
+    var page = typeof fromPage === "number" ? fromPage : st.page;
+    var line = typeof fromLine === "number" ? fromLine : st.line;
+    st.playing = true;
+    st.page = page;
+    st.line = line;
+    render();
+
+    function later(fn, ms) {
+      if (typeof setTimeout === "function") setTimeout(fn, ms);
+    }
+
+    function step() {
+      if (my !== readerToken) return;
+      if (page >= b.pages.length) return;
+      var pg = b.pages[page];
+      if (line >= pg.lines.length) {
+        if (page + 1 >= b.pages.length) {
+          st.playing = false;
+          S.saveLibrary(b.id, { page: page, done: true });
+          toast("끝까지 읽었어요! 독후 퀴즈를 풀어 보세요");
+          render();
+          return;
+        }
+        page += 1;
+        line = 0;
+        st.page = page;
+        st.line = 0;
+        S.saveLibrary(b.id, { page: page });
+        render();
+        later(step, 320);
+        return;
+      }
+      st.page = page;
+      st.line = line;
+      setReaderLine(line);
+      var started = Speech.speakCue(pg.lines[line], RD().locale, st.rate || 0.9, function (ok) {
+        if (my !== readerToken) return;
+        if (!ok) {
+          st.playing = false;
+          render();
+          return;
+        }
+        line += 1;
+        later(step, 200);
+      });
+      if (!started) {
+        st.playing = false;
+        toast("이 브라우저에서는 음성 재생을 지원하지 않아요. 문장을 읽으며 학습해요.");
+        render();
+      }
+    }
+
+    step();
+  }
+
+  function setReaderLine(line) {
+    var nodes = (UI.reader && UI.reader.nodes) || [];
+    nodes.forEach(function (n, i) {
+      if (!n.classList) return;
+      if (i === line) n.classList.add("is-reading");
+      else n.classList.remove("is-reading");
+    });
+    var active = nodes[line];
+    if (active && active.scrollIntoView) {
+      try { active.scrollIntoView({ block: "nearest" }); } catch (e) { /* noop */ }
+    }
+  }
+
+  /* ---------- 독후 퀴즈 ---------- */
+  function openReaderQuiz(bookId) {
+    stopReader();
+    UI.readerQuiz = { bookId: bookId, idx: 0, answers: [], locked: false, done: false };
+    UI.view = "readerQuiz";
+    render();
+  }
+
+  function viewReaderQuiz() {
+    var qz = UI.readerQuiz;
+    var b = qz ? RD().byId(qz.bookId) : null;
+    if (!b) { UI.view = "library"; return el("div", { class: "view" }); }
+    if (qz.done) return viewReaderQuizResult(b);
+
+    var wrap = el("div", { class: "view view-reader-quiz" });
+    var item = b.quiz[qz.idx];
+    wrap.appendChild(el("div", { class: "run-meta" }, [
+      el("span", { class: "run-type", text: "독후 퀴즈" }),
+      el("span", { class: "run-unit", text: b.ko }),
+      el("span", { class: "run-count", text: (qz.idx + 1) + " / " + b.quiz.length })
+    ]));
+
+    wrap.appendChild(el("p", { class: "quiz-q", text: item.q }));
+    wrap.appendChild(el("p", { class: "quiz-ko", text: item.ko }));
+
+    var opts = el("div", { class: "options" });
+    var picked = qz.answers[qz.idx];
+    item.options.forEach(function (text, i) {
+      var cls = "option-btn";
+      if (qz.locked) {
+        if (i === item.answer) cls += " is-correct";
+        else if (i === picked) cls += " is-wrong";
+        cls += " is-locked";
+      }
+      opts.appendChild(el("button", {
+        class: cls,
+        type: "button",
+        on: {
+          click: function () {
+            if (qz.locked) return;
+            qz.answers[qz.idx] = i;
+            qz.locked = true;
+            if (i === item.answer) beep("win"); else beep("wrong");
+            render();
+          }
+        }
+      }, [el("span", { class: "option-key", text: String(i + 1) }), el("span", { class: "option-text", text: text })]));
+    });
+    wrap.appendChild(opts);
+
+    if (qz.locked) {
+      var ok = picked === item.answer;
+      wrap.appendChild(el("div", { class: "run-verdict " + (ok ? "is-good" : "is-bad") }, [
+        el("b", { text: ok ? "정답이에요!" : "아쉬워요" }),
+        el("span", { text: item.why })
+      ]));
+      wrap.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: nextQuizQuestion }
+      }, [qz.idx >= b.quiz.length - 1 ? "결과 보기" : "다음 문제"]));
+    } else {
+      wrap.appendChild(el("p", { class: "foot-hint", text: "책 내용을 떠올리며 답을 골라 보세요" }));
+    }
+    return wrap;
+  }
+
+  function nextQuizQuestion() {
+    var qz = UI.readerQuiz;
+    var b = RD().byId(qz.bookId);
+    if (!b) return;
+    if (qz.idx >= b.quiz.length - 1) {
+      qz.done = true;
+      var correct = 0;
+      b.quiz.forEach(function (item, i) { if (qz.answers[i] === item.answer) correct += 1; });
+      var score = Math.round((correct / b.quiz.length) * 100);
+      var prev = S.libraryOf(b.id);
+      var firstTime = prev.quizBest === 0;
+      S.saveLibrary(b.id, { done: true, quizBest: Math.max(prev.quizBest || 0, score) });
+      if (firstTime) S.addXp(10);
+      qz.score = score;
+      qz.correct = correct;
+      qz.xp = firstTime ? 10 : 0;
+      render();
+      if (score >= 90) { beep("win"); confetti(); }
+      return;
+    }
+    qz.idx += 1;
+    qz.locked = false;
+    render();
+  }
+
+  function viewReaderQuizResult(b) {
+    var qz = UI.readerQuiz;
+    var score = typeof qz.score === "number" ? qz.score : 0;
+    var wrap = el("div", { class: "view view-report" });
+    wrap.appendChild(el("section", { class: "report-hero" }, [
+      el("span", { class: "result-emoji", text: score >= 90 ? "🌟" : (score >= 60 ? "👏" : "📖") }),
+      el("h1", { class: "report-score", text: score + "점" }),
+      el("p", { class: "report-title", text: score >= 90 ? "책을 잘 읽었어요!" : (score >= 60 ? "좋아요, 내용을 기억하고 있네요" : "한 번 더 읽으면 더 잘 기억할 수 있어요") }),
+      el("p", { class: "report-sub", text: b.title + " · " + qz.correct + " / " + b.quiz.length + " 정답" }),
+      qz.xp ? el("span", { class: "result-xp" }, [icon("bolt", "result-xp-ico"), "+" + qz.xp + " XP"]) : null
+    ]));
+
+    wrap.appendChild(el("div", { class: "result-rows" }, [
+      resultRow("책", b.title),
+      resultRow("쪽", b.pages.length + "쪽"),
+      resultRow("퀴즈 최고", S.libraryOf(b.id).quizBest + "점"),
+      resultRow("완독 기록", "저장됨")
+    ]));
+
+    var actions = el("div", { class: "report-actions" }, [
+      el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { UI.readerQuiz = null; UI.view = "library"; render(); } }
+      }, ["도서관으로"]),
+      el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { openReaderQuiz(b.id); } }
+      }, ["퀴즈 다시 풀기"]),
+      el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { openReader(b.id); } }
+      }, ["책 다시 읽기"])
+    ]);
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  /* ---------- 새 기능 상단바 ---------- */
+  function renderRunTop(top) {
+    var run = UI.run;
+    var total = run ? run.questions.length : 0;
+    var done = run ? run.idx + (run.locked || (run.reveal && typeof run.pickIndex === "number") ? 1 : 0) : 0;
+    top.className = "topbar lesson-top";
+    top.appendChild(el("div", { class: "lesson-top-row" }, [
+      iconBtn("close", "그만두기", exitRun, "close-btn"),
+      el("div", { class: "lesson-progress" }, [bar(C.percent(done, total), "green")]),
+      el("span", { class: "lesson-count", text: run ? (run.idx + 1) + "/" + total : "" })
+    ]));
+  }
+
+  function renderReportTop(top) {
+    top.className = "topbar lesson-top";
+    top.appendChild(el("div", { class: "lesson-top-row" }, [
+      iconBtn("close", "닫기", closeReport, "close-btn"),
+      el("span", { class: "run-top-label", text: UI.report ? UI.report.title : "결과" })
+    ]));
+  }
+
+  function renderReaderTop(top) {
+    var b = UI.reader ? RD().byId(UI.reader.bookId) : null;
+    var isQuiz = UI.view === "readerQuiz";
+    top.className = "topbar reader-top";
+    top.appendChild(el("div", { class: "reader-top-row" }, [
+      iconBtn("back", "도서관으로", function () {
+        stopReader();
+        UI.readerQuiz = null;
+        UI.view = "library";
+        render();
+      }, "close-btn"),
+      el("div", { class: "reader-top-copy" }, [
+        el("span", { class: "reader-top-title", text: b ? b.title : "영어원서" }),
+        el("span", { class: "reader-top-sub", text: isQuiz ? "독후 퀴즈" : (b ? b.ko + " · " + (UI.reader.page + 1) + " / " + b.pages.length + "쪽" : "") })
+      ]),
+      el("span", { class: "reader-top-flag", text: "EN" })
+    ]));
+  }
+
   /* ---------- 탭바 ---------- */
   var TABS = [
-    { id: "today", label: "오늘의 학습", icon: "home" },
-    { id: "cards", label: "문장 암기", icon: "cards" },
-    { id: "speak", label: "말하기 연습", icon: "mic" },
+    { id: "today", label: "오늘", icon: "home" },
+    { id: "exam", label: "단원평가", icon: "exam" },
+    { id: "bank", label: "문제은행", icon: "bank" },
+    { id: "library", label: "도서관", icon: "book" },
     { id: "progress", label: "진도", icon: "chart" }
   ];
+
+  /** 지금 화면이 속한 탭 (문제 풀기·결과 화면도 자기 탭을 켭니다). */
+  function activeTab() {
+    var v = UI.view;
+    if (v === "exam") return "exam";
+    if (v === "bank") return "bank";
+    if (v === "library" || v === "reader" || v === "readerQuiz") return "library";
+    if (v === "progress") return "progress";
+    if (v === "run") return UI.run && UI.run.kind === "exam" ? "exam" : "bank";
+    if (v === "report") return UI.report && UI.report.back === "exam" ? "exam" : "bank";
+    return "today";
+  }
+
+  function immersiveView() {
+    return ["lesson", "run", "report", "reader", "readerQuiz"].indexOf(UI.view) >= 0;
+  }
+
+  function goTab(id) {
+    if (immersiveView()) return;
+    stopReader();
+    stopRecognize();
+    Speech.stop();
+    if (id === "exam") UI.view = "exam";
+    else if (id === "bank") UI.view = "bank";
+    else if (id === "library") UI.view = "library";
+    else if (id === "progress") UI.view = "progress";
+    else UI.view = "today";
+    render();
+  }
 
   function renderTab() {
     var tab = roots.tab;
     if (!tab) return;
     clear(tab);
-    tab.className = "tabbar" + (UI.view === "lesson" ? " is-hidden" : "");
+    tab.className = "tabbar" + (immersiveView() ? " is-hidden" : "");
+    var active = activeTab();
     TABS.forEach(function (t) {
-      var active = UI.view === t.id;
+      var on = active === t.id;
       tab.appendChild(el("button", {
-        class: "tab" + (active ? " is-active" : ""),
+        class: "tab" + (on ? " is-active" : ""),
         type: "button",
         "aria-label": t.label,
-        "aria-current": active ? "page" : false,
-        on: {
-          click: function () {
-            if (UI.view === "lesson") return;
-            UI.view = t.id;
-            if (t.id === "cards") { UI.card.flipped = false; }
-            if (t.id === "speak") { UI.speak.result = null; }
-            render();
-          }
-        }
+        "aria-current": on ? "page" : false,
+        on: { click: function () { goTab(t.id); } }
       }, [
         el("span", { class: "tab-ico" }, [icon(t.icon)]),
         el("span", { class: "tab-label", text: t.label })
@@ -3922,6 +6302,13 @@ body.in-lesson .main { padding-bottom: 0; }
     else if (UI.view === "speak") node = viewSpeak();
     else if (UI.view === "progress") node = viewProgress();
     else if (UI.view === "lesson") node = viewLesson();
+    else if (UI.view === "exam") node = viewExam();
+    else if (UI.view === "bank") node = viewBank();
+    else if (UI.view === "run") node = viewRun();
+    else if (UI.view === "report") node = viewReport();
+    else if (UI.view === "library") node = viewLibrary();
+    else if (UI.view === "reader") node = viewReader();
+    else if (UI.view === "readerQuiz") node = viewReaderQuiz();
     if (node) roots.main.appendChild(node);
     renderTab();
     roots.main.scrollTop = 0;
@@ -3940,13 +6327,24 @@ body.in-lesson .main { padding-bottom: 0; }
     // 매니페스트 바로가기(./#speak 등)로 들어온 경우 해당 탭을 엽니다.
     try {
       var hash = global.location && global.location.hash ? String(global.location.hash).replace("#", "") : "";
-      if (hash === "today" || hash === "cards" || hash === "speak" || hash === "progress") UI.view = hash;
+      if (hash === "today" || hash === "cards" || hash === "speak" || hash === "progress" ||
+        hash === "exam" || hash === "bank" || hash === "library") UI.view = hash;
+      if (UI.view === "reader" || UI.view === "run") UI.view = "today";
     } catch (e) { /* 해시가 없어도 괜찮아요 */ }
     if (global.addEventListener) {
       global.addEventListener("popstate", function () {
         if (UI.view === "lesson") {
           UI.lesson = null;
           UI.view = "today";
+          render();
+        } else if (UI.view === "run") {
+          exitRun();
+        } else if (UI.view === "report") {
+          closeReport();
+        } else if (UI.view === "reader" || UI.view === "readerQuiz") {
+          stopReader();
+          UI.readerQuiz = null;
+          UI.view = "library";
           render();
         }
       });

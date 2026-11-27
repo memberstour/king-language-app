@@ -18,7 +18,10 @@
       progress: {},
       mastered: {},
       daily: {},
-      prefs: { sound: true, slow: false, installDismissed: false },
+      exams: {},
+      wrong: {},
+      library: {},
+      prefs: { sound: true, slow: false, installDismissed: false, readerRate: 0.9, readerKo: false },
       createdAt: C.dateKey()
     };
   }
@@ -44,6 +47,12 @@
     if (typeof st.prefs.sound !== "boolean") st.prefs.sound = true;
     if (typeof st.prefs.slow !== "boolean") st.prefs.slow = false;
     if (typeof st.prefs.installDismissed !== "boolean") st.prefs.installDismissed = false;
+    var rate = Number(st.prefs.readerRate);
+    st.prefs.readerRate = isFinite(rate) && rate >= 0.5 && rate <= 1.5 ? rate : 0.9;
+    if (typeof st.prefs.readerKo !== "boolean") st.prefs.readerKo = false;
+    st.exams = normalizeExams(st.exams);
+    st.wrong = normalizeWrong(st.wrong);
+    st.library = normalizeLibrary(st.library);
     Object.keys(st.daily).forEach(function (k) {
       var v = Number(st.daily[k]);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !isFinite(v) || v <= 0) delete st.daily[k];
@@ -55,6 +64,61 @@
       if (k < cutoff) delete st.daily[k];
     });
     return st;
+  }
+
+  function normalizeExams(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var r = raw[k];
+      if (!isObj(r)) return;
+      var best = Math.floor(Number(r.best) || 0);
+      var last = Math.floor(Number(r.last) || 0);
+      out[k] = {
+        best: C.clamp(best, 0, 100),
+        last: C.clamp(last, 0, 100),
+        passed: !!r.passed,
+        tries: Math.max(0, Math.floor(Number(r.tries) || 0)),
+        at: typeof r.at === "string" ? r.at : null
+      };
+    });
+    return out;
+  }
+
+  function normalizeWrong(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var w = raw[k];
+      if (!isObj(w) || typeof w.sentenceId !== "string" || typeof w.unitId !== "string") return;
+      out[k] = {
+        key: k,
+        lang: typeof w.lang === "string" ? w.lang : "en",
+        unitId: w.unitId,
+        unitNo: Math.max(0, Math.floor(Number(w.unitNo) || 0)),
+        sentenceId: w.sentenceId,
+        type: typeof w.type === "string" ? w.type : "",
+        count: Math.max(1, Math.floor(Number(w.count) || 1)),
+        at: typeof w.at === "string" ? w.at : null
+      };
+    });
+    return out;
+  }
+
+  function normalizeLibrary(raw) {
+    var out = {};
+    if (!isObj(raw)) return out;
+    Object.keys(raw).forEach(function (k) {
+      var r = raw[k];
+      if (!isObj(r)) return;
+      out[k] = {
+        page: Math.max(0, Math.floor(Number(r.page) || 0)),
+        done: !!r.done,
+        quizBest: C.clamp(Math.floor(Number(r.quizBest) || 0), 0, 100),
+        at: typeof r.at === "string" ? r.at : null
+      };
+    });
+    return out;
   }
 
   function load() {
@@ -269,6 +333,95 @@
     save();
   }
 
+  /* ---------- 단원평가 기록 ---------- */
+  function examRecord(unitId) {
+    var r = get().exams[unitId];
+    return isObj(r) ? r : { best: 0, last: 0, passed: false, tries: 0, at: null };
+  }
+
+  function passedExamCount(lang) {
+    var code = lang || get().lang;
+    return Object.keys(get().exams).filter(function (k) {
+      return k.indexOf(code + "-") === 0 && get().exams[k].passed;
+    }).length;
+  }
+
+  /** 평가 결과를 저장하고 최고 점수·첫 통과 여부를 돌려줍니다. */
+  function recordExam(unitId, result) {
+    var st = get();
+    var rec = isObj(st.exams[unitId]) ? st.exams[unitId] : { best: 0, last: 0, passed: false, tries: 0, at: null };
+    var wasPassed = !!rec.passed;
+    var score = C.clamp(Math.round(Number(result && result.score) || 0), 0, 100);
+    rec.last = score;
+    rec.tries = (rec.tries || 0) + 1;
+    rec.at = new Date().toISOString();
+    if (score > rec.best) rec.best = score;
+    if (result && result.passed) rec.passed = true;
+    st.exams[unitId] = rec;
+    save();
+    return { record: rec, best: rec.best, firstPass: !!(result && result.passed) && !wasPassed };
+  }
+
+  /* ---------- 오답노트 ---------- */
+  function addWrong(q) {
+    if (!q || !q.key) return;
+    var st = get();
+    var cur = isObj(st.wrong[q.key]) ? st.wrong[q.key] : null;
+    st.wrong[q.key] = {
+      key: q.key,
+      lang: q.lang || get().lang,
+      unitId: q.unitId,
+      unitNo: q.unitNo || 0,
+      sentenceId: q.sentenceId,
+      type: q.type || "",
+      count: (cur ? cur.count : 0) + 1,
+      at: new Date().toISOString()
+    };
+    save();
+  }
+
+  function removeWrong(key) {
+    var st = get();
+    if (st.wrong[key]) {
+      delete st.wrong[key];
+      save();
+    }
+  }
+
+  function wrongEntries(lang) {
+    var code = lang || get().lang;
+    return Object.keys(get().wrong).map(function (k) { return get().wrong[k]; }).filter(function (w) {
+      return w.lang === code;
+    }).sort(function (a, b) {
+      return String(b.at || "").localeCompare(String(a.at || ""));
+    });
+  }
+
+  function wrongCount(lang) {
+    return wrongEntries(lang).length;
+  }
+
+  /* ---------- 영어원서 도서관 ---------- */
+  function libraryOf(bookId) {
+    var r = get().library[bookId];
+    return isObj(r) ? r : { page: 0, done: false, quizBest: 0, at: null };
+  }
+
+  function saveLibrary(bookId, patch) {
+    var st = get();
+    var cur = isObj(st.library[bookId]) ? st.library[bookId] : { page: 0, done: false, quizBest: 0, at: null };
+    Object.keys(patch || {}).forEach(function (k) { cur[k] = patch[k]; });
+    cur.at = new Date().toISOString();
+    st.library[bookId] = cur;
+    save();
+    return cur;
+  }
+
+  function libraryDoneCount() {
+    var lib = get().library;
+    return Object.keys(lib).filter(function (k) { return lib[k].done; }).length;
+  }
+
   function resetAll() {
     state = defaults();
     save();
@@ -303,6 +456,16 @@
     unitMastered: unitMastered,
     todayXp: todayXp,
     totalXp: totalXp,
+    examRecord: examRecord,
+    passedExamCount: passedExamCount,
+    recordExam: recordExam,
+    addWrong: addWrong,
+    removeWrong: removeWrong,
+    wrongEntries: wrongEntries,
+    wrongCount: wrongCount,
+    libraryOf: libraryOf,
+    saveLibrary: saveLibrary,
+    libraryDoneCount: libraryDoneCount,
     streakInfo: streakInfo,
     last7: last7,
     setPref: setPref,

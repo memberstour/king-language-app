@@ -25,7 +25,14 @@
     back: SVG_OPEN + '<path d="M15 5l-7 7 7 7"/>',
     star: SVG_OPEN + '<path d="m12 4 2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8L12 4Z"/>',
     share: SVG_OPEN + '<path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><path d="M6 13v6h12v-6"/>',
-    refresh: SVG_OPEN + '<path d="M4 12a8 8 0 1 1 3 6.2"/><path d="M4 20v-5h5"/>'
+    refresh: SVG_OPEN + '<path d="M4 12a8 8 0 1 1 3 6.2"/><path d="M4 20v-5h5"/>',
+    exam: SVG_OPEN + '<rect x="4.5" y="4.5" width="15" height="16" rx="2.6"/><path d="M9 4.5V3h6v1.5"/><path d="M8.6 12.2l2 2 4-4"/><path d="M8.6 17.2h6.8"/>',
+    bank: SVG_OPEN + '<rect x="4" y="4" width="6.6" height="6.6" rx="1.8"/><rect x="13.4" y="4" width="6.6" height="6.6" rx="1.8"/><rect x="4" y="13.4" width="6.6" height="6.6" rx="1.8"/><rect x="13.4" y="13.4" width="6.6" height="6.6" rx="1.8"/>',
+    book: SVG_OPEN + '<path d="M4 4.6h5.4a2.6 2.6 0 0 1 2.6 2.6V20a2.6 2.6 0 0 0-2.6-2.6H4V4.6Z"/><path d="M20 4.6h-5.4A2.6 2.6 0 0 0 12 7.2V20a2.6 2.6 0 0 1 2.6-2.6H20V4.6Z"/>',
+    play: SVG_OPEN + '<path d="M7.5 4.8 19 12 7.5 19.2V4.8Z"/>',
+    pause: SVG_OPEN + '<path d="M9 4.8v14.4"/><path d="M15 4.8v14.4"/>',
+    note: SVG_OPEN + '<path d="M6 5h9l4 4v10.2H6V5Z"/><path d="M14.6 5v4.2H19"/><path d="M9 12.4h6"/><path d="M9 15.8h4"/>',
+    trophy: SVG_OPEN + '<path d="M8 4h8v4.6a4 4 0 0 1-8 0V4Z"/><path d="M8 5.6H5.5V8a3 3 0 0 0 3 3"/><path d="M16 5.6h2.5V8a3 3 0 0 1-3 3"/><path d="M12 12.6V17"/><path d="M8.5 20h7l-1-3h-5l-1 3Z"/>'
   };
 
   /* ---------- 작은 도우미 ---------- */
@@ -105,6 +112,12 @@
     card: { unit: 1, idx: 0, flipped: false },
     speak: { unit: 1, idx: 0, result: null },
     lesson: null,
+    exam: { unit: 1, count: 10, type: "all" },
+    bank: { tab: "bank", unitNo: 0, type: "all", count: 10 },
+    run: null,
+    report: null,
+    reader: { bookId: null, page: 0, line: 0, playing: false, showKo: false },
+    readerQuiz: null,
     micOn: false,
     recog: null
   };
@@ -209,7 +222,30 @@
         }
       } catch (e) { /* noop */ }
     }
-    return { supported: supported, speak: speak, stop: stop, refresh: refresh };
+    /** 한 문장을 읽고 끝나면 알려 줍니다. (오디오북 연속 재생용) */
+    function speakCue(text, loc, rate, onEnd) {
+      if (!supported || !text) {
+        if (onEnd) onEnd(false);
+        return false;
+      }
+      try {
+        global.speechSynthesis.cancel();
+        var u = new global.SpeechSynthesisUtterance(text);
+        u.lang = loc;
+        u.rate = rate || 1;
+        u.pitch = 1;
+        var v = pick(loc);
+        if (v) u.voice = v;
+        u.onend = function () { if (onEnd) onEnd(true); };
+        u.onerror = function () { if (onEnd) onEnd(false); };
+        global.speechSynthesis.speak(u);
+        return true;
+      } catch (e) {
+        if (onEnd) onEnd(false);
+        return false;
+      }
+    }
+    return { supported: supported, speak: speak, speakCue: speakCue, stop: stop, refresh: refresh };
   })();
 
   function rateFor(slow) {
@@ -355,6 +391,18 @@
     clear(top);
     if (UI.view === "lesson") {
       renderLessonTop(top);
+      return;
+    }
+    if (UI.view === "run") {
+      renderRunTop(top);
+      return;
+    }
+    if (UI.view === "report") {
+      renderReportTop(top);
+      return;
+    }
+    if (UI.view === "reader" || UI.view === "readerQuiz") {
+      renderReaderTop(top);
       return;
     }
     top.className = "topbar";
@@ -505,7 +553,39 @@
     ]));
 
     var tipIndex = (unit.no - 1) % unit.sentences.length;
-    var sample = unit.sentences[tipIndex];
+    var sample = unit.sentences[tipIndex];    wrap.appendChild(el("div", { class: "section-head" }, [
+      el("h2", { text: "더 배우기" }),
+      el("span", { class: "section-right", text: course().name + " 14단원" })
+    ]));
+    var featureGrid = el("div", { class: "feature-grid" });
+    featureGrid.appendChild(featureTile("exam", "단원평가", "통과 " + S.passedExamCount() + " / " + course().units.length, "green", function () {
+      UI.view = "exam";
+      render();
+    }));
+    featureGrid.appendChild(featureTile("bank", "문제은행", "오답 " + S.wrongCount() + "문항", "blue", function () {
+      UI.bank.tab = "bank";
+      UI.view = "bank";
+      render();
+    }));
+    featureGrid.appendChild(featureTile("book", "영어원서", "완독 " + S.libraryDoneCount() + " / " + RD().books.length, "orange", function () {
+      UI.view = "library";
+      render();
+    }));
+    wrap.appendChild(featureGrid);
+
+    wrap.appendChild(el("div", { class: "quick-row" }, [
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: { click: function () { UI.card.unit = unit.no; UI.card.idx = 0; UI.card.flipped = false; UI.view = "cards"; render(); } }
+      }, ["🃏 문장 카드로 복습"]),
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: { click: function () { UI.speak.unit = unit.no; UI.speak.idx = 0; UI.speak.result = null; UI.view = "speak"; render(); } }
+      }, ["🎤 따라 말하기 연습"])
+    ]));
+
     wrap.appendChild(el("section", { class: "card today-sentence" }, [
       el("div", { class: "section-head section-head-tight" }, [
         el("h2", { text: "오늘의 한 문장" }),
@@ -533,6 +613,19 @@
     ]));
 
     return wrap;
+  }
+
+  /* ---------- 오늘: 더 배우기 카드 ---------- */
+  function featureTile(iconName, title, sub, tone, handler) {
+    return el("button", {
+      class: "feature-tile ft-" + tone,
+      type: "button",
+      on: { click: handler }
+    }, [
+      el("span", { class: "feature-ico" }, [icon(iconName)]),
+      el("span", { class: "feature-title", text: title }),
+      el("span", { class: "feature-sub", text: sub })
+    ]);
   }
 
   /* ---------- 문장 암기(플래시카드) ---------- */
@@ -1475,35 +1568,1165 @@
     body.appendChild(voice.node);
   }
 
+  /* =========================================================
+   *  단원평가 · 문제은행 · 영어원서 도서관
+   * ========================================================= */
+  function BK() { return global.KingBank; }
+  function RD() { return global.KING_READERS; }
+
+  function playText(text, loc, rate) {
+    var ok = Speech.speak(text, loc, rate);
+    if (!ok) toast("이 브라우저에서는 음성 재생을 지원하지 않아요.");
+    return ok;
+  }
+
+  function scoreTone(score) {
+    if (score >= 80) return "good";
+    if (score >= 50) return "mid";
+    return "low";
+  }
+
+  /* ---------- 단원평가 목록 ---------- */
+  function viewExam() {
+    var c = course();
+    var units = c.units;
+    var passed = 0;
+    var sum = 0;
+    var tried = 0;
+    var tries = 0;
+    units.forEach(function (u) {
+      var r = S.examRecord(u.id);
+      if (r.best > 0) { tried += 1; sum += r.best; }
+      if (r.passed) passed += 1;
+      tries += r.tries || 0;
+    });
+
+    var wrap = el("div", { class: "view view-exam" });
+    wrap.appendChild(viewHead("단원평가", c.name + " 단원마다 10문항 · " + BK().PASS_SCORE + "점이면 통과예요"));
+
+    wrap.appendChild(el("section", { class: "exam-summary" }, [
+      el("div", { class: "exam-summary-main" }, [
+        el("span", { class: "exam-summary-num", text: passed + " / " + units.length }),
+        el("span", { class: "exam-summary-label", text: "통과한 단원" })
+      ]),
+      el("div", { class: "exam-summary-side" }, [
+        el("span", { text: tried ? "평균 최고 " + Math.round(sum / tried) + "점" : "아직 응시 전이에요" }),
+        el("span", { text: "응시 " + tries + "회 · 최고 점수는 계속 남아요" })
+      ])
+    ]));
+
+    var list = el("div", { class: "exam-list" });
+    units.forEach(function (u) {
+      var r = S.examRecord(u.id);
+      list.appendChild(el("button", {
+        class: "exam-row" + (r.passed ? " is-passed" : ""),
+        type: "button",
+        on: { click: function () { startExam(u.no); } }
+      }, [
+        el("span", { class: "exam-emoji", text: u.emoji }),
+        el("span", { class: "exam-copy" }, [
+          el("span", { class: "exam-day", text: "DAY " + u.no }),
+          el("span", { class: "exam-title", text: u.title }),
+          el("span", { class: "exam-goal", text: u.goal })
+        ]),
+        el("span", { class: "exam-score is-" + scoreTone(r.best) }, [
+          el("b", { text: r.best ? r.best + "점" : "미응시" }),
+          el("span", { text: r.passed ? "통과 ✓" : (r.tries ? "다시 도전" : "10문항") })
+        ])
+      ]));
+    });
+    wrap.appendChild(list);
+    wrap.appendChild(el("p", { class: "footnote", text: "듣기·뜻·빈칸·문장 배열·문장 고르기를 섞어 냅니다. 다시 응시해도 최고 점수가 남아요." }));
+    return wrap;
+  }
+
+  function startExam(unitNo) {
+    var c = course();
+    var u = S.unitOf(L(), unitNo);
+    var qs = BK().buildUnitExam(c, u);
+    if (!qs.length) { toast("이 단원은 아직 문제를 만들 수 없어요."); return; }
+    UI.exam.unit = unitNo;
+    UI.run = {
+      kind: "exam",
+      unitId: u.id,
+      unitNo: u.no,
+      title: "DAY " + u.no + " · " + u.title,
+      sub: "단원평가",
+      questions: qs,
+      idx: 0,
+      answers: [],
+      reveal: false,
+      locked: false,
+      pickIndex: null,
+      order: null,
+      pool: null
+    };
+    Speech.stop();
+    UI.view = "run";
+    render();
+  }
+
+  /* ---------- 문제은행 ---------- */
+  function viewBank() {
+    var c = course();
+    var wrap = el("div", { class: "view view-bank" });
+    wrap.appendChild(viewHead("문제은행", c.name + " 14단원 문제에서 골라 풀고, 틀린 문제는 오답노트에 모아요"));
+
+    var wrongN = S.wrongCount();
+    var seg = el("div", { class: "seg seg-block", role: "tablist", "aria-label": "문제은행 메뉴" }, [
+      segBlockBtn("문제은행", UI.bank.tab !== "wrong", function () { UI.bank.tab = "bank"; render(); }),
+      segBlockBtn("오답노트 " + wrongN, UI.bank.tab === "wrong", function () { UI.bank.tab = "wrong"; render(); })
+    ]);
+    wrap.appendChild(seg);
+
+    if (UI.bank.tab === "wrong") {
+      wrap.appendChild(wrongNoteSection());
+    } else {
+      wrap.appendChild(bankSection());
+    }
+    return wrap;
+  }
+
+  function segBlockBtn(label, active, handler) {
+    return el("button", {
+      class: "seg-btn" + (active ? " is-active" : ""),
+      type: "button",
+      role: "tab",
+      "aria-selected": active ? "true" : "false",
+      on: { click: handler }
+    }, [el("span", { text: label })]);
+  }
+
+  function bankSection() {
+    var c = course();
+    var box = el("div", { class: "bank-wrap" });
+
+    box.appendChild(el("section", { class: "mock-card" }, [
+      el("span", { class: "mock-emoji", text: "🎲" }),
+      el("div", { class: "mock-copy" }, [
+        el("h2", { class: "mock-title", text: "랜덤 모의고사" }),
+        el("p", { class: "mock-sub", text: "14단원에서 고르게 10문항이 나와요" })
+      ]),
+      el("button", { class: "btn btn-primary btn-small", type: "button", on: { click: startMock } }, ["시작"])
+    ]));
+
+    var filters = el("section", { class: "card filter-card" }, [
+      el("div", { class: "section-head section-head-tight" }, [
+        el("h2", { text: "직접 고르기" }),
+        el("span", { class: "section-right", text: "지금 " + BK().bankCount(c, UI.bank) + "문항" })
+      ])
+    ]);
+
+    var unitRow = el("div", { class: "chips" });
+    unitRow.appendChild(filterChip("전체 단원", UI.bank.unitNo === 0, function () { UI.bank.unitNo = 0; render(); }));
+    c.units.forEach(function (u) {
+      unitRow.appendChild(filterChip("Day " + u.no, UI.bank.unitNo === u.no, function () { UI.bank.unitNo = u.no; render(); }));
+    });
+    filters.appendChild(el("p", { class: "filter-label", text: "단원" }));
+    filters.appendChild(unitRow);
+
+    var typeRow = el("div", { class: "chips" });
+    typeRow.appendChild(filterChip("전체 유형", UI.bank.type === "all", function () { UI.bank.type = "all"; render(); }));
+    BK().TYPES.forEach(function (t) {
+      if (t.id === "read" && !course().units[0].sentences.every(function (s) { return !!(s.read || s.pinyin); })) return;
+      typeRow.appendChild(filterChip(t.ico + " " + t.name, UI.bank.type === t.id, function () { UI.bank.type = t.id; render(); }));
+    });
+    filters.appendChild(el("p", { class: "filter-label", text: "유형" }));
+    filters.appendChild(typeRow);
+
+    var countSeg = el("div", { class: "seg seg-block seg-count" }, [5, 10, 20].map(function (n) {
+      return segBlockBtn(n + "문항", UI.bank.count === n, function () { UI.bank.count = n; render(); });
+    }));
+    filters.appendChild(el("p", { class: "filter-label", text: "문항 수" }));
+    filters.appendChild(countSeg);
+
+    var available = BK().bankCount(c, UI.bank);
+    var go = el("button", {
+      class: "btn btn-primary btn-wide",
+      type: "button",
+      on: { click: startBankRun }
+    }, [available ? UI.bank.count + "문항 풀기" : "조건에 맞는 문제가 없어요"]);
+    if (!available) { go.disabled = true; go.classList.add("is-disabled"); }
+    filters.appendChild(go);
+    filters.appendChild(el("p", { class: "foot-hint", text: "듣기 문제는 소리로 나오고, 풀면 바로 채점해요" }));
+    box.appendChild(filters);
+    return box;
+  }
+
+  function filterChip(label, active, handler) {
+    return el("button", {
+      class: "unit-chip filter-chip" + (active ? " is-active" : ""),
+      type: "button",
+      "aria-pressed": active ? "true" : "false",
+      on: { click: handler }
+    }, [el("span", { class: "unit-chip-label", text: label })]);
+  }
+
+  function wrongNoteSection() {
+    var entries = S.wrongEntries();
+    var box = el("div", { class: "wrong-wrap" });
+
+    if (!entries.length) {
+      box.appendChild(el("section", { class: "empty-card" }, [
+        el("span", { class: "empty-emoji", text: "🎯" }),
+        el("h2", { class: "empty-title", text: "오답노트가 비어 있어요" }),
+        el("p", { class: "empty-sub", text: "단원평가나 문제은행에서 틀린 문제가 여기에 자동으로 모여요. 다시 풀어 맞히면 사라져요." })
+      ]));
+      return box;
+    }
+
+    box.appendChild(el("div", { class: "wrong-head" }, [
+      el("div", {}, [
+        el("b", { class: "wrong-count", text: entries.length + "문항" }),
+        el("span", { class: "wrong-sub", text: "틀린 문제만 모아 두었어요" })
+      ]),
+      el("button", { class: "btn btn-primary btn-small", type: "button", on: { click: function () { startWrongRun(null); } } }, ["모두 다시 풀기"])
+    ]));
+
+    var list = el("div", { class: "wrong-list" });
+    entries.forEach(function (w) {
+      var q = findQuestion(w);
+      var label = q ? q.text : w.sentenceId;
+      list.appendChild(el("div", { class: "wrong-row" }, [
+        el("button", {
+          class: "wrong-main",
+          type: "button",
+          on: { click: function () { startWrongRun([w.key]); } }
+        }, [
+          el("span", { class: "wrong-type", text: BK().typeName(w.type) }),
+          el("span", { class: "wrong-text", text: label }),
+          el("span", { class: "wrong-meta", text: "DAY " + w.unitNo + " · " + (w.count || 1) + "번 틀림" })
+        ]),
+        iconBtn("close", "오답노트에서 지우기", function () {
+          S.removeWrong(w.key);
+          render();
+          toast("오답노트에서 지웠어요");
+        }, "wrong-del")
+      ]));
+    });
+    box.appendChild(list);
+    return box;
+  }
+
+  /** 오답노트 항목의 문제를 현재 코스에서 다시 찾습니다. */
+  function findQuestion(w) {
+    var qs = BK().byKeys(course(), [w.key]);
+    return qs[0] || null;
+  }
+
+  function startBankRun() {
+    var c = course();
+    var qs = BK().buildBank(c, UI.bank);
+    if (!qs.length) { toast("조건에 맞는 문제가 없어요."); return; }
+    var parts = [];
+    parts.push(UI.bank.unitNo ? "DAY " + UI.bank.unitNo : "전체 단원");
+    parts.push(UI.bank.type === "all" ? "모든 유형" : BK().typeName(UI.bank.type));
+    openRun({
+      kind: "bank",
+      title: "문제은행",
+      sub: parts.join(" · "),
+      questions: qs
+    });
+  }
+
+  function startMock() {
+    var qs = BK().mockExam(course(), 10);
+    if (!qs.length) { toast("문제를 만들 수 없어요."); return; }
+    openRun({ kind: "mock", title: "랜덤 모의고사", sub: "14단원 고르게 10문항", questions: qs });
+  }
+
+  function startWrongRun(keys) {
+    var list = keys || S.wrongEntries().map(function (w) { return w.key; });
+    var qs = BK().byKeys(course(), list);
+    if (!qs.length) { toast("다시 풀 문제가 없어요."); return; }
+    openRun({ kind: "wrong", title: "오답노트", sub: qs.length + "문항 다시 풀기", questions: qs });
+  }
+
+  function openRun(opts) {
+    UI.run = {
+      kind: opts.kind,
+      unitId: opts.unitId || null,
+      unitNo: opts.unitNo || 0,
+      title: opts.title,
+      sub: opts.sub || "",
+      questions: opts.questions,
+      idx: 0,
+      answers: [],
+      reveal: true,
+      locked: false,
+      pickIndex: null,
+      order: null,
+      pool: null
+    };
+    Speech.stop();
+    UI.view = "run";
+    render();
+  }
+
+  /* ---------- 문제 풀기 (단원평가·문제은행 공통) ---------- */
+  function viewRun() {
+    var run = UI.run;
+    if (!run || !run.questions.length) { UI.view = "today"; return el("div", { class: "view" }); }
+    var q = run.questions[run.idx];
+    var wrap = el("div", { class: "view view-run" });
+
+    wrap.appendChild(el("div", { class: "run-meta" }, [
+      el("span", { class: "run-type", text: BK().typeName(q.type) }),
+      el("span", { class: "run-unit", text: run.kind === "exam" ? run.title : "DAY " + q.unitNo + " · " + q.unitTitle }),
+      el("span", { class: "run-count", text: (run.idx + 1) + " / " + run.questions.length })
+    ]));
+
+    var body = el("div", { class: "run-body" });
+    renderQuestion(q, run, body);
+    wrap.appendChild(body);
+    wrap.appendChild(runFoot(run, q));
+    return wrap;
+  }
+
+  function renderQuestion(q, run, body) {
+    if (q.type === "listen") {
+      body.appendChild(el("p", { class: "run-ask", text: "듣고 뜻을 고르세요" }));
+      body.appendChild(el("div", { class: "run-audio" }, [
+        el("button", {
+          class: "play-btn",
+          type: "button",
+          "aria-label": "문장 듣기",
+          on: { click: function () { playText(q.speak, locale(), (course().rate || {}).normal || 0.95); } }
+        }, [icon("speaker")]),
+        el("button", {
+          class: "btn btn-ghost btn-small",
+          type: "button",
+          on: { click: function () { playText(q.speak, locale(), (course().rate || {}).slow || 0.6); } }
+        }, [icon("slow", "btn-ico"), "천천히"])
+      ]));
+      if (run.locked) {
+        body.appendChild(el("p", { class: "target target-sm", lang: q.lang, text: q.text }));
+        if (q.read) body.appendChild(el("p", { class: "pinyin", text: q.read }));
+      }
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "meaning" || q.type === "read") {
+      body.appendChild(el("p", { class: "run-ask", text: q.type === "read" ? "이 문장은 어떻게 읽을까요?" : "이 문장의 뜻은 무엇일까요?" }));
+      body.appendChild(el("p", { class: "target target-sm", lang: q.lang, text: q.text }));
+      if (q.type === "meaning" && q.read) body.appendChild(el("p", { class: "pinyin", text: q.read }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "blank") {
+      body.appendChild(el("p", { class: "run-ask", text: "빈칸에 들어갈 말을 고르세요" }));
+      body.appendChild(blankLine(q));
+      body.appendChild(el("p", { class: "ko-line", text: q.ko }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "pick") {
+      body.appendChild(el("p", { class: "run-ask", text: "이 뜻에 맞는 문장을 고르세요" }));
+      body.appendChild(el("p", { class: "run-ko", text: q.ko }));
+      renderChoiceOptions(q, run, body);
+      return;
+    }
+
+    if (q.type === "order") {
+      body.appendChild(el("p", { class: "run-ask", text: "단어를 순서대로 놓아 문장을 만드세요" }));
+      body.appendChild(el("p", { class: "run-ko", text: q.ko }));
+      renderOrderQuestion(q, run, body);
+    }
+  }
+
+  /** 빈칸 문장을 조각으로 그립니다. */
+  function blankLine(q) {
+    var parts = [];
+    (q.parts || []).forEach(function (p) {
+      if (p.blank) parts.push(el("span", { class: "blank-slot", text: "____" }));
+      else parts.push(p.t + (course().space ? " " : ""));
+    });
+    return el("p", { class: "target target-sm blank-text", lang: q.lang }, parts);
+  }
+
+  function renderChoiceOptions(q, run, body) {
+    var picked = run.pickIndex;
+    var locked = !!run.locked;
+    var opts = el("div", { class: "options" });
+    q.options.forEach(function (o, i) {
+      var cls = "option-btn";
+      if (locked) {
+        if (o.correct) cls += " is-correct";
+        else if (i === picked) cls += " is-wrong";
+        cls += " is-locked";
+      } else if (i === picked) {
+        cls += " is-picked";
+      }
+      opts.appendChild(el("button", {
+        class: cls,
+        type: "button",
+        on: {
+          click: function () {
+            if (locked) return;
+            run.pickIndex = i;
+            if (run.reveal) { submitRunAnswer(); return; }
+            render();
+          }
+        }
+      }, [
+        el("span", { class: "option-key", text: String(i + 1) }),
+        el("span", { class: "option-text", text: o.text, lang: q.type === "pick" ? q.lang : null })
+      ]));
+    });
+    body.appendChild(opts);
+    if (locked) body.appendChild(runVerdict(q, run));
+  }
+
+  function renderOrderQuestion(q, run, body) {
+    if (!run.order) run.order = [];
+    if (!run.pool) run.pool = q.tokens.map(function (t, i) { return { id: i, text: t }; });
+    var used = {};
+    run.order.forEach(function (o) { used[o.id] = true; });
+
+    var slots = el("div", { class: "slots" + (run.order.length ? "" : " is-empty") });
+    if (!run.order.length) slots.appendChild(el("span", { class: "slots-empty", text: "아래 단어를 순서대로 눌러 보세요" }));
+    run.order.forEach(function (o, i) {
+      slots.appendChild(el("button", {
+        class: "tile tile-placed",
+        type: "button",
+        on: {
+          click: function () {
+            if (run.locked) return;
+            run.order.splice(i, 1);
+            render();
+          }
+        }
+      }, [o.text]));
+    });
+    body.appendChild(slots);
+
+    var bankRow = el("div", { class: "bank" });
+    run.pool.forEach(function (o) {
+      if (used[o.id]) return;
+      bankRow.appendChild(el("button", {
+        class: "tile",
+        type: "button",
+        on: {
+          click: function () {
+            if (run.locked) return;
+            run.order.push(o);
+            render();
+          }
+        }
+      }, [o.text]));
+    });
+    body.appendChild(bankRow);
+    if (run.locked) body.appendChild(runVerdict(q, run));
+  }
+
+  function runVerdict(q, run) {
+    var ok = BK().isCorrect(q, run.answers[run.idx]);
+    return el("div", { class: "run-verdict " + (ok ? "is-good" : "is-bad") }, [
+      el("b", { text: ok ? "정답이에요!" : "아쉬워요" }),
+      el("span", { text: ok ? q.ko : "정답: " + BK().correctText(q) + " — " + q.ko }),
+      q.tip ? el("em", { class: "run-tip", text: "💡 " + q.tip }) : null
+    ]);
+  }
+
+  function runFoot(run, q) {
+    var foot = el("div", { class: "run-foot" });
+    var ready;
+    if (run.locked) ready = true;
+    else if (q.tokens) ready = !!run.order && run.order.length === q.tokens.length;
+    else ready = typeof run.pickIndex === "number";
+
+    var last = run.idx >= run.questions.length - 1;
+    var label;
+    if (run.locked) label = last ? "결과 보기" : "다음 문항";
+    else if (run.reveal) label = last ? "채점하기" : "다음 문항";
+    else label = last ? "채점하기" : "다음 문항";
+
+    var btn = el("button", {
+      class: "btn btn-primary btn-wide",
+      type: "button",
+      on: {
+        click: function () {
+          if (!ready) return;
+          if (run.locked) { advanceRun(); return; }
+          submitRunAnswer();
+        }
+      }
+    }, [label]);
+    if (!ready) { btn.disabled = true; btn.classList.add("is-disabled"); }
+    foot.appendChild(btn);
+    if (!ready) foot.appendChild(el("p", { class: "foot-hint", text: q.tokens ? "단어를 모두 놓으면 다음으로 갈 수 있어요" : "보기를 고르면 다음으로 갈 수 있어요" }));
+    return foot;
+  }
+
+  function submitRunAnswer() {
+    var run = UI.run;
+    if (!run) return;
+    var q = run.questions[run.idx];
+    var answer;
+    if (q.tokens) {
+      if (!run.order || run.order.length !== q.tokens.length) return;
+      answer = run.order.map(function (o) { return o.text; });
+    } else {
+      if (typeof run.pickIndex !== "number") return;
+      answer = run.pickIndex;
+    }
+    run.answers[run.idx] = answer;
+
+    if (run.reveal) {
+      run.locked = true;
+      if (BK().isCorrect(q, answer)) {
+        beep("win");
+        S.removeWrong(q.key);
+      } else {
+        beep("wrong");
+        S.addWrong(q);
+      }
+      render();
+      return;
+    }
+
+    beep();
+    advanceRun();
+  }
+
+  function advanceRun() {
+    var run = UI.run;
+    if (!run) return;
+    if (run.idx >= run.questions.length - 1) { finishRun(); return; }
+    run.idx += 1;
+    run.locked = false;
+    run.pickIndex = null;
+    run.order = null;
+    run.pool = null;
+    Speech.stop();
+    render();
+  }
+
+  function finishRun() {
+    var run = UI.run;
+    if (!run) return;
+    var res = BK().grade(run.questions, run.answers);
+    var xp = 0;
+    var best = 0;
+    var firstPass = false;
+    var record = null;
+
+    if (run.kind === "exam") {
+      record = S.recordExam(run.unitId, res);
+      best = record.best;
+      firstPass = record.firstPass;
+      xp = res.correct * 2 + (firstPass ? 10 : 0);
+      res.wrong.forEach(function (w) { S.addWrong(w.q); });
+      if (xp) S.addXp(xp);
+    } else {
+      // 연습 모드: 이미 문항마다 오답노트를 반영했고, 남은 오답만 다시 더해 둡니다.
+      res.wrong.forEach(function (w) { if (!S.get().wrong[w.q.key]) S.addWrong(w.q); });
+    }
+
+    UI.report = {
+      kind: run.kind,
+      title: run.title,
+      unitId: run.unitId,
+      unitNo: run.unitNo,
+      result: res,
+      questions: run.questions,
+      answers: run.answers,
+      xp: xp,
+      best: best,
+      firstPass: firstPass,
+      back: run.kind === "exam" ? "exam" : "bank"
+    };
+    UI.run = null;
+    UI.view = "report";
+    render();
+    if (res.passed) {
+      beep("win");
+      confetti();
+    }
+  }
+
+  function exitRun() {
+    var kind = UI.run ? UI.run.kind : "exam";
+    Speech.stop();
+    UI.run = null;
+    UI.view = kind === "exam" ? "exam" : "bank";
+    render();
+  }
+
+  function closeReport() {
+    var back = UI.report ? UI.report.back : "exam";
+    UI.report = null;
+    UI.view = back;
+    render();
+  }
+
+  /* ---------- 결과 · 해설 리포트 ---------- */
+  function viewReport() {
+    var r = UI.report;
+    if (!r) { UI.view = "today"; return el("div", { class: "view" }); }
+    var res = r.result;
+    var isExam = r.kind === "exam";
+    var wrap = el("div", { class: "view view-report" });
+
+    wrap.appendChild(el("section", { class: "report-hero" }, [
+      el("span", { class: "result-emoji", text: res.passed ? "🎉" : (res.score >= 50 ? "💪" : "🌱") }),
+      el("h1", { class: "report-score", text: res.score + "점" }),
+      el("p", { class: "report-title", text: isExam ? (res.passed ? "통과했어요!" : "조금만 더 힘내요") : (res.score >= 80 ? "아주 잘 풀었어요!" : "틀린 문제는 오답노트에 모았어요") }),
+      el("p", { class: "report-sub", text: r.title + " · " + res.correct + " / " + res.total + " 정답" }),
+      r.xp ? el("span", { class: "result-xp" }, [icon("bolt", "result-xp-ico"), "+" + r.xp + " XP"]) : null
+    ]));
+
+    wrap.appendChild(el("div", { class: "result-rows" }, [
+      resultRow("정답", res.correct + "문항"),
+      resultRow("틀린 문항", res.wrong.length + "문항"),
+      resultRow("통과 기준", BK().PASS_SCORE + "점"),
+      isExam ? resultRow("이 단원 최고", r.best + "점") : resultRow("오답노트", S.wrongCount() + "문항"),
+      isExam ? resultRow("통과 여부", res.passed ? "통과" : "다시 도전") : null
+    ]));
+
+    if (res.wrong.length) {
+      wrap.appendChild(el("div", { class: "section-head" }, [
+        el("h2", { text: "틀린 문항 해설" }),
+        el("span", { class: "section-right", text: res.wrong.length + "문항" })
+      ]));
+      res.wrong.forEach(function (w, i) { wrap.appendChild(explainCard(w, i)); });
+    } else {
+      wrap.appendChild(el("p", { class: "report-perfect", text: "모든 문항을 맞혔어요. 다음 단원에 도전해 볼까요?" }));
+    }
+
+    var actions = el("div", { class: "report-actions" });
+    if (res.wrong.length) {
+      actions.appendChild(el("button", {
+        class: "btn btn-orange-ghost btn-wide",
+        type: "button",
+        on: {
+          click: function () {
+            var keys = res.wrong.map(function (w) { return w.q.key; });
+            UI.report = null;
+            UI.view = "bank";
+            startWrongRun(keys);
+          }
+        }
+      }, ["틀린 문항만 다시 풀기"]));
+    }
+    if (isExam) {
+      actions.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { var no = r.unitNo; UI.report = null; startExam(no); } }
+      }, ["이 단원 다시 응시"]));
+      actions.appendChild(el("button", { class: "btn btn-ghost btn-wide", type: "button", on: { click: function () { UI.report = null; UI.view = "exam"; render(); } } }, ["단원평가 목록"]));
+    } else {
+      actions.appendChild(el("button", { class: "btn btn-primary btn-wide", type: "button", on: { click: function () { UI.report = null; UI.bank.tab = "wrong"; UI.view = "bank"; render(); } } }, ["오답노트 보기"]));
+      actions.appendChild(el("button", { class: "btn btn-ghost btn-wide", type: "button", on: { click: function () { UI.report = null; UI.view = "bank"; render(); } } }, ["문제은행으로"]));
+    }
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  function explainCard(w, i) {
+    var q = w.q;
+    var mine = BK().answerText(q, w.answer);
+    return el("section", { class: "explain-card" }, [
+      el("div", { class: "explain-head" }, [
+        el("span", { class: "explain-no", text: String(i + 1) }),
+        el("span", { class: "run-type", text: BK().typeName(q.type) }),
+        el("span", { class: "explain-unit", text: "DAY " + q.unitNo })
+      ]),
+      el("p", { class: "explain-text", text: q.text, lang: q.lang }),
+      q.read ? el("p", { class: "pinyin", text: q.read }) : null,
+      el("p", { class: "explain-ko", text: q.ko }),
+      el("p", { class: "explain-mine", text: "내 답: " + mine }),
+      el("p", { class: "explain-answer", text: "정답: " + BK().correctText(q) }),
+      q.tip ? el("p", { class: "explain-tip", text: "💡 " + q.tip }) : null
+    ]);
+  }
+
+  /* ---------- 영어원서 도서관 ---------- */
+  function viewLibrary() {
+    var lib = RD();
+    var wrap = el("div", { class: "view view-library" });
+    wrap.appendChild(viewHead("영어원서 도서관", "초등 입문~초급 원서 " + lib.books.length + "권 · 문장을 눌러 듣고 따라 읽어요"));
+
+    wrap.appendChild(el("div", { class: "lib-stats" }, [
+      el("span", { class: "lib-stat" }, [el("b", { text: String(S.libraryDoneCount()) }), el("span", { text: "완독" })]),
+      el("span", { class: "lib-stat" }, [el("b", { text: String(lib.books.length) }), el("span", { text: "권 보유" })]),
+      el("span", { class: "lib-note", text: "🔊 아이폰 사파리·홈 화면 앱에서 소리가 나요" })
+    ]));
+
+    var grid = el("div", { class: "book-grid" });
+    lib.books.forEach(function (b) {
+      var st = S.libraryOf(b.id);
+      var pct = C.percent(st.done ? b.pages.length : st.page, b.pages.length);
+      grid.appendChild(el("button", {
+        class: "book-card tone-" + b.tone + (st.done ? " is-done" : ""),
+        type: "button",
+        on: { click: function () { openReader(b.id); } }
+      }, [
+        el("span", { class: "book-cover" }, [
+          el("span", { class: "book-emoji", text: b.emoji }),
+          el("span", { class: "book-level", text: b.level })
+        ]),
+        el("span", { class: "book-title", text: b.title }),
+        el("span", { class: "book-ko", text: b.ko }),
+        el("span", { class: "book-meta", text: st.done ? "완독 · 퀴즈 " + st.quizBest + "점" : (st.page ? "읽는 중 " + (st.page + 1) + " / " + b.pages.length + "쪽" : b.pages.length + "쪽 · " + b.minutes + "분") }),
+        bar(pct, "green")
+      ]));
+    });
+    wrap.appendChild(grid);
+
+    wrap.appendChild(el("section", { class: "card tip-card" }, [
+      el("span", { class: "tip-emoji", text: "📚" }),
+      el("p", { class: "tip-copy", text: "한 쪽씩 소리 내어 따라 읽고, 해석이 궁금할 때만 '해석 보기'를 눌러요. 마지막 쪽에서 독후 퀴즈를 풀면 내용이 오래 남아요." })
+    ]));
+    return wrap;
+  }
+
+  var readerToken = 0;
+
+  function openReader(bookId) {
+    var b = RD().byId(bookId);
+    if (!b) return;
+    stopReader();
+    var st = S.libraryOf(bookId);
+    UI.reader = {
+      bookId: bookId,
+      page: C.clamp(st.page || 0, 0, b.pages.length - 1),
+      line: 0,
+      playing: false,
+      rate: S.get().prefs.readerRate || 0.9,
+      showKo: !!S.get().prefs.readerKo,
+      nodes: []
+    };
+    UI.view = "reader";
+    render();
+  }
+
+  function stopReader() {
+    readerToken += 1;
+    if (UI.reader) UI.reader.playing = false;
+    Speech.stop();
+  }
+
+  function viewReader() {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) { UI.view = "library"; return el("div", { class: "view" }); }
+    var st = UI.reader;
+    var page = b.pages[C.clamp(st.page, 0, b.pages.length - 1)];
+    var wrap = el("div", { class: "view view-reader" });
+
+    wrap.appendChild(el("div", { class: "reader-scene" }, [
+      el("span", { class: "reader-scene-text", text: page.scene || b.scene }),
+      el("span", { class: "reader-page", text: (st.page + 1) + " / " + b.pages.length })
+    ]));
+
+    var nodes = [];
+    wrap.appendChild(el("div", { class: "reader-lines" }, page.lines.map(function (text, i) {
+      var node = el("button", {
+        class: "reader-line" + (st.playing && st.line === i ? " is-reading" : ""),
+        type: "button",
+        on: { click: function () { readerJump(i); } }
+      }, [text]);
+      nodes.push(node);
+      return node;
+    })));
+    st.nodes = nodes;
+
+    if (st.showKo) wrap.appendChild(el("p", { class: "reader-ko", text: page.ko }));
+
+    wrap.appendChild(el("div", { class: "reader-controls" }, [
+      iconBtn("back", "이전 쪽", function () { goPage(-1); }, "round-btn"),
+      el("button", {
+        class: "play-btn play-btn-lg",
+        type: "button",
+        "aria-label": st.playing ? "멈춤" : "재생",
+        on: { click: toggleReaderPlay }
+      }, [icon(st.playing ? "pause" : "play")]),
+      iconBtn("chevron", "다음 쪽", function () { goPage(1); }, "round-btn")
+    ]));
+
+    var rates = [0.7, 0.9, 1.1];
+    var speed = el("div", { class: "speed" }, rates.map(function (r) {
+      return el("button", {
+        class: "speed-btn" + (Math.abs((st.rate || 0.9) - r) < 0.01 ? " is-active" : ""),
+        type: "button",
+        on: {
+          click: function () {
+            st.rate = r;
+            S.setPref("readerRate", r);
+            render();
+            if (st.playing) { stopReader(); render(); readerPlay(); }
+          }
+        }
+      }, [r + "×"]);
+    }));
+
+    wrap.appendChild(el("div", { class: "reader-tools" }, [
+      speed,
+      el("button", {
+        class: "btn btn-ghost btn-small",
+        type: "button",
+        on: {
+          click: function () {
+            st.showKo = !st.showKo;
+            S.setPref("readerKo", st.showKo);
+            render();
+          }
+        }
+      }, [st.showKo ? "해석 숨기기" : "해석 보기"])
+    ]));
+
+    wrap.appendChild(el("div", { class: "dots reader-dots" }, b.pages.map(function (_, i) {
+      return el("span", { class: "dot" + (i === st.page ? " is-on" : "") });
+    })));
+
+    if (st.page >= b.pages.length - 1) {
+      wrap.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { openReaderQuiz(b.id); } }
+      }, ["독후 퀴즈 · " + b.quiz.length + "문항"]));
+    } else {
+      wrap.appendChild(el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { goPage(1); } }
+      }, ["다음 쪽"]));
+    }
+
+    wrap.appendChild(el("p", { class: "reader-hint", text: st.playing ? "읽는 문장이 초록색으로 표시돼요" : "문장을 누르면 그 문장부터 이어서 읽어 줘요" }));
+    return wrap;
+  }
+
+  function readerJump(line) {
+    var st = UI.reader;
+    stopReader();
+    readerPlay(st.page, line);
+  }
+
+  function goPage(delta) {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) return;
+    var next = C.clamp(UI.reader.page + delta, 0, b.pages.length - 1);
+    stopReader();
+    if (next !== UI.reader.page) {
+      UI.reader.page = next;
+      UI.reader.line = 0;
+      S.saveLibrary(b.id, { page: next });
+    }
+    render();
+  }
+
+  function toggleReaderPlay() {
+    if (UI.reader.playing) {
+      stopReader();
+      render();
+      return;
+    }
+    readerPlay(UI.reader.page, UI.reader.line);
+  }
+
+  /** 문장을 하나씩 읽고, 쪽이 끝나면 다음 쪽으로 넘어갑니다. */
+  function readerPlay(fromPage, fromLine) {
+    var b = RD().byId(UI.reader.bookId);
+    if (!b) return;
+    var st = UI.reader;
+    var my = ++readerToken;
+    var page = typeof fromPage === "number" ? fromPage : st.page;
+    var line = typeof fromLine === "number" ? fromLine : st.line;
+    st.playing = true;
+    st.page = page;
+    st.line = line;
+    render();
+
+    function later(fn, ms) {
+      if (typeof setTimeout === "function") setTimeout(fn, ms);
+    }
+
+    function step() {
+      if (my !== readerToken) return;
+      if (page >= b.pages.length) return;
+      var pg = b.pages[page];
+      if (line >= pg.lines.length) {
+        if (page + 1 >= b.pages.length) {
+          st.playing = false;
+          S.saveLibrary(b.id, { page: page, done: true });
+          toast("끝까지 읽었어요! 독후 퀴즈를 풀어 보세요");
+          render();
+          return;
+        }
+        page += 1;
+        line = 0;
+        st.page = page;
+        st.line = 0;
+        S.saveLibrary(b.id, { page: page });
+        render();
+        later(step, 320);
+        return;
+      }
+      st.page = page;
+      st.line = line;
+      setReaderLine(line);
+      var started = Speech.speakCue(pg.lines[line], RD().locale, st.rate || 0.9, function (ok) {
+        if (my !== readerToken) return;
+        if (!ok) {
+          st.playing = false;
+          render();
+          return;
+        }
+        line += 1;
+        later(step, 200);
+      });
+      if (!started) {
+        st.playing = false;
+        toast("이 브라우저에서는 음성 재생을 지원하지 않아요. 문장을 읽으며 학습해요.");
+        render();
+      }
+    }
+
+    step();
+  }
+
+  function setReaderLine(line) {
+    var nodes = (UI.reader && UI.reader.nodes) || [];
+    nodes.forEach(function (n, i) {
+      if (!n.classList) return;
+      if (i === line) n.classList.add("is-reading");
+      else n.classList.remove("is-reading");
+    });
+    var active = nodes[line];
+    if (active && active.scrollIntoView) {
+      try { active.scrollIntoView({ block: "nearest" }); } catch (e) { /* noop */ }
+    }
+  }
+
+  /* ---------- 독후 퀴즈 ---------- */
+  function openReaderQuiz(bookId) {
+    stopReader();
+    UI.readerQuiz = { bookId: bookId, idx: 0, answers: [], locked: false, done: false };
+    UI.view = "readerQuiz";
+    render();
+  }
+
+  function viewReaderQuiz() {
+    var qz = UI.readerQuiz;
+    var b = qz ? RD().byId(qz.bookId) : null;
+    if (!b) { UI.view = "library"; return el("div", { class: "view" }); }
+    if (qz.done) return viewReaderQuizResult(b);
+
+    var wrap = el("div", { class: "view view-reader-quiz" });
+    var item = b.quiz[qz.idx];
+    wrap.appendChild(el("div", { class: "run-meta" }, [
+      el("span", { class: "run-type", text: "독후 퀴즈" }),
+      el("span", { class: "run-unit", text: b.ko }),
+      el("span", { class: "run-count", text: (qz.idx + 1) + " / " + b.quiz.length })
+    ]));
+
+    wrap.appendChild(el("p", { class: "quiz-q", text: item.q }));
+    wrap.appendChild(el("p", { class: "quiz-ko", text: item.ko }));
+
+    var opts = el("div", { class: "options" });
+    var picked = qz.answers[qz.idx];
+    item.options.forEach(function (text, i) {
+      var cls = "option-btn";
+      if (qz.locked) {
+        if (i === item.answer) cls += " is-correct";
+        else if (i === picked) cls += " is-wrong";
+        cls += " is-locked";
+      }
+      opts.appendChild(el("button", {
+        class: cls,
+        type: "button",
+        on: {
+          click: function () {
+            if (qz.locked) return;
+            qz.answers[qz.idx] = i;
+            qz.locked = true;
+            if (i === item.answer) beep("win"); else beep("wrong");
+            render();
+          }
+        }
+      }, [el("span", { class: "option-key", text: String(i + 1) }), el("span", { class: "option-text", text: text })]));
+    });
+    wrap.appendChild(opts);
+
+    if (qz.locked) {
+      var ok = picked === item.answer;
+      wrap.appendChild(el("div", { class: "run-verdict " + (ok ? "is-good" : "is-bad") }, [
+        el("b", { text: ok ? "정답이에요!" : "아쉬워요" }),
+        el("span", { text: item.why })
+      ]));
+      wrap.appendChild(el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: nextQuizQuestion }
+      }, [qz.idx >= b.quiz.length - 1 ? "결과 보기" : "다음 문제"]));
+    } else {
+      wrap.appendChild(el("p", { class: "foot-hint", text: "책 내용을 떠올리며 답을 골라 보세요" }));
+    }
+    return wrap;
+  }
+
+  function nextQuizQuestion() {
+    var qz = UI.readerQuiz;
+    var b = RD().byId(qz.bookId);
+    if (!b) return;
+    if (qz.idx >= b.quiz.length - 1) {
+      qz.done = true;
+      var correct = 0;
+      b.quiz.forEach(function (item, i) { if (qz.answers[i] === item.answer) correct += 1; });
+      var score = Math.round((correct / b.quiz.length) * 100);
+      var prev = S.libraryOf(b.id);
+      var firstTime = prev.quizBest === 0;
+      S.saveLibrary(b.id, { done: true, quizBest: Math.max(prev.quizBest || 0, score) });
+      if (firstTime) S.addXp(10);
+      qz.score = score;
+      qz.correct = correct;
+      qz.xp = firstTime ? 10 : 0;
+      render();
+      if (score >= 90) { beep("win"); confetti(); }
+      return;
+    }
+    qz.idx += 1;
+    qz.locked = false;
+    render();
+  }
+
+  function viewReaderQuizResult(b) {
+    var qz = UI.readerQuiz;
+    var score = typeof qz.score === "number" ? qz.score : 0;
+    var wrap = el("div", { class: "view view-report" });
+    wrap.appendChild(el("section", { class: "report-hero" }, [
+      el("span", { class: "result-emoji", text: score >= 90 ? "🌟" : (score >= 60 ? "👏" : "📖") }),
+      el("h1", { class: "report-score", text: score + "점" }),
+      el("p", { class: "report-title", text: score >= 90 ? "책을 잘 읽었어요!" : (score >= 60 ? "좋아요, 내용을 기억하고 있네요" : "한 번 더 읽으면 더 잘 기억할 수 있어요") }),
+      el("p", { class: "report-sub", text: b.title + " · " + qz.correct + " / " + b.quiz.length + " 정답" }),
+      qz.xp ? el("span", { class: "result-xp" }, [icon("bolt", "result-xp-ico"), "+" + qz.xp + " XP"]) : null
+    ]));
+
+    wrap.appendChild(el("div", { class: "result-rows" }, [
+      resultRow("책", b.title),
+      resultRow("쪽", b.pages.length + "쪽"),
+      resultRow("퀴즈 최고", S.libraryOf(b.id).quizBest + "점"),
+      resultRow("완독 기록", "저장됨")
+    ]));
+
+    var actions = el("div", { class: "report-actions" }, [
+      el("button", {
+        class: "btn btn-primary btn-wide",
+        type: "button",
+        on: { click: function () { UI.readerQuiz = null; UI.view = "library"; render(); } }
+      }, ["도서관으로"]),
+      el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { openReaderQuiz(b.id); } }
+      }, ["퀴즈 다시 풀기"]),
+      el("button", {
+        class: "btn btn-ghost btn-wide",
+        type: "button",
+        on: { click: function () { openReader(b.id); } }
+      }, ["책 다시 읽기"])
+    ]);
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  /* ---------- 새 기능 상단바 ---------- */
+  function renderRunTop(top) {
+    var run = UI.run;
+    var total = run ? run.questions.length : 0;
+    var done = run ? run.idx + (run.locked || (run.reveal && typeof run.pickIndex === "number") ? 1 : 0) : 0;
+    top.className = "topbar lesson-top";
+    top.appendChild(el("div", { class: "lesson-top-row" }, [
+      iconBtn("close", "그만두기", exitRun, "close-btn"),
+      el("div", { class: "lesson-progress" }, [bar(C.percent(done, total), "green")]),
+      el("span", { class: "lesson-count", text: run ? (run.idx + 1) + "/" + total : "" })
+    ]));
+  }
+
+  function renderReportTop(top) {
+    top.className = "topbar lesson-top";
+    top.appendChild(el("div", { class: "lesson-top-row" }, [
+      iconBtn("close", "닫기", closeReport, "close-btn"),
+      el("span", { class: "run-top-label", text: UI.report ? UI.report.title : "결과" })
+    ]));
+  }
+
+  function renderReaderTop(top) {
+    var b = UI.reader ? RD().byId(UI.reader.bookId) : null;
+    var isQuiz = UI.view === "readerQuiz";
+    top.className = "topbar reader-top";
+    top.appendChild(el("div", { class: "reader-top-row" }, [
+      iconBtn("back", "도서관으로", function () {
+        stopReader();
+        UI.readerQuiz = null;
+        UI.view = "library";
+        render();
+      }, "close-btn"),
+      el("div", { class: "reader-top-copy" }, [
+        el("span", { class: "reader-top-title", text: b ? b.title : "영어원서" }),
+        el("span", { class: "reader-top-sub", text: isQuiz ? "독후 퀴즈" : (b ? b.ko + " · " + (UI.reader.page + 1) + " / " + b.pages.length + "쪽" : "") })
+      ]),
+      el("span", { class: "reader-top-flag", text: "EN" })
+    ]));
+  }
+
   /* ---------- 탭바 ---------- */
   var TABS = [
-    { id: "today", label: "오늘의 학습", icon: "home" },
-    { id: "cards", label: "문장 암기", icon: "cards" },
-    { id: "speak", label: "말하기 연습", icon: "mic" },
+    { id: "today", label: "오늘", icon: "home" },
+    { id: "exam", label: "단원평가", icon: "exam" },
+    { id: "bank", label: "문제은행", icon: "bank" },
+    { id: "library", label: "도서관", icon: "book" },
     { id: "progress", label: "진도", icon: "chart" }
   ];
+
+  /** 지금 화면이 속한 탭 (문제 풀기·결과 화면도 자기 탭을 켭니다). */
+  function activeTab() {
+    var v = UI.view;
+    if (v === "exam") return "exam";
+    if (v === "bank") return "bank";
+    if (v === "library" || v === "reader" || v === "readerQuiz") return "library";
+    if (v === "progress") return "progress";
+    if (v === "run") return UI.run && UI.run.kind === "exam" ? "exam" : "bank";
+    if (v === "report") return UI.report && UI.report.back === "exam" ? "exam" : "bank";
+    return "today";
+  }
+
+  function immersiveView() {
+    return ["lesson", "run", "report", "reader", "readerQuiz"].indexOf(UI.view) >= 0;
+  }
+
+  function goTab(id) {
+    if (immersiveView()) return;
+    stopReader();
+    stopRecognize();
+    Speech.stop();
+    if (id === "exam") UI.view = "exam";
+    else if (id === "bank") UI.view = "bank";
+    else if (id === "library") UI.view = "library";
+    else if (id === "progress") UI.view = "progress";
+    else UI.view = "today";
+    render();
+  }
 
   function renderTab() {
     var tab = roots.tab;
     if (!tab) return;
     clear(tab);
-    tab.className = "tabbar" + (UI.view === "lesson" ? " is-hidden" : "");
+    tab.className = "tabbar" + (immersiveView() ? " is-hidden" : "");
+    var active = activeTab();
     TABS.forEach(function (t) {
-      var active = UI.view === t.id;
+      var on = active === t.id;
       tab.appendChild(el("button", {
-        class: "tab" + (active ? " is-active" : ""),
+        class: "tab" + (on ? " is-active" : ""),
         type: "button",
         "aria-label": t.label,
-        "aria-current": active ? "page" : false,
-        on: {
-          click: function () {
-            if (UI.view === "lesson") return;
-            UI.view = t.id;
-            if (t.id === "cards") { UI.card.flipped = false; }
-            if (t.id === "speak") { UI.speak.result = null; }
-            render();
-          }
-        }
+        "aria-current": on ? "page" : false,
+        on: { click: function () { goTab(t.id); } }
       }, [
         el("span", { class: "tab-ico" }, [icon(t.icon)]),
         el("span", { class: "tab-label", text: t.label })
@@ -1538,6 +2761,13 @@
     else if (UI.view === "speak") node = viewSpeak();
     else if (UI.view === "progress") node = viewProgress();
     else if (UI.view === "lesson") node = viewLesson();
+    else if (UI.view === "exam") node = viewExam();
+    else if (UI.view === "bank") node = viewBank();
+    else if (UI.view === "run") node = viewRun();
+    else if (UI.view === "report") node = viewReport();
+    else if (UI.view === "library") node = viewLibrary();
+    else if (UI.view === "reader") node = viewReader();
+    else if (UI.view === "readerQuiz") node = viewReaderQuiz();
     if (node) roots.main.appendChild(node);
     renderTab();
     roots.main.scrollTop = 0;
@@ -1556,13 +2786,24 @@
     // 매니페스트 바로가기(./#speak 등)로 들어온 경우 해당 탭을 엽니다.
     try {
       var hash = global.location && global.location.hash ? String(global.location.hash).replace("#", "") : "";
-      if (hash === "today" || hash === "cards" || hash === "speak" || hash === "progress") UI.view = hash;
+      if (hash === "today" || hash === "cards" || hash === "speak" || hash === "progress" ||
+        hash === "exam" || hash === "bank" || hash === "library") UI.view = hash;
+      if (UI.view === "reader" || UI.view === "run") UI.view = "today";
     } catch (e) { /* 해시가 없어도 괜찮아요 */ }
     if (global.addEventListener) {
       global.addEventListener("popstate", function () {
         if (UI.view === "lesson") {
           UI.lesson = null;
           UI.view = "today";
+          render();
+        } else if (UI.view === "run") {
+          exitRun();
+        } else if (UI.view === "report") {
+          closeReport();
+        } else if (UI.view === "reader" || UI.view === "readerQuiz") {
+          stopReader();
+          UI.readerQuiz = null;
+          UI.view = "library";
           render();
         }
       });
